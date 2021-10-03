@@ -19,8 +19,8 @@
 #smooth结果添加染色体号并进行排序，并且合并成A，B，D lineage.
 
 Name=(CA_NW_A CA_SA NW_A_NE_A SA_SW_A SA_Tibet SE_A_NE_A SW_A_NE_A Strang_WA WA_CA WA_EU WA_NE_A WA_NW_A WA_SA WA_SE_A WA_SW_A WA_Tibet)
-
-for file in Name {
+for file in Name
+do
   for i in {1,2,7,8,13,14,19,20,25,26,31,32,37,38}
     do
       sed '1d' $file_smooth$i.txt | awk '{print "'$i'""\t"$0}'  
@@ -33,7 +33,7 @@ for file in Name {
     do
       sed '1d' $file_smooth$i.txt | awk '{print "'$i'""\t"$0}'  
     done |sed '/NA/d' | sort -k5,5n -k1,1n -k2,2n | sed '1i Chr\tWindowStart\tWindowStop\tSNPcount\tMeanY\tWstat' > $file_smooth_D.txt
-}
+done
 
 #42条染色体合并成21条(因为gff文件是42条染色体,此步可以跳过)
 #bash 42-21chr.sh  

@@ -1,4 +1,7 @@
-#Statistics and Graphics drawing
+# R_Code
+ R codes for Vmap1.1 and Vmap3
+ 
+ #Statistics and Graphics drawing
 PI.r: Calculate population genetic diversity
 FST.r: Calculate the fixation index (FST)
 IBS.r: Calculate IBS distance

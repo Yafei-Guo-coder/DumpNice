@@ -1,7 +1,8 @@
 #XP-CLR
+#工作路径：xuebo@204:/data2/xuebo/Projects/Speciation/xpclr/
 #XPCLR的流程：XPCLR -xpclr ../groupSouth/groupSouthChr${i}.geno ../groupSCA/groupSCAChr${i}.geno ../groupSCA/groupSCAChr${i}.snp South_SCA_10kchr${i} -w1 0.005 500 10000 $i -p1 0.95 &
 #这是参数 -w1 0.005 500 10000 -p1 0.95
-#下面的是做标准化
+#下面的是做smooth标准化
 
 #!/usr/bin/Rscript.R
 setwd("/data2/xuebo/Projects/Speciation/xpclr/North_South_SCA/XPCLRresultNorth_SCA")
@@ -46,11 +47,11 @@ for(i in c(1,2,7,8,13,14,19,20,25,26,31,32,37,38)){
   write.table(normScore,outFile,sep="\t",col.names = T,row.names = F)
 }
 
-#GenWin的结果是这样的"WindowStart" "WindowStop" "SNPcount" "MeanY" "Wstat"，没有染色体，要加上染色体的信息
+#GenWin的结果: "WindowStart" "WindowStop" "SNPcount" "MeanY" "Wstat"，没有染色体，要加上染色体的信息
 #工作路径：xuebo@204:/data2/xuebo/Projects/Speciation/xpclr/North_South_SCA/XPCLRresultSouth_SCA/smooth
 
 #smooth结果添加染色体号并进行排序
-
+#!/usr/bin/shell
 for i in {1,2,7,8,13,14,19,20,25,26,31,32,37,38}
 do
 sed '1d' smooth$i.txt | awk '{print "'$i'""\t"$0}'  
@@ -154,7 +155,6 @@ grep -f posB North_manhatan.txt
 bedtools intersect -a North_top5_D.bed -b gene.bed -wa | awk '{print $1"\t"$2+1000000"\t"$3-1000000}'> D.pos
 grep -f D.pos smooth_D.txt| awk '{print $4"\t"$5}' > posD
 grep -f posD North_manhatan.txt 
-
 
 #South
 sed '1d' South_top5_A.txt | awk '{print $1"\t"$2"\t"$3}' > South_top5_A.bed

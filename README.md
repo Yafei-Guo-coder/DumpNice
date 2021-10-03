@@ -1,4 +1,4 @@
-# R codes for Vmap1.1 and Vmap3
+# Codes for Vmap1.1 and Vmap3
 ### Statistics and Graphics drawing
  
 PI.r: Calculate population genetic diversity

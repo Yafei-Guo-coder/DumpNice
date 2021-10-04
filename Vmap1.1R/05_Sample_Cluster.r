@@ -26,3 +26,11 @@ for(i in 1:126) {
   }
 }
 write.table(data2,"BB_data2.txt",sep="\t",row.names = F,quote=F)
+
+library(maps)
+mp<-NULL
+mapworld<-borders("world",colour = "gray70",fill="gray70") 
+mp<-ggplot()+mapworld+ylim(-90,90)
+mp_40<-mp+geom_point(aes(x=re$Longitude_40, y=re$Latitude_40))+
+  scale_size(range=c(1,1))+ 
+  theme_classic()

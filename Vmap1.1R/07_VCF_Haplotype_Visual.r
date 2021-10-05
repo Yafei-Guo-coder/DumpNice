@@ -1,4 +1,4 @@
-#统#设置：注释内容及颜色
+#统一设置：注释内容及颜色
 library(pheatmap)
 require(reshape)
 require (rworldmap)

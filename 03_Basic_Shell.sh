@@ -67,15 +67,7 @@ bcftools merge chr0${chr}.vcf.gz chr0${chr}.vcf.gz chr0${chr}.vcf.gz chr${chr}.v
 
 bcftools filter 1000Genomes.vcf.gz --regions 9:4700000-4800000 > 4700000-4800000.vcf
 
-
 #E6:xuebo@204:/data2/xuebo/Projects/Speciation/E6/Landrace_locate_225
-
-
-#做迁徙和环境适应性路径
-204:yafei:/data2/yafei/003_Project3/Vmap1.1/E6
-203:yafei:/data1/home/yafei/008_Software/snpEff/data2
-
-/data2/xuebo/Projects/Speciation/xpclr/Selection_V2
 
 #统计VCF文件的snp的密度
 #hg19.bed

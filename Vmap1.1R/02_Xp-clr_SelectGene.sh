@@ -17,22 +17,24 @@
 #WA_Tibet_smooth*
 #GenWin(smooth)的结果是这样的"WindowStart" "WindowStop" "SNPcount" "MeanY" "Wstat"，没有染色体，要加上染色体的信息
 #smooth结果添加染色体号并进行排序，并且合并成A，B，D lineage.
+CA_SA
 
-Name=(CA_NW_A CA_SA NW_A_NE_A SA_SW_A SA_Tibet SE_A_NE_A SW_A_NE_A Strang_WA WA_CA WA_EU WA_NE_A WA_NW_A WA_SA WA_SE_A WA_SW_A WA_Tibet)
-for file in Name
+Name=(CA_NW_A NW_A_NE_A SA_SW_A SA_Tibet SE_A_NE_A SW_A_NE_A Strang_WA WA_CA WA_EU WA_NE_A WA_NW_A WA_SA WA_SE_A WA_SW_A WA_Tibet)
+
+for num in {1..15}
 do
   for i in {1,2,7,8,13,14,19,20,25,26,31,32,37,38}
     do
-      sed '1d' $file_smooth$i.txt | awk '{print "'$i'""\t"$0}'  
-    done |sed '/NA/d' | sort -k5,5n -k1,1n -k2,2n | sed '1i Chr\tWindowStart\tWindowStop\tSNPcount\tMeanY\tWstat' > $file_smooth_A.txt
+      sed '1d' ${Name[$num]}_smooth${i}.txt | awk '{print "'$i'""\t"$0}'  
+    done |sed '/NA/d' | sort -k5,5n -k1,1n -k2,2n | sed '1i Chr\tWindowStart\tWindowStop\tSNPcount\tMeanY\tWstat' > ${Name[$num]}_smooth_A.txt
   for i in {3,4,9,10,15,16,21,22,27,28,33,34,39,40}
     do
-      sed '1d' $file_smooth$i.txt | awk '{print "'$i'""\t"$0}'  
-    done |sed '/NA/d' | sort -k5,5n -k1,1n -k2,2n | sed '1i Chr\tWindowStart\tWindowStop\tSNPcount\tMeanY\tWstat' > $file_smooth_B.txt
+      sed '1d' ${Name[$num]}_smooth${i}.txt | awk '{print "'$i'""\t"$0}'  
+    done |sed '/NA/d' | sort -k5,5n -k1,1n -k2,2n | sed '1i Chr\tWindowStart\tWindowStop\tSNPcount\tMeanY\tWstat' > ${Name[$num]}_smooth_B.txt
   for i in {5,6,11,12,17,18,23,24,29,30,35,36,41,42}
     do
-      sed '1d' $file_smooth$i.txt | awk '{print "'$i'""\t"$0}'  
-    done |sed '/NA/d' | sort -k5,5n -k1,1n -k2,2n | sed '1i Chr\tWindowStart\tWindowStop\tSNPcount\tMeanY\tWstat' > $file_smooth_D.txt
+      sed '1d' ${Name[$num]}_smooth${i}.txt | awk '{print "'$i'""\t"$0}'  
+    done |sed '/NA/d' | sort -k5,5n -k1,1n -k2,2n | sed '1i Chr\tWindowStart\tWindowStop\tSNPcount\tMeanY\tWstat' > ${Name[$num]}_smooth_D.txt
 done
 
 #42条染色体合并成21条(因为gff文件是42条染色体,此步可以跳过)
@@ -44,31 +46,75 @@ done
 
 #每个亚基因组取5%看信号(42条染色体): bash top.sh
 #File_name	Line_num	Top1%_num	Top5%_num
-EA_A_7.txt	98813	988	4941
-EA_B_7.txt	105670	1057	5284
-EA_D_7.txt	104488	1045	5224
-EU_A_7.txt	116545	1165	5827
-EU_B_7.txt	137135	1371	6857
-EU_D_7.txt	123002	1230	6150
-North_A_7.txt	99964	1000	4998
-North_B_7.txt	125422	1254	6271
-North_D_7.txt	107516	1075	5376
-SCA_A_7.txt	101636	1016	5082
-SCA_B_7.txt	132997	1330	6650
-SCA_D_7.txt	137558	1376	6878
-South_A_7.txt	94773	948	4739
-South_B_7.txt	119459	1195	5973
-South_D_7.txt	115796	1158	5790
-WA_A_7.txt	139411	1394	6971
-WA_B_7.txt	138839	1388	6942
-WA_D_7.txt	73047	730	3652
-
-#定位基因: bash gene.sh
-bedtools intersect -a gene_v1.1_Lulab.gff3 -b North_top1_A.txt -wa | awk '{print $1"\t"$4"\t"$5"\t"$9}' | awk -F";" '{print $1}' | sort | uniq > North_top1_A.gene
-
-#已知基因的列表
-
-#定位位点
+NW_A_NE_A_smooth_A	129132	1291	6456
+NW_A_NE_A_smooth_B	138395	1383	6919
+NW_A_NE_A_smooth_D	141012	1410	7050
+SA_SW_A_smooth_A	131502	1315	6575
+SA_SW_A_smooth_B	133113	1331	6655
+SA_SW_A_smooth_D	103739	1037	5186
+SA_Tibet_smooth_A	113723	1137	5686
+SA_Tibet_smooth_B	148444	1484	7422
+SA_Tibet_smooth_D	127197	1271	6359
+SE_A_NE_A_smooth_A	122931	1229	6146
+SE_A_NE_A_smooth_B	154965	1549	7748
+SE_A_NE_A_smooth_D	133311	1333	6665
+SW_A_NE_A_smooth_A	137511	1375	6875
+SW_A_NE_A_smooth_B	127835	1278	6391
+SW_A_NE_A_smooth_D	145916	1459	7295
+Strang_WA_smooth_D	108845	1088	5442
+WA_CA_smooth_A	93440	934	4672
+WA_CA_smooth_B	112623	1126	5631
+WA_CA_smooth_D	131030	1310	6551
+WA_EU_smooth_A	123462	1234	6173
+WA_EU_smooth_B	132148	1321	6607
+WA_EU_smooth_D	122656	1226	6132
+WA_NE_A_smooth_A	104044	1040	5202
+WA_NE_A_smooth_B	123554	1235	6177
+WA_NE_A_smooth_D	110422	1104	5521
+WA_NW_A_smooth_A	90164	901	4508
+WA_NW_A_smooth_B	126871	1268	6343
+WA_NW_A_smooth_D	123968	1239	6198
+WA_SA_smooth_A	88171	881	4408
+WA_SA_smooth_B	112723	1127	5636
+WA_SA_smooth_D	120472	1204	6023
+WA_SE_A_smooth_A	104408	1044	5220
+WA_SE_A_smooth_B	109275	1092	5463
+WA_SE_A_smooth_D	89218	892	4460
+WA_SW_A_smooth_A	107621	1076	5381
+WA_SW_A_smooth_B	113789	1137	5689
+WA_SW_A_smooth_D	91140	911	4557
+WA_Tibet_smooth_A	116230	1162	5811
+WA_Tibet_smooth_B	138922	1389	6946
+WA_Tibet_smooth_D	112125	1121	5606
+for i in `ls *txt`; do  wc -l $i; done | awk '{print $2"\t"$1"\t"$1*0.01"\t"$1*0.05}' | awk -F"[.|\t]" '{print $1"\t"$3"\t"$4"\t"$6}' | awk '{print "tail -n "$3,$1".txt > Top1%/"$1".top1.bed"}'
+#阈值3-4
+for i in `ls *txt`; do  wc -l $i; done | awk '{print $2"\t"$1"\t"$1*0.01"\t"$1*0.05}' | awk -F"[.|\t]" '{print $1"\t"$3"\t"$4"\t"$6}' | awk '{print "tail -n "$4,$1".txt > Top5%/"$1".top5.bed"}'
+#阈值1-2
+#定位已注释基因:gff
+for i in `ls *bed`
+do
+bedtools intersect -a ../gene_v1.1_Lulab.gff3 -b $i -wa | awk '{print $1"\t"$4"\t"$5"\t"$9}' | awk -F";" '{print $1}' | sort | uniq > ${i::-3}gene
+done
+#定位已知基因:known gene
+for i in `ls *gene`
+do
+grep -w -f ../known_gene.txt $i | sort | uniq > ${i::-4}known.gene
+done
+#定位已克隆基因:cloned gene
+for i in `ls *top1.gene`
+do
+awk -F"ID=" '{print $2}' $i > ${i::-4}gene2
+done
+for i in `ls *top1.gene2`
+do
+grep -w -f $i ../cloned_gene.txt > ${i::-5}cloned.gene
+done
+#定位抗病基因:nlr gene
+for i in `ls *top1.gene`
+#for i in `ls *top5.gene`
+do
+grep -w -f ../nlr_gene.txt $i | sort | uniq > ${i::-4}nlr.gene
+done
 
 #画top5% nlr基因的曼哈顿图
 204@xuebo:/data2/xuebo/Projects/Speciation/xpclr/North_South_SCA/smooth/Top5%/gene/Manhattan/gene

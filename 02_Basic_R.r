@@ -1,90 +1,36 @@
-#-------------------------------------------------------------------shell--------------------------------------------------------------------------------------
-#Linux Shell中使用awk完成两个文件的关联Join
-#外关联
-awk 'NR==FNR{a[$2]=$0;}NR!=FNR{print $0,a[$2]}' b.txt a.txt
-#内关联
-#方法1
-awk -F',' 'NR==FNR{a[$1]=$2;}NR!=FNR && a[$1] {print $0,a[$1]}' b.txt a.txt
-#方法2
-awk -F',' 'NR==FNR{a[$1]=$2;}NR!=FNR && $1 in a {print $0,a[$1]}' b.txt a.txt
+#循环：for
+v <- LETTERS[1:6]
+for ( i in v) {
+  if (i == "D") {  # D 不会输出，跳过这次循环，进入下一次
+    next
+  }
+  print(i)
+}
+#连接两个字符串：paste
+paste (a, sep = " ", collapse = NULL)
+paste0(a, collapse = NULL)
+#定义一个空向量
+x=vector()
+x<-numeirc(0) #长度可变的存储数字的向量
+x=character() #创建出来的为字符串向量
+x[1]=1
+x[2]=3
+x<-NULL; x[1]<-2
+vector(mode="numeric",length=0) #定义一个空向量，往里面添加元素即可
+x=matrix(nrow = 2,ncol=3) #创建空矩阵
+#添加元素
+c1 <- c(1,2,3,4,5) #创建一个向量
+c1 <- c(c1,5) #追加一个元素
+c1 <- c(c1,c(5,6)) #追加一个向量
+c1 <- c(c1[1:2],c(5,6),c[3:5]) #指定位置来添加的元素
+c1 <- append(c1,8) #在向量最后追加一个元素8
+c1 <- append(c1,c(11,22)) #在向量后追加向量
+c1 <- append(c1,35,3) #在第3个元素后插入新元素，也可以插入向量
 
-awk 'FNR==NR{a[$1];next}($1 in a){next} {print}' a b 
-
-
-#-------------------------------------------------------------------shell--------------------------------------------------------------------------------------
-#提取vcf的特定区域
-#yafei@203:/data2/yafei/Project3/make_tree
-for chr in {1,2,7,8,13,14,19,20,25,26,31,32,37,38}
-do
-bedtools intersect -a /data2/xuebo/Projects/Speciation/tree/withBarley_segregate/chr${chr}.withBarley.vcf.gz -b merge_A.bed -header > chr${chr}.withBarley.vcf &
-  done
-
-for chr in {3,4,9,10,15,16,21,22,27,28,33,34,39,40}
-do
-bedtools intersect -a /data2/xuebo/Projects/Speciation/tree/withBarley_segregate/chr${chr}.withBarley.vcf.gz -b merge_B.bed -header > chr${chr}.withBarley.vcf &
-  done
-
-for chr in {5,6,11,12,17,18,23,24,29,30,35,36,41,42}
-do
-bedtools intersect -a /data2/xuebo/Projects/Speciation/tree/withBarley_segregate/chr${chr}.withBarley.vcf.gz -b merge_D.bed -header > chr${chr}.withBarley.vcf &
-  done
-
-for i in `ls *vcf`
-do 
-bgzip -c ${i} > ${i}.gz &
-  done
-
-awk 'ORS=NR%2?" ":"\n"{print}' 
-  
-#批量杀死程序
-ps aux|grep Volca|tail -n 20 | awk '{print $2}' > id
-for i in `cat id`; do kill -9 $i; done
-
-
-## split by chromosome
-for chr in {0..42}
-do
-samtools view -b $out/$ID.rm.bam $chr > $out/$ID.chr$chr.bam
-done
-index bam file
-for chr in {0..42}
-do
-samtools index $out/$ID.chr$chr.bam
-done
-
-samtools view test.bam | awk '{print $5"\t"$9}'| sed '1i mapping-qulity\tmate-length' > test
-awk '{print $5"\t"$9}' standard.bam| sed '1i mapping-qulity\tmate-length' > standard
-
-cat 687_f1_test.fq | paste - - - - | sort -k1,1 -t " "  > 687_f1_test.sorte
-
-grep -v -f 687_uniqid 687_f1_test.sorted | tr "\t" "\n" > 687_f1_test.sorted.fq
-
-nohup zcat CRR061687_r2.filtered.fq.gz |paste - - - - |sort -k1,1 -S 500G | tr '\t' '\n' |gzip > CRR061687_r2.filtered_sorted.fq.gz &
-  
-nohup seqkit sort -n CRR061687_r2.filtered.fq.gz | gzip -c > CRR061687_r2.filtered_sorted.fq.gz &
-  
-bcftools merge chr0${chr}.vcf.gz chr0${chr}.vcf.gz chr0${chr}.vcf.gz chr${chr}.vcf.gz -o chr${chr}.all.vcf
-
-bcftools filter 1000Genomes.vcf.gz --regions 9:4700000-4800000 > 4700000-4800000.vcf
-
-
-#E6:xuebo@204:/data2/xuebo/Projects/Speciation/E6/Landrace_locate_225
-
-
-#做迁徙和环境适应性路径
-204:yafei:/data2/yafei/003_Project3/Vmap1.1/E6
-203:yafei:/data1/home/yafei/008_Software/snpEff/data2
-
-/data2/xuebo/Projects/Speciation/xpclr/Selection_V2
-
-#统计VCF文件的snp的密度
-#hg19.bed
-chr1 248956422
-chr2 242193529
-chr3 198295559
-....
-
-bedtools makewindows -g hg19.bed -w 1000000 > windows.bed
-bedtools coverage -a windows.bed -b test.vcf -counts > coverage.txt
-
-
+#删除元素
+c1 <- c1[-1] #从向量中指定位置为1的元素
+c1 <- c1[-c(2:3)] #可以给定一个位置向量来删除多个元素
+c1 <- c1[c(3:5)] #与上面的方式相反，保留想要的元素
+#展示调色板
+library(RColorBrewer)
+display.brewer.all()

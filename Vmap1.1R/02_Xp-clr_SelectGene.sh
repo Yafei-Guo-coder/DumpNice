@@ -101,20 +101,85 @@ do
 grep -w -f ../known_gene.txt $i | sort | uniq > ${i::-4}known.gene
 done
 #定位已克隆基因:cloned gene
-for i in `ls *top1.gene`
+for i in `ls *top5.gene`
 do
 awk -F"ID=" '{print $2}' $i > ${i::-4}gene2
 done
-for i in `ls *top1.gene2`
+for i in `ls *top5.gene2`
 do
 grep -w -f $i ../cloned_gene.txt > ${i::-5}cloned.gene
 done
 #定位抗病基因:nlr gene
-for i in `ls *top1.gene`
+for i in `ls *top5.gene`
 #for i in `ls *top5.gene`
 do
 grep -w -f ../nlr_gene.txt $i | sort | uniq > ${i::-4}nlr.gene
 done
+
+#check
+cat *cloned.gene | sort | uniq -c
+ls *cloned.gene |xargs -n1 > cloned_gene.txt
+for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done | awk '{print $1}' | awk -F"_smooth" '{print $1}'|uniq > file_prefix.txt
+#change file format to plot heatmap(A,B,D lineage seperate)
+#A lineage
+ls *A.top5.cloned.gene |xargs -n1 > A_cloned_gene.txt
+sed 's/$/_smooth_A.top5.cloned.gene/' file_prefix.txt > A_file.txt
+for i in `cat A_cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $2}' | sort | uniq > A_gene.txt
+
+#B lineage
+ls *B.top5.cloned.gene |xargs -n1 > B_cloned_gene.txt
+sed 's/$/_smooth_B.top5.cloned.gene/' file_prefix.txt> B_file.txt
+for i in `cat B_cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $2}' | sort | uniq > B_gene.txt
+
+#D lineage 
+ls *D.top5.cloned.gene |xargs -n1 > D_cloned_gene.txt
+sed 's/$/_smooth_D.top5.cloned.gene/' file_prefix.txt > D_file.txt
+for i in `cat D_cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $2}' | sort | uniq > D_gene.txt
+R
+v <- c("A","B","D")
+for ( i in c(1:3)){
+  filename <- paste(v[i],"_file.txt",sep="")
+  genename <- paste(v[i],"_gene.txt",sep="")
+  file <- read.table(filename,header=F,stringsAsFactors=F)
+  gene <- read.table(genename,header=F,stringsAsFactors=F)
+  files <- file[,1]
+  genes <- gene[,1]
+  x=vector()
+  for (j in files){
+    a<-paste(j,genes,sep=" ")
+    x <- c(x,a)
+  }
+  out <- paste(v[i],"_file_gene_mode.txt",sep="")
+  write.table(x,out,quote=F,row.names=F,col.names=F,sep="\t")
+}
+#shell
+#A lineage
+for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep A.top5.cloned.gene > A_postive_file_gene_mode.txt
+awk 'NR==FNR{a[$0]=$0}NR!=FNR{if($0 in a) {print a[$0]"\t1"} else print $0"\t"0}' A_postive_file_gene_mode.txt A_file_gene_mode.txt | awk -F"_smooth_" '{print $1"\t"$2}'|sed 's/ /\t/' > A_heatmap_format1.txt
+#B lineage
+for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep B.top5.cloned.gene > B_postive_file_gene_mode.txt
+awk 'NR==FNR{a[$0]=$0}NR!=FNR{if($0 in a) {print a[$0]"\t1"} else print $0"\t"0}' B_postive_file_gene_mode.txt B_file_gene_mode.txt | awk -F"_smooth_" '{print $1"\t"$2}'|sed 's/ /\t/' > B_heatmap_format1.txt
+#D lineage
+for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep D.top5.cloned.gene > D_postive_file_gene_mode.txt
+awk 'NR==FNR{a[$0]=$0}NR!=FNR{if($0 in a) {print a[$0]"\t1"} else print $0"\t"0}' D_postive_file_gene_mode.txt D_file_gene_mode.txt | awk -F"_smooth_" '{print $1"\t"$2}'|sed 's/ /\t/' > D_heatmap_format1.txt
+#R
+library(reshape)
+name <- read.table("file_prefix.txt",header=F,stringsAsFactors=F)
+colnames(name) <- "file"
+v <- c("A","B","D")
+num <- c(1,0.6,0.2)
+for ( i in c(1:3)){
+  filename <- paste(v[i],"_heatmap_format1.txt",sep="")
+  file <- read.table(filename,header=F,stringsAsFactors=F)
+  sub <- file[,c(1,3,4)]
+  colnames(sub) <- c("file","gene","type")
+  sub[which(sub$type==1),3] <- num[i]
+  sub[which(sub$type==0),3] <- num[i]-0.2
+  mt <- melt(sub,id=c("file","gene"))
+  st <- cast(mt,file~variable+gene)
+  name<-merge(name,st,by="file") 
+}
+write.table(name,"heatmap_format2.txt",quote=F,row.names=F,col.names=T,sep="\t")
 
 #画top5% nlr基因的曼哈顿图
 204@xuebo:/data2/xuebo/Projects/Speciation/xpclr/North_South_SCA/smooth/Top5%/gene/Manhattan/gene

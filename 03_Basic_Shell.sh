@@ -69,14 +69,6 @@ bcftools filter 1000Genomes.vcf.gz --regions 9:4700000-4800000 > 4700000-4800000
 
 #E6:xuebo@204:/data2/xuebo/Projects/Speciation/E6/Landrace_locate_225
 
-#统计VCF文件的snp的密度
-#hg19.bed
-chr1 248956422
-chr2 242193529
-chr3 198295559
-....
 
-bedtools makewindows -g hg19.bed -w 1000000 > windows.bed
-bedtools coverage -a windows.bed -b test.vcf -counts > coverage.txt
 
 

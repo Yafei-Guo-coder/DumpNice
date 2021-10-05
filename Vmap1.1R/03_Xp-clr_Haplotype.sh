@@ -14,5 +14,5 @@ do
     #fi
 done
 
-#传到本地用Java 将vcf转换成单倍型txt格式，使用07_VCF_Haplotype_Visual.r进行可视化。
+#传到本地用Java Migration/Haplotype将vcf转换成单倍型txt格式，使用07_VCF_Haplotype_Visual.r进行可视化。
 

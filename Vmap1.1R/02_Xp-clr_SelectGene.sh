@@ -119,7 +119,9 @@ done
 #check
 cat *cloned.gene | sort | uniq -c
 ls *cloned.gene |xargs -n1 > cloned_gene.txt
+
 for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done | awk '{print $1}' | awk -F"_smooth" '{print $1}'|uniq > file_prefix.txt
+
 #change file format to plot heatmap(A,B,D lineage seperate)
 #A lineage
 ls *A.top5.cloned.gene |xargs -n1 > A_cloned_gene.txt

@@ -1,3 +1,5 @@
+#working directory
+#yafei@204:/data1/home/yafei/009_GWAS/Rht/WEGA_out
 #extract VCF for 349_WEGA samples from Vmap3.0 dataset
 for chr in {001..009}
 do
@@ -28,6 +30,9 @@ rm *prune*
 rm *nosex
 bgzip -c chr${chr}.WEGA_LD.vcf > chr${chr}.WEGA_LD.vcf.gz
 done
+
+#Working directory
+#yafei@66:/data1/home/yafei/009_GWAS/WEGA_out
 #concat file from 42 to 21
 vcf-concat VCF/chr001.WEGA_LD.vcf.gz VCF/chr002.WEGA_LD.vcf.gz | bgzip -c > 1A.WEGA.vcf.gz
 vcf-concat VCF/chr003.WEGA_LD.vcf.gz VCF/chr004.WEGA_LD.vcf.gz | bgzip -c > 1B.WEGA.vcf.gz
@@ -67,3 +72,20 @@ run_pipeline.pl -Xmx200g -fork1 -h ${i}${j}.WEGA.hmp.txt -fork2 -r height.txt -f
 run_pipeline.pl -Xmx200g -fork1 -h ${i}${j}.WEGA.hmp.txt -fork2 -r stoma.txt -fork3 -q matrix_10.Q -excludeLastTrait -fork4 -k all_kinship.txt -combine5 -input1 -input2 -input3 -intersect -combine6 -input5 -input4 -mlm -mlmVarCompEst P3D -mlmCompressionLevel None -export stoma/${i}${j}_stoma_mlm -runfork1 -runfork2 -runfork3
 done
 done
+
+#change result file format
+#QQ plot file prepare
+for i in `ls *all.txt`; do sed -i '1d' $i; done 
+for i in `ls *all.txt`; do wc -l $i ; done | awk '{print "shuf -n "int($1*0.005),$2" | sort -k2,2n -k3,3n > "$2".sub.txt"}'
+
+#Manhattan plot file prepare
+ls *mlm2* | xargs -n1 > txt.names
+for i in `cat txt.names`
+do
+awk '{print $2"\t"$3"\t"$4"\t"$7"\t"(-log($7)/log(10))}' $i | awk '{if($5>2.5 && $4!="NaN") print $0}' | awk '{print $1"\t"$2"\t"$3"\t"$4}' > ${i::-15}.txt
+done
+
+
+
+
+

@@ -408,7 +408,8 @@ colnames(gwasR) <- c("SNP", "CHR", "BP","P")
 highsnp <- c(99120,99232,99317,99324,99381,99530,99629,99658,99668,99693,99720,99752,99767,99808,99844,99847,99860,99888,99900,99917,99919,99922,99926,99941,99956)
 manhattan(gwasR, annotateTop = T, highlight = highsnp, col = c("#b2df8a","#33a02c","#b2df8a","#33a02c","#b2df8a","#33a02c","#b2df8a","#a6cee3","#1f78b4","#a6cee3","#1f78b4","#a6cee3","#1f78b4","#a6cee3","#fdbf6f","#ff7f00","#fdbf6f","#ff7f00","#fdbf6f","#ff7f00","#fdbf6f"), suggestiveline=FALSE,genomewideline=F,logp=F, ylim=c(-2,25))
 
-#20210902 FuGWAS
+
+#20210902 FuGWAS----
 setwd("/Users/guoyafei/Documents/01_个人项目/05_FuGWAS/07_气孔导度数据/20210928/")
 data <- read.table("stoma.mlm.txt",header=F,stringsAsFactors = F)
 colnames(data) <- c("SNP", "CHR", "BP","P")
@@ -428,7 +429,6 @@ dev.off()
 
 highsnp <- c("21-30861571","23-18781242","23-22706233")
 manhattan(gwasR, annotateTop = T, highlight = highsnp, col = c("#b2df8a","#33a02c","#b2df8a","#33a02c","#b2df8a","#33a02c","#b2df8a","#a6cee3","#1f78b4","#a6cee3","#1f78b4","#a6cee3","#1f78b4","#a6cee3","#fdbf6f","#ff7f00","#fdbf6f","#ff7f00","#fdbf6f","#ff7f00","#fdbf6f"), suggestiveline=FALSE,genomewideline=F,logp=F, ylim=c(-2,25))
-
 
 setwd("/Users/guoyafei/Documents/01_个人项目/05_FuGWAS/07_气孔导度数据/20210928/")
 data <- read.table("height_all.mlm.txt",header=F,stringsAsFactors = F)

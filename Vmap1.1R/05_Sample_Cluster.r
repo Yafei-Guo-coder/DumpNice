@@ -11,7 +11,6 @@ df = scale(data2)
 result <- dist(df, method = "euclidean")
 #产生层次结构
 result_hc <- hclust(d = result, method = "ward.D2")
-
 data2$type <- cutree(result_hc, k=40)
 lat_mean <- tapply(data2[,1],data2$type,mean,na.rm = TRUE)
 lon_mean <- tapply(data2[,2],data2$type,mean,na.rm = TRUE)

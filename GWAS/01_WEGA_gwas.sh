@@ -82,7 +82,7 @@ for i in `ls *all.txt`; do wc -l $i ; done | awk '{print "shuf -n "int($1*0.005)
 ls *mlm2* | xargs -n1 > txt.names
 for i in `cat txt.names`
 do
-awk '{print $2"\t"$3"\t"$4"\t"$7"\t"(-log($7)/log(10))}' $i | awk '{if($5>2.5 && $4!="NaN") print $0}' | awk '{print $1"\t"$2"\t"$3"\t"$4}' > ${i::-15}.txt
+awk '{print $2"\t"$3"\t"$4"\t"$7"\t"(-log($7)/log(10))}' $i | awk '{if($5>2 && $4!="NaN") print $0}' | awk '{print $1"\t"$2"\t"$3"\t"$4}' > ${i::-15}.man.txt
 done
 
 

@@ -411,16 +411,26 @@ manhattan(gwasR, annotateTop = T, highlight = highsnp, col = c("#b2df8a","#33a02
 
 #20210902 FuGWAS----
 #准备文件来自：01_GWAS_gwas.sh
-setwd("/Users/guoyafei/Documents/01_个人项目/05_FuGWAS/07_气孔导度数据/20210928/")
-data <- read.table("stoma.mlm.txt",header=F,stringsAsFactors = F)
-colnames(data) <- c("SNP", "CHR", "BP","P")
-sub <- data[order(data$P),]
-sub$logP <- -log10(sub$P)
-sub2 <- sub[which(sub$logP>2),1:4]
-#data <- data[-1,]
-png("height1.png")
-#manhattan(sub2, col = c("#b2df8a","#33a02c","#b2df8a","#33a02c","#b2df8a","#33a02c","#b2df8a","#a6cee3","#1f78b4","#a6cee3","#1f78b4","#a6cee3","#1f78b4","#a6cee3","#fdbf6f","#ff7f00","#fdbf6f","#ff7f00","#fdbf6f","#ff7f00","#fdbf6f"), suggestiveline=FALSE,genomewideline=F,logp=T, ylim=c(2,10))
-manhattan(data, col = c("#b2df8a","#b2df8a","#a6cee3","#a6cee3","#fdbf6f","#fdbf6f"), highlight = highsnp,suggestiveline=FALSE,genomewideline=F,logp=T, ylim=c(1,7))
+#Manhattan plot
+setwd("/Users/guoyafei/Documents/01_个人项目/05_FuGWAS/07_气孔导度数据/20211007/Manhattan")
+
+
+path <- "/Users/guoyafei/Documents/01_个人项目/05_FuGWAS/07_气孔导度数据/20211007/Manhattan" ##文件目录
+fileNames <- dir(path)  ##获取该路径下的文件名
+filePath <- sapply(fileNames, function(x){ 
+  paste(path,x,sep='/')})   ##生成读取文件路径
+data <- lapply(filePath, function(x){
+  read.table(x, header=T,stringsAsFactors = F)})
+
+png("stoma.png")
+for (i in c(1:82)){
+  all <- as.matrix(data[[i]])
+  colnames(data) <- c("SNP", "CHR", "BP","P")
+  #sub <- data[order(data$P),]
+  #sub$logP <- -log10(sub$P)
+  #sub2 <- sub[which(sub$logP>2),1:4]
+  manhattan(data, col = c("#b2df8a","#b2df8a","#a6cee3","#a6cee3","#fdbf6f","#fdbf6f"), highlight = highsnp,suggestiveline=FALSE,genomewideline=F,logp=T, ylim=c(1,7))
+}
 dev.off()
 
 png("stoma1.png")
@@ -431,6 +441,7 @@ dev.off()
 highsnp <- c("21-30861571","23-18781242","23-22706233")
 manhattan(gwasR, annotateTop = T, highlight = highsnp, col = c("#b2df8a","#33a02c","#b2df8a","#33a02c","#b2df8a","#33a02c","#b2df8a","#a6cee3","#1f78b4","#a6cee3","#1f78b4","#a6cee3","#1f78b4","#a6cee3","#fdbf6f","#ff7f00","#fdbf6f","#ff7f00","#fdbf6f","#ff7f00","#fdbf6f"), suggestiveline=FALSE,genomewideline=F,logp=F, ylim=c(-2,25))
 
+#QQ plot
 setwd("/Users/guoyafei/Documents/01_个人项目/05_FuGWAS/07_气孔导度数据/20210928/")
 data <- read.table("height_all.mlm.txt",header=F,stringsAsFactors = F)
 colnames(data) <- c("SNP", "CHR", "BP","P")
@@ -457,36 +468,4 @@ pd_qq
 dev.off()
 
 sub3 <- sub[which(sub$logP>5),]
-
-data <- read.table("/Users/guoyafei/Desktop/相关性.txt", header=T, stringsAsFactors = F)
-sub <- data[!is.na(data$株高.郑老师),]
-sub2 <- sub[!is.na(sub$气孔导度),]
-library("ggpubr")
-ggscatter(data, x = "株高.郑老师", y = "气孔导度", 
-          add = "reg.line", conf.int = TRUE, 
-          cor.coef = TRUE, cor.method = "pearson",
-          xlab = "Plant height", ylab = "Stomatal conductance")
-ggscatter(data, x = "ZX株高", y = "气孔导度", color = "orgCty",
-          add = "reg.line", conf.int = TRUE, 
-          cor.coef = TRUE, cor.method = "pearson",
-          xlab = "Tiller", ylab = "Stomatal conductance")
-ggplot(data=data, aes(x=ZX株高, y=气孔导度 ))+
-  geom_point(size=3,aes(x=ZX株高, y=气孔导度,color=orgCty ))+
-  stat_smooth(method="lm")+
-  xlab("plant height")+
-  ylab("Stomatal conductance")+
-  theme_classic()
-
-
-library(gggplot2)
-ggplot(data,aes(x = ZX株高,color=orgCty)) +
-  geom_histogram(aes(x = ZX株高),stat="bin",binwidth=1, boundary = 0)+
-  theme_classic()+
-  xlab("plant height")
-
-
-
-geom_text(aes(label=as.character(round(..density..,2))),stat="bin",binwidth=0.01,boundary = 0,vjust=-0.5)
-
-
 

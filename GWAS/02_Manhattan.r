@@ -412,31 +412,40 @@ manhattan(gwasR, annotateTop = T, highlight = highsnp, col = c("#b2df8a","#33a02
 #20210902 FuGWAS----
 #准备文件来自：01_GWAS_gwas.sh
 #Manhattan plot
-setwd("/Users/guoyafei/Documents/01_个人项目/05_FuGWAS/07_气孔导度数据/20211007/Manhattan")
-
-
-path <- "/Users/guoyafei/Documents/01_个人项目/05_FuGWAS/07_气孔导度数据/20211007/Manhattan" ##文件目录
+setwd("/Users/guoyafei/Documents/01_个人项目/05_FuGWAS/07_气孔导度数据/20211007/Manhattan/logP2")
+path <- "/Users/guoyafei/Documents/01_个人项目/05_FuGWAS/07_气孔导度数据/20211007/Manhattan/logP2" ##文件目录
 fileNames <- dir(path)  ##获取该路径下的文件名
 filePath <- sapply(fileNames, function(x){ 
   paste(path,x,sep='/')})   ##生成读取文件路径
 data <- lapply(filePath, function(x){
   read.table(x, header=T,stringsAsFactors = F)})
 
-png("stoma.png")
-for (i in c(1:82)){
-  all <- as.matrix(data[[i]])
-  colnames(data) <- c("SNP", "CHR", "BP","P")
+pdf("stoma_high.pdf")
+for (i in c(1:20)){
+  all <- data[[i]]
+  colnames(all) <- c("SNP", "CHR", "BP","P")
   #sub <- data[order(data$P),]
   #sub$logP <- -log10(sub$P)
   #sub2 <- sub[which(sub$logP>2),1:4]
-  manhattan(data, col = c("#b2df8a","#b2df8a","#a6cee3","#a6cee3","#fdbf6f","#fdbf6f"), highlight = highsnp,suggestiveline=FALSE,genomewideline=F,logp=T, ylim=c(1,7))
+  manhattan(all, col = c("#fdbf6f","#fdbf6f"), highlight = highsnp,suggestiveline=FALSE,genomewideline=F,logp=T, ylim=c(2,8))
+  #manhattan(all, col = c("#fdbf6f","#fdbf6f"), suggestiveline=FALSE, genomewideline=F, logp=T, ylim=c(2,8))
 }
 dev.off()
 
-png("stoma1.png")
-#manhattan(sub2, col = c("#b2df8a","#33a02c","#b2df8a","#33a02c","#b2df8a","#33a02c","#b2df8a","#a6cee3","#1f78b4","#a6cee3","#1f78b4","#a6cee3","#1f78b4","#a6cee3","#fdbf6f","#ff7f00","#fdbf6f","#ff7f00","#fdbf6f","#ff7f00","#fdbf6f"), suggestiveline=FALSE,genomewideline=F,logp=T, ylim=c(2,10))
-manhattan(data, highlight = highsnp, col = c("#b2df8a","#b2df8a","#a6cee3","#a6cee3","#fdbf6f","#fdbf6f"), suggestiveline=FALSE,genomewideline=F,logp=T, ylim=c(1.5,7))
-dev.off()
+
+#标注气孔相关基因在曼哈顿上的位置
+#shell:yafei@66:/data1/home/yafei/009_GWAS/WEGA_out/stoma/Manhattan/logP2.5
+for i in `ls *txt`
+do
+awk '{print $2"\t"$3-1"\t"$3}' $i | sed '1d ' > ${i::-3}bed
+done
+for i in `ls *bed`; do bedtools intersect -a ../Related_gene_5k.gff3 -b $i -wb; done | awk '{print $10"\t"$12}'|sed 's/\t/-/' > 5k.snp
+for i in `ls *bed`; do bedtools intersect -a ../Related_gene.gff3 -b $i -wb; done | awk '{print $10"\t"$12}'|sed 's/\t/-/' > snp
+for i in `ls *bed`; do bedtools intersect -a ../Related_gene_1M.gff3 -b $i -wb; done| awk '{print $10"\t"$12}'|sed 's/\t/-/' > 1M.snp
+#基因上下游5k的位点
+highsnp <- c("4-28222453","5-346668758","14-196323275","14-196324770","14-196327488","14-196329328","14-196329549","14-196330321","14-196330993","14-196331076","14-196331701","18-39729024","21-30861571")
+#基因区的位点
+highsnp <- c("14-196327488","21-30861571")
 
 highsnp <- c("21-30861571","23-18781242","23-22706233")
 manhattan(gwasR, annotateTop = T, highlight = highsnp, col = c("#b2df8a","#33a02c","#b2df8a","#33a02c","#b2df8a","#33a02c","#b2df8a","#a6cee3","#1f78b4","#a6cee3","#1f78b4","#a6cee3","#1f78b4","#a6cee3","#fdbf6f","#ff7f00","#fdbf6f","#ff7f00","#fdbf6f","#ff7f00","#fdbf6f"), suggestiveline=FALSE,genomewideline=F,logp=F, ylim=c(-2,25))

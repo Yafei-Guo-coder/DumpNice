@@ -69,6 +69,6 @@ bcftools filter 1000Genomes.vcf.gz --regions 9:4700000-4800000 > 4700000-4800000
 
 #E6:xuebo@204:/data2/xuebo/Projects/Speciation/E6/Landrace_locate_225
 
-
-
+#gff & bed 取交集
+bedtools intersect -a /data2/xuebo/Projects/Speciation/tree/withBarley_segregate/chr${chr}.withBarley.vcf.gz -b merge_D.bed -header > chr${chr}.withBarley.vcf &
 

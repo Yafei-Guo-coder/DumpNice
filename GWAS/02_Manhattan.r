@@ -410,6 +410,7 @@ manhattan(gwasR, annotateTop = T, highlight = highsnp, col = c("#b2df8a","#33a02
 
 
 #20210902 FuGWAS----
+#准备文件来自：01_GWAS_gwas.sh
 setwd("/Users/guoyafei/Documents/01_个人项目/05_FuGWAS/07_气孔导度数据/20210928/")
 data <- read.table("stoma.mlm.txt",header=F,stringsAsFactors = F)
 colnames(data) <- c("SNP", "CHR", "BP","P")

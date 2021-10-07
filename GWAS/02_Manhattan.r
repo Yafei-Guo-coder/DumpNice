@@ -419,8 +419,40 @@ filePath <- sapply(fileNames, function(x){
   paste(path,x,sep='/')})   ##生成读取文件路径
 data <- lapply(filePath, function(x){
   read.table(x, header=T,stringsAsFactors = F)})
+#标注气孔相关基因在曼哈顿上的位置
+#shell:yafei@66:/data1/home/yafei/009_GWAS/WEGA_out/stoma/Manhattan/logP2.5
+grep -f Gene_id.txt /data1/home/yafei/009_GWAS/gene/gene_v1.1_Lulab.gff3 | awk '{print $1"\t"$2"\t"$3"\t"$4-1000000"\t"$5+1000000"\t"$6"\t"$7"\t"$8"\t"$9}' | sed '1i ##gff-version 3' > Related_gene_1M.gff3
+grep -f Fu_known.gene /data1/home/yafei/009_GWAS/gene/gene_v1.1_Lulab.gff3 | awk '{print $1"\t"$2"\t"$3"\t"$4-1000000"\t"$5+1000000"\t"$6"\t"$7"\t"$8"\t"$9}' | sed '1i ##gff-version 3' | sort -k1,1n -k4,4n > Fu_gene_1M.gff3
 
-pdf("stoma_high.pdf")
+for i in `ls *txt`
+do
+awk '{print $2"\t"$3-1"\t"$3}' $i | sed '1d ' > ${i::-3}bed
+done
+
+for i in `ls *bed`; do bedtools intersect -a ../Related_gene_5k.gff3 -b $i -wb; done | awk '{print $10"\t"$12}'|sed 's/\t/-/' > 5k.snp
+for i in `ls *bed`; do bedtools intersect -a ../Related_gene.gff3 -b $i -wb; done | awk '{print $10"\t"$12}'|sed 's/\t/-/' > snp
+for i in `ls *bed`; do bedtools intersect -a ../Related_gene_1M.gff3 -b $i -wb; done| awk '{print $10"\t"$12}'|sed 's/\t/-/' > 1M.snp
+#基因上下游5M的位点
+snp <- read.table("5M.snp",header=F,stringsAsFactors = F)
+highsnp <- snp[,1]
+#基因上下游1M的位点
+snp <- read.table("1M.snp",header=F,stringsAsFactors = F)
+highsnp <- snp[,1]
+#Fu已知基因上下游1M的位点
+snp <- read.table("Fu.1M.snp",header=F,stringsAsFactors = F)
+highsnp <- snp[,1]
+#基因上下游3M的位点
+snp <- read.table("3M.snp",header=F,stringsAsFactors = F)
+highsnp <- snp[,1]
+#基因上下游5k的位点
+highsnp <- c("4-28222453","5-346668758","14-196323275","14-196324770","14-196327488","14-196329328","14-196329549","14-196330321","14-196330993","14-196331076","14-196331701","18-39729024","21-30861571")
+#基因区的位点
+highsnp <- c("14-196327488","21-30861571")
+#-lop的值大于5的位置
+snp <- read.table("logP5_50k.snp",header=F,stringsAsFactors = F)
+highsnp <- snp[,1]
+
+pdf("stoma_logP5_high_50k.pdf")
 for (i in c(1:20)){
   all <- data[[i]]
   colnames(all) <- c("SNP", "CHR", "BP","P")
@@ -432,23 +464,27 @@ for (i in c(1:20)){
 }
 dev.off()
 
-
-#标注气孔相关基因在曼哈顿上的位置
-#shell:yafei@66:/data1/home/yafei/009_GWAS/WEGA_out/stoma/Manhattan/logP2.5
-for i in `ls *txt`
-do
-awk '{print $2"\t"$3-1"\t"$3}' $i | sed '1d ' > ${i::-3}bed
+#标注-logP的值在4以上的信号位点在曼哈顿上的位置
+#shell:yafei@66:/data1/home/yafei/009_GWAS/WEGA_out/stoma/logP5
+#-lopP4 bed 上下游500k
+for i in `cat txt.names`
+do 
+awk '{print $2"\t"$3"\t"$4"\t"$7"\t"(-log($7)/log(10))}' $i | awk '{if($5>5 && $4!="NaN") print $0}' |awk '{print $2"\t"$3-50000"\t"$3+50000}' |sed '1d' > logP5/${i::-15}.50k.bed
 done
-for i in `ls *bed`; do bedtools intersect -a ../Related_gene_5k.gff3 -b $i -wb; done | awk '{print $10"\t"$12}'|sed 's/\t/-/' > 5k.snp
-for i in `ls *bed`; do bedtools intersect -a ../Related_gene.gff3 -b $i -wb; done | awk '{print $10"\t"$12}'|sed 's/\t/-/' > snp
-for i in `ls *bed`; do bedtools intersect -a ../Related_gene_1M.gff3 -b $i -wb; done| awk '{print $10"\t"$12}'|sed 's/\t/-/' > 1M.snp
-#基因上下游5k的位点
-highsnp <- c("4-28222453","5-346668758","14-196323275","14-196324770","14-196327488","14-196329328","14-196329549","14-196330321","14-196330993","14-196331076","14-196331701","18-39729024","21-30861571")
-#基因区的位点
-highsnp <- c("14-196327488","21-30861571")
+#mlm bed
+for i in `cat txt.names`
+do 
+awk '{if($4!="NaN")print $3"\t"$4-1"\t"$4}' $i | sed '1d'  > logP5/${i::-15}.mlm.bed 
+done
 
-highsnp <- c("21-30861571","23-18781242","23-22706233")
-manhattan(gwasR, annotateTop = T, highlight = highsnp, col = c("#b2df8a","#33a02c","#b2df8a","#33a02c","#b2df8a","#33a02c","#b2df8a","#a6cee3","#1f78b4","#a6cee3","#1f78b4","#a6cee3","#1f78b4","#a6cee3","#fdbf6f","#ff7f00","#fdbf6f","#ff7f00","#fdbf6f","#ff7f00","#fdbf6f"), suggestiveline=FALSE,genomewideline=F,logp=F, ylim=c(-2,25))
+#intersect
+for i in {1..7}
+do
+for j in {A,B,D}
+do
+bedtools intersect -a ${i}${j}.50k.bed -b ${i}${j}.mlm.bed -wb
+done
+done | awk '{print $4"\t"$6}'|sort -k1,1n -k2,2n | uniq | sed 's/\t/-/' > logP5_50k.snp
 
 #QQ plot
 setwd("/Users/guoyafei/Documents/01_个人项目/05_FuGWAS/07_气孔导度数据/20210928/")

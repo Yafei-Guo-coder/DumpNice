@@ -23,7 +23,7 @@ TraesCS5A02G391300
 grep -w -f VIP_gene.txt 87gene_5k.txt > VIPgene_5k.txt
 bash getVcf.sh VIPgene_5k.txt > VIPgene_5k.log
 ##传到本地用Java Migration/Haplotype将vcf转换成单倍型txt格式，使用07_VCF_Haplotype_Visual.r进行可视化。
-#本地路径：/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/Gene/VIP_gene
+#本地路径：/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/Gene/VIP_gene/TXT
 
 
 

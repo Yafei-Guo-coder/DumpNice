@@ -15,3 +15,4 @@ do
 done
 
 #传到本地用Java Migration/Haplotype将vcf转换成单倍型txt格式，使用07_VCF_Haplotype_Visual.r进行可视化。
+#本地路径：/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/Gene/V2/TXT

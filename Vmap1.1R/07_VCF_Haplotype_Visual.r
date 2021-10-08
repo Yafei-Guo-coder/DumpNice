@@ -4,7 +4,7 @@ require(reshape)
 require (rworldmap)
 require(rworldxtra)
 library(RColorBrewer)
-setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/Gene/V2/")
+setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/Gene/VIP_gene/")
 
 annotation_col <- read.table("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/E6_Landrace_locate_225.txt",header=T,stringsAsFactors = T)
 rownames(annotation_col) = c(1:225)
@@ -17,7 +17,7 @@ ann_colors = list(
   Growing_Habit = c(Facultative = "yellow", Spring="orange", Winter="blue"),
   Region = c(AF = "#8DD3C7", AM = "#FFFFB3", CA="#BEBADA",EU="#FB8072", NE_A= "#FFED6F",NW_A="#80B1D3", Other ="#FDB462",SA="#B3DE69", SE_A="#FCCDE5",SW_A ="#D9D9D9",Tibet ="#BC80BD",WA="#CCEBC5")
 )
-path <- "/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/Gene/V2/TXT" ##文件目录
+path <- "/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/Gene/VIP_gene/TXT" ##文件目录
 fileNames <- dir(path)  ##获取该路径下的文件名
 filePath <- sapply(fileNames, function(x){ 
   paste(path,x,sep='/')})   ##生成读取文件路径

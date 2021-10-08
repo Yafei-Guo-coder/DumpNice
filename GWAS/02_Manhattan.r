@@ -423,7 +423,6 @@ data <- lapply(filePath, function(x){
 #shell:yafei@66:/data1/home/yafei/009_GWAS/WEGA_out/stoma/Manhattan/logP2
 grep -f Gene_id.txt /data1/home/yafei/009_GWAS/gene/gene_v1.1_Lulab.gff3 | awk '{print $1"\t"$2"\t"$3"\t"$4-1000000"\t"$5+1000000"\t"$6"\t"$7"\t"$8"\t"$9}' | sed '1i ##gff-version 3' > Related_gene_1M.gff3
 grep -f Fu_known.gene /data1/home/yafei/009_GWAS/gene/gene_v1.1_Lulab.gff3 | awk '{print $1"\t"$2"\t"$3"\t"$4-1000000"\t"$5+1000000"\t"$6"\t"$7"\t"$8"\t"$9}' | sed '1i ##gff-version 3' | sort -k1,1n -k4,4n > Fu_gene_1M.gff3
-
 for i in `ls *txt`
 do
 awk '{print $2"\t"$3-1"\t"$3}' $i | sed '1d ' > ${i::-3}bed
@@ -432,6 +431,8 @@ done
 for i in `ls *bed`; do bedtools intersect -a ../Related_gene_5k.gff3 -b $i -wb; done | awk '{print $10"\t"$12}'|sed 's/\t/-/' > 5k.snp
 for i in `ls *bed`; do bedtools intersect -a ../Related_gene.gff3 -b $i -wb; done | awk '{print $10"\t"$12}'|sed 's/\t/-/' > snp
 for i in `ls *bed`; do bedtools intersect -a ../Related_gene_1M.gff3 -b $i -wb; done| awk '{print $10"\t"$12}'|sed 's/\t/-/' > 1M.snp
+for i in `ls *bed`; do bedtools intersect -a ../Fu_gene_1M.gff3 -b $i -wb; done| awk '{print $10"\t"$12}'|sed 's/\t/-/' > Fu.1M.snp
+
 
 #基因上下游5M的位点
 snp <- read.table("5M.snp",header=F,stringsAsFactors = F)
@@ -453,7 +454,7 @@ highsnp <- c("14-196327488","21-30861571")
 snp <- read.table("logP5_50k.snp",header=F,stringsAsFactors = F)
 highsnp <- snp[,1]
 
-pdf("stoma_logP5_high_50k.pdf",height = 5,width = 15)
+pdf("stoma_Fu_gene_1M.pdf",height = 5,width = 15)
 for (i in c(1:20)){
   all <- data[[i]]
   colnames(all) <- c("SNP", "CHR", "BP","P")

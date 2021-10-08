@@ -70,4 +70,4 @@ bcftools filter 1000Genomes.vcf.gz --regions 9:4700000-4800000 > 4700000-4800000
 #E6:xuebo@204:/data2/xuebo/Projects/Speciation/E6/Landrace_locate_225
 #gff & bed 取交集
 bedtools intersect -a /data2/xuebo/Projects/Speciation/tree/withBarley_segregate/chr${chr}.withBarley.vcf.gz -b merge_D.bed -header > chr${chr}.withBarley.vcf &
-
+bedtools intersect -a /data1/home/yafei/009_GWAS/gene/gene_v1.1_Lulab.gff3 -b test -wb | awk 'split($9, array, ";") {print $1"\t"$4"\t"$5"\t"array[1]"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14}' 

@@ -34,3 +34,4 @@ c1 <- c1[c(3:5)] #与上面的方式相反，保留想要的元素
 #展示调色板
 library(RColorBrewer)
 display.brewer.all()
+brewer.pal(8, "Set2")

@@ -1,5 +1,5 @@
 #working directory
-#203:yafei:/data2/yafei/003_Project3/Vmap1.1/E6/Xp-CLR_V2
+#204:yafei:/data2/yafei/003_Project3/Vmap1.1/E6/Xp-CLR_V2
 
 #extract gene_region VCF from 225 all vcf files
 grep -w -f 87Gene_id.txt gene_v1.1_Lulab.gff3 | awk -F";" '{print $1}' |awk '{print $1"\t"$4-5000"\t"$5+5000"\t"$9}' | awk -F"\tID=" '{print $2"\t"$1}' > 87gene_5k.txt

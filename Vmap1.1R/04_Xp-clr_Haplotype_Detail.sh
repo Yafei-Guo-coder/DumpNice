@@ -6,4 +6,7 @@
 #3. 单倍型在区域变化的例子。
   #eg(开花，光敏): TaFT8-2_1(TraesCS2A02G485000), TaPHYC_1(TraesCS5A02G391300)
 
-#
+#working directory
+204:yafei:/data2/yafei/003_Project3/Vmap1.1/E6/Xp-CLR_V2
+#提取祖先的对应位点vcf
+

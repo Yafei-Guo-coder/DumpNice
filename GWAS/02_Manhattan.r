@@ -420,7 +420,7 @@ filePath <- sapply(fileNames, function(x){
 data <- lapply(filePath, function(x){
   read.table(x, header=T,stringsAsFactors = F)})
 #标注气孔相关基因在曼哈顿上的位置
-#shell:yafei@66:/data1/home/yafei/009_GWAS/WEGA_out/stoma/Manhattan/logP2.5
+#shell:yafei@66:/data1/home/yafei/009_GWAS/WEGA_out/stoma/Manhattan/logP2
 grep -f Gene_id.txt /data1/home/yafei/009_GWAS/gene/gene_v1.1_Lulab.gff3 | awk '{print $1"\t"$2"\t"$3"\t"$4-1000000"\t"$5+1000000"\t"$6"\t"$7"\t"$8"\t"$9}' | sed '1i ##gff-version 3' > Related_gene_1M.gff3
 grep -f Fu_known.gene /data1/home/yafei/009_GWAS/gene/gene_v1.1_Lulab.gff3 | awk '{print $1"\t"$2"\t"$3"\t"$4-1000000"\t"$5+1000000"\t"$6"\t"$7"\t"$8"\t"$9}' | sed '1i ##gff-version 3' | sort -k1,1n -k4,4n > Fu_gene_1M.gff3
 
@@ -432,6 +432,7 @@ done
 for i in `ls *bed`; do bedtools intersect -a ../Related_gene_5k.gff3 -b $i -wb; done | awk '{print $10"\t"$12}'|sed 's/\t/-/' > 5k.snp
 for i in `ls *bed`; do bedtools intersect -a ../Related_gene.gff3 -b $i -wb; done | awk '{print $10"\t"$12}'|sed 's/\t/-/' > snp
 for i in `ls *bed`; do bedtools intersect -a ../Related_gene_1M.gff3 -b $i -wb; done| awk '{print $10"\t"$12}'|sed 's/\t/-/' > 1M.snp
+
 #基因上下游5M的位点
 snp <- read.table("5M.snp",header=F,stringsAsFactors = F)
 highsnp <- snp[,1]
@@ -452,25 +453,42 @@ highsnp <- c("14-196327488","21-30861571")
 snp <- read.table("logP5_50k.snp",header=F,stringsAsFactors = F)
 highsnp <- snp[,1]
 
-pdf("stoma_logP5_high_50k.pdf")
+pdf("stoma_logP5_high_50k.pdf",height = 5,width = 15)
 for (i in c(1:20)){
   all <- data[[i]]
   colnames(all) <- c("SNP", "CHR", "BP","P")
   #sub <- data[order(data$P),]
   #sub$logP <- -log10(sub$P)
   #sub2 <- sub[which(sub$logP>2),1:4]
-  manhattan(all, col = c("#fdbf6f","#fdbf6f"), highlight = highsnp,suggestiveline=FALSE,genomewideline=F,logp=T, ylim=c(2,8))
+  manhattan(all, col = c("#fdbf6f","#BEBADA"), highlight = highsnp,suggestiveline=FALSE,genomewideline=F,logp=T, ylim=c(2,8))
   #manhattan(all, col = c("#fdbf6f","#fdbf6f"), suggestiveline=FALSE, genomewideline=F, logp=T, ylim=c(2,8))
 }
 dev.off()
 
-#标注-logP的值在4以上的信号位点在曼哈顿上的位置
+#标注-logP的值在5以上的信号位点在曼哈顿上的位置
 #shell:yafei@66:/data1/home/yafei/009_GWAS/WEGA_out/stoma/logP5
-#-lopP4 bed 上下游500k
+
+#提取-lopP5 bed 上下游50k区域的富集基因
+#提取-lopP5 bed 上下游50k的区域
 for i in `cat txt.names`
 do 
 awk '{print $2"\t"$3"\t"$4"\t"$7"\t"(-log($7)/log(10))}' $i | awk '{if($5>5 && $4!="NaN") print $0}' |awk '{print $2"\t"$3-50000"\t"$3+50000}' |sed '1d' > logP5/${i::-15}.50k.bed
 done
+#把-lopP5 bed 上下游50k的区域在1M之内的合并在一起
+for i in {1..7}
+do
+for j in {A,B,D}
+do
+bedtools merge -d 1000000 -i ${i}${j}.50k.bed > ${i}${j}.50k.merge.bed  
+done
+done
+for i in `ls *50k.merge.bed`
+do
+awk '{print $0"\t"FILENAME"\t"NR}' $i >> All_50k_region.bed
+done
+#曼哈顿图注释表
+bedtools intersect -a /data1/home/yafei/009_GWAS/gene/gene_v1.1_Lulab.gff3 -b All_50k_region.bed -wb | awk 'split($9, array, ";") {print $1"\t"$4"\t"$5"\t"array[1]"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14}' | sed '1i gene_chr\tgene_start\tgene_end\tgene_id\tsnpBlock_chr\tsnpBlock_start\tsnpBlock_end\tfileName\tsnpBlock_id'> snpBlock_annotation.txt
+
 #mlm bed
 for i in `cat txt.names`
 do 
@@ -485,6 +503,8 @@ do
 bedtools intersect -a ${i}${j}.50k.bed -b ${i}${j}.mlm.bed -wb
 done
 done | awk '{print $4"\t"$6}'|sort -k1,1n -k2,2n | uniq | sed 's/\t/-/' > logP5_50k.snp
+
+
 
 #QQ plot
 setwd("/Users/guoyafei/Documents/01_个人项目/05_FuGWAS/07_气孔导度数据/20210928/")

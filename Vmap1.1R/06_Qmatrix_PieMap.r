@@ -57,6 +57,5 @@ for (i in c(1:82)){
 }
 dev.off()
 
-par(mfcol=c(5,1))
 
 

@@ -1,17 +1,44 @@
+#working directory
+#203:yafei:/data1/home/yafei/008_Software/snpEff/
+#input file: Xp-clr_9VIP/* from 204:yafei:/data2/yafei/003_Project3/Vmap1.1/E6/Xp-CLR_V2/VIP_genes
+#output file: data/Xp-clr_9VIP_out/* 
+#shell: 
+for i in `cat /data1/home/yafei/008_Software/snpEff/Xp-clr_9VIP/names.txt`
+do
+  java -Xmx10G -jar ../snpEff.jar eff -c ../snpEff.config AT_10 /data1/home/yafei/008_Software/snpEff/Xp-clr_9VIP/${i}.pos.recode.vcf > ${i}.snp.eff.vcf -csvStats ${i}.csv -stats ${i}.html &
+done
+for i in `cat /data1/home/yafei/008_Software/snpEff/Xp-clr_9VIP/names.txt`
+do
+  sed '1,45d' ${i}.snp.eff.vcf | awk '{if(NF > 100) print $1"\t"$2"\t"$4"\t"$5}' > ${i}.snpEff1
+  sed '1,45d' ${i}.snp.eff.vcf | awk '{if(NF>100) print $8}' |awk -F"ANN=" '{print $2}' | awk -F"|" '{print $2"\t"$3"\t"$11}' > ${i}.snpEff2
+  paste -d "\t" ${i}.snpEff1 ${i}.snpEff2 > ${i}.snpEff
+  rm ${i}.snpEff1 ${i}.snpEff2
+done
+
+#画变异序列分布
+#将VCF通过tassel转换成table格式的table.txt
+for i in `cat /data1/home/yafei/008_Software/snpEff/Xp-clr_9VIP/names.txt`
+do
+  sed '1d' table/${i}.txt | sed 's/\t/:/g' | sed 's/:/\t/1' | sed 's/://g' > ${i}.logo.seq
+done
+
 library(ggplot2)
 library(ggseqlogo)
-setwd("/Users/guoyafei/Documents/个人项目/傅老师/20210311/GWAS_sign_gene/")
+setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/Gene/VIP_gene/Plot")
 substrRight <- function(x){
   num = nchar(x)-2
   gsub('[0-9.]', '', substr(x, 6, nchar(x)))
 }
-names <- c("","","","","","","","","","","","","","","","","GA2ox3-A1","","GA2ox3-D1","","","","","","","","","","","","","","","","","","","","","","","","","","","","NGR5_1","NGR5_2","NGR5_3","PIF_1","PIF_2","PIF_3")
+names <- read.table("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/Gene/VIP_gene/names.txt",header=F,stringsAsFactors = F)
+names <- names[,1]
+#names <- c("","","","","","","","","","","","","","","","","GA2ox3-A1","","GA2ox3-D1","","","","","","","","","","","","","","","","","","","","","","","","","","","","NGR5_1","NGR5_2","NGR5_3","PIF_1","PIF_2","PIF_3")
+
 pdf("plot1.pdf", width = 60, height = 8)
-for (i in c(17,19,47,48,49,50,51,52)){
-  file1 <- paste("/Users/guoyafei/Documents/个人项目/傅老师/20210311/GWAS_sign_gene/TXT/noheader/",i,".txt.log",sep="")
+for (i in c(1:9)){
+  file1 <- paste("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/Gene/VIP_gene/SeqLog/",names[i],".logo.seq",sep="")
   fasta_file = read.table(file1,header=F,stringsAsFactors = F)
   fasta = fasta_file[,2]
-  file2 <- paste("/Users/guoyafei/Documents/个人项目/傅老师/20210311/GWAS_sign_gene/snpEff/",i,".pos.snpEff",sep="")
+  file2 <- paste("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/Gene/VIP_gene/SnpEff/",names[i],".snpEff",sep="")
   snpEff <- read.table(file2,header=F,stringsAsFactors = F,fill=TRUE,sep="\t")
   p1 <- ggseqlogo(fasta,method="prob")+theme(axis.text.x = element_blank())+labs(title = names[i])+theme(plot.title = element_text(hjust = 0.5,size = 25))
   Ref <- as.data.frame(snpEff$V3)

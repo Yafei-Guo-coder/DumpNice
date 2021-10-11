@@ -120,26 +120,33 @@ p
 
 #分类样本提取----
 taxa <- read.table("select_taxa4.txt",header=T,stringsAsFactors = F)
-taxa_CA <- taxa[which(taxa$Xp_clr=="CA"),1]
-taxa_EU <- taxa[which(taxa$Xp_clr=="EU"),1]
-taxa_NE_A <- taxa[which(taxa$Xp_clr=="NE_A"),1]
-taxa_NW_A <- taxa[which(taxa$Xp_clr=="NW_A"),1]
-taxa_SA <- taxa[which(taxa$Xp_clr=="SA"),1]
-taxa_SE_A <- taxa[which(taxa$Xp_clr=="SE_A"),1]
-taxa_SW_A <- taxa[which(taxa$Xp_clr=="SW_A"),1]
-taxa_Tibet <- taxa[which(taxa$Xp_clr=="Tibet"),1]
-taxa_WA <- taxa[which(taxa$Xp_clr=="WA"),1]
+taxa_EA_N <- taxa[which(taxa$RDA=="N_A"),1]
+taxa_EA_S <- taxa[which(taxa$RDA=="SW_A"),1]
+taxa_EU <- taxa[which(taxa$RDA=="EU"),1]
+taxa_SCA <- taxa[which(taxa$RDA=="SCA"),1]
+taxa_WA <- taxa[which(taxa$RDA=="WA"),1]
 
-taxa_region = list(taxa_CA,taxa_EU,taxa_NE_A,taxa_NW_A,taxa_SA,taxa_SE_A,taxa_SW_A,taxa_Tibet,taxa_WA)
+#taxa_CA <- taxa[which(taxa$RDA=="CA"),1]
+taxa_EU <- taxa[which(taxa$RDA=="EU"),1]
+taxa_N_A <- taxa[which(taxa$RDA=="N_A"),1]
+#taxa_NW_A <- taxa[which(taxa$RDA=="NW_A"),1]
+#taxa_SA <- taxa[which(taxa$RDA=="SA"),1]
+taxa_SCA <- taxa[which(taxa$RDA=="SCA"),1]
+#taxa_SE_A <- taxa[which(taxa$RDA=="SE_A"),1]
+taxa_SW_A <- taxa[which(taxa$RDA=="SW_A"),1]
+#taxa_Tibet <- taxa[which(taxa$RDA=="Tibet"),1]
+taxa_WA <- taxa[which(taxa$RDA=="WA"),1]
+
+#taxa_region = list(taxa_EU,taxa_N_A,taxa_SCA,taxa_SW_A,taxa_WA)
+taxa_region = list(taxa_EA_N,taxa_EA_S,taxa_EU,taxa_SCA,taxa_WA)
 #区域环境变量提取----
 
 #100次重复，计算SE
 alltemp <- vector()
 allprec <- vector()
-for(i in c(2,3,9)){
+for(i in c(1:length(taxa_region))){
   taxaTemp <- vector()
   taxaPrec <- vector()
-  
   x <- 1
   while (x < 100){
     sample_taxa <- taxa_region[[i]][sort(sample(c(1:length(taxa_region[[i]])),size=20))]
@@ -167,118 +174,14 @@ for(i in c(2,3,9)){
   alltemp <- cbind(alltemp,taxaTemp)
   allprec <- cbind(allprec,taxaPrec)
 }
-taxa_name <- c("taxa_CA","taxa_EU","taxa_NE_A","taxa_NW_A","taxa_SA","taxa_SE_A","taxa_SW_A","taxa_Tibet","taxa_WA")
+
+#taxa_name <- c("taxa_EU","taxa_N_A","taxa_SCA","taxa_SW_A","taxa_WA")
+taxa_name = c("taxa_EA_N","taxa_EA_S","taxa_EU","taxa_SCA","taxa_WA")
 colnames(alltemp) <- taxa_name
 colnames(allprec) <- taxa_name
 AdjRsq <- cbind(apply(alltemp,2,mean,na.omit=T),apply(allprec,2,mean),apply(alltemp,2,sd),apply(allprec,2,sd))
 colnames(AdjRsq)<- c("temp_mean","prec_mean","temp_sd","prec_sd")
-write.table(AdjRsq, "RDA_AdjRsq.txt", row.names = T,sep="\t",col.names = T)
-
-
-
-alltemp1 <- vector()
-allprec1 <- vector()
-alltemp2 <- vector()
-allprec2 <- vector()
-x <- 1
-while (x < 100){
-  #选择TAXA_new-----
-  taxa_CA <- taxa_EA_N[sort(sample(c(1:length(taxa_EA_N)),size=23))]
-  taxa_EU <- taxa_EA_S[sort(sample(c(1:length(taxa_EA_S)),size=23))]
-  taxa_NE_A <- taxa_WA[sort(sample(c(1:length(taxa_WA)),size=23))]
-  taxa_NW_A <- taxa_EU[sort(sample(c(1:length(taxa_EU)),size=23))]
-  taxa_SA <- taxa_SCA[sort(sample(c(1:length(taxa_SCA)),size=23))]
-  taxa_SE_A <- taxa_EA_N[sort(sample(c(1:length(taxa_EA_N)),size=23))]
-  taxa_SW_A <- taxa_EA_S[sort(sample(c(1:length(taxa_EA_S)),size=23))]
-  taxa_Tibet <- taxa_WA[sort(sample(c(1:length(taxa_WA)),size=23))]
-  taxa_WA <- taxa_EU[sort(sample(c(1:length(taxa_EU)),size=23))]
-  #筛选样本变异----
-  phylum_EA_N <- phylum_hel[taxa_north,]
-  phylum_EA_S <- phylum_hel[taxa_south,]
-  phylum_WA <- phylum_hel[taxa_WA_25,]
-  phylum_SCA <- phylum_hel[taxa_SCA_25,]
-  phylum_EU <- phylum_hel[taxa_EU_25,]
-  #筛选样本的环境（温度）变量----
-  temp_EA_N <- env_temp[taxa_north,]
-  temp_EA_S <- env_temp[taxa_south,]
-  temp_WA <- env_temp[taxa_WA_25,]
-  temp_SCA <- env_temp[taxa_SCA_25,]
-  temp_EU <- env_temp[taxa_EU_25,]
-  #筛选样本的环境（降水）变量----
-  prec_EA_N <- env_prec[taxa_north,]
-  prec_EA_S <- env_prec[taxa_south,]
-  prec_WA <- env_prec[taxa_WA_25,]
-  prec_SCA <- env_prec[taxa_SCA_25,]
-  prec_EU <- env_prec[taxa_EU_25,]
-  #筛选样本的环境（all）变量----
-  env_EA_N <- env_all[taxa_north,]
-  env_EA_S <- env_all[taxa_south,]
-  env_WA <- env_all[taxa_WA_25,]
-  env_SCA <- env_all[taxa_SCA_25,]
-  env_EU <- env_all[taxa_EU_25,]
-  #RDA分析(EU_25)----
-  #EU
-  EU_temp_rda <- rda(phylum_EU~., temp_EU, scale = FALSE)
-  RsquareAdj(EU_temp_rda)
-  EU_prec_rda <- rda(phylum_EU~., prec_EU, scale = FALSE)
-  RsquareAdj(EU_prec_rda)
-  EU_all_rda <- rda(phylum_EU~., env_EU, scale = FALSE)
-  RsquareAdj(EU_all_rda)
-  #RDA分析(SCA_25)----
-  #SCA
-  SCA_temp_rda <- rda(phylum_SCA~., temp_SCA, scale = FALSE)
-  RsquareAdj(SCA_temp_rda)
-  SCA_prec_rda <- rda(phylum_SCA~., prec_SCA, scale = FALSE)
-  RsquareAdj(SCA_prec_rda)
-  SCA_all_rda <- rda(phylum_SCA~., env_SCA, scale = FALSE)
-  RsquareAdj(SCA_all_rda)
-  #RDA分析(WA_25)----
-  #WA
-  WA_temp_rda <- rda(phylum_WA~., temp_WA, scale = FALSE)
-  RsquareAdj(WA_temp_rda)
-  WA_prec_rda <- rda(phylum_WA~., prec_WA, scale = FALSE)
-  RsquareAdj(WA_prec_rda)
-  WA_all_rda <- rda(phylum_WA~., env_WA, scale = FALSE)
-  RsquareAdj(WA_all_rda)
-  #RDA分析(north_25)----
-  #north
-  north_temp_rda <- rda(phylum_EA_N~., temp_EA_N, scale = FALSE)
-  RsquareAdj(north_temp_rda)
-  north_prec_rda <- rda(phylum_EA_N~., prec_EA_N, scale = FALSE)
-  RsquareAdj(north_prec_rda)
-  north_all_rda <- rda(phylum_EA_N~., env_EA_N, scale = FALSE)
-  RsquareAdj(north_all_rda)
-  #RDA分析(south_25)----
-  #South
-  South_temp_rda <- rda(phylum_EA_S~., temp_EA_S, scale = FALSE)
-  RsquareAdj(South_temp_rda)
-  South_prec_rda <- rda(phylum_EA_S~., prec_EA_S, scale = FALSE)
-  RsquareAdj(South_prec_rda)
-  #生成画图输入文件----
-  #Rsq
-  tempName1 <- c(as.numeric(RsquareAdj(WA_temp_rda)[1]),as.numeric(RsquareAdj(EU_temp_rda)[1]),as.numeric(RsquareAdj(SCA_temp_rda)[1]),as.numeric(RsquareAdj(north_temp_rda)[1]),as.numeric(RsquareAdj(South_temp_rda)[1]))
-  precName1 <- c(as.numeric(RsquareAdj(WA_prec_rda)[1]),as.numeric(RsquareAdj(EU_prec_rda)[1]),as.numeric(RsquareAdj(SCA_prec_rda)[1]),as.numeric(RsquareAdj(north_prec_rda)[1]),as.numeric(RsquareAdj(South_prec_rda)[1]))
-  alltemp1 <- cbind(alltemp1,tempName1)
-  allprec1 <- cbind(allprec1,precName1)
-  #Adjust Rsq
-  tempName2 <- c(as.numeric(RsquareAdj(WA_temp_rda)[2]),as.numeric(RsquareAdj(EU_temp_rda)[2]),as.numeric(RsquareAdj(SCA_temp_rda)[2]),as.numeric(RsquareAdj(north_temp_rda)[2]),as.numeric(RsquareAdj(South_temp_rda)[2]))
-  precName2 <- c(as.numeric(RsquareAdj(WA_prec_rda)[2]),as.numeric(RsquareAdj(EU_prec_rda)[2]),as.numeric(RsquareAdj(SCA_prec_rda)[2]),as.numeric(RsquareAdj(north_prec_rda)[2]),as.numeric(RsquareAdj(South_prec_rda)[2]))
-  alltemp2 <- cbind(alltemp2,tempName2)
-  allprec2 <- cbind(allprec2,precName2)
-  x <- x+1
-}
-#Rsq----
-#rownames(alltemp1) <- c("WA","EU","SCA","EA_N","EA_S")
-#rownames(allprec1) <- c("WA","EU","SCA","EA_N","EA_S")
-#Rsq <- cbind(apply(alltemp1,1,mean),apply(allprec1,1,mean),apply(alltemp1,1,sd),apply(allprec1,1,sd))
-#colnames(Rsq)<- c("temp_mean","prec_mead","temp_sd","prec_sd")
-#write.table(Rsq, "RDA_Rsq.txt", sep="\t")
-#Adjust Rsq(后续使用)----
-rownames(alltemp2) <- c("WA","EU","SCA","EA_N","EA_S")
-rownames(allprec2) <- c("WA","EU","SCA","EA_N","EA_S")
-AdjRsq <- cbind(apply(alltemp2,1,mean),apply(allprec2,1,mean),apply(alltemp2,1,sd),apply(allprec2,1,sd))
-colnames(AdjRsq)<- c("temp_mean","prec_mean","temp_sd","prec_sd")
-write.table(AdjRsq, "RDA_AdjRsq.txt", row.names = T,sep="\t",col.names = T)
+write.table(AdjRsq, "RDA_AdjRsq_new.txt", row.names = T,sep="\t",col.names = T,quote=F)
 
 #画各区域RDA分解图----
 plot(EU_temp_rda, type = 'n', display = c('wa', 'cn'), choices = 1:2, scaling = 1)
@@ -312,12 +215,12 @@ text(South_west_temp_rda, choices = 1:2, scaling = 1, display = 'cn', col = 'bro
 
 # version 2----
 color2 <- brewer.pal(n = 4, name = "Accent")
-AdjRsq <- read.table("RDA_AdjRsq.txt", header=T,sep="\t")
-AdjRsq$Region = factor(AdjRsq$Region, levels=c('EU','WA','SCA','EA_N','EA_S'))
+AdjRsq <- read.table("RDA_AdjRsq_new.txt", header=T,sep="\t")
+AdjRsq$Region = factor(AdjRsq$Region, levels=c('EU','WA','SCA','EA_N','EA_SW'))
 AdjRsq$Type = factor(AdjRsq$Type, levels=c("Temperature","Precipitation"))
 ggplot(AdjRsq, aes(x=Region, y=Mean, group=Type,fill=Type)) + 
   geom_bar(position=position_dodge(), stat="identity") +
-  geom_errorbar(aes(ymin=Mean-se, ymax=Mean+se),
+  geom_errorbar(aes(ymin=Mean-SE, ymax=Mean+SE),
                 width=.2, # 设置误差线的宽度 
                 position=position_dodge(.9))+
   theme_classic()+

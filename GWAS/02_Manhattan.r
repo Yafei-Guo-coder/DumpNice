@@ -13,7 +13,7 @@ colnames(gwasR) <- c("SNP", "CHR", "BP","P")
 chr_len <- tibble(
    CHR=1:21,
    chr_len= c(594102056,689851870,495453186,780798557,801256715,651852609,750843639,830829764,615552423,744588157,673617499,509857067,709773743,713149757,566080677,618079260,720988478,473592718,736706236,750620385,638686055)
-   )
+)
 # 2)计算每条chr的初始位置
 chr_pos <- chr_len  %>% 
   mutate(total = cumsum(as.numeric(chr_len)) - chr_len) %>%
@@ -419,6 +419,7 @@ filePath <- sapply(fileNames, function(x){
   paste(path,x,sep='/')})   ##生成读取文件路径
 data <- lapply(filePath, function(x){
   read.table(x, header=T,stringsAsFactors = F)})
+
 #标注气孔相关基因在曼哈顿上的位置
 #shell:yafei@66:/data1/home/yafei/009_GWAS/WEGA_out/stoma/Manhattan/logP2
 grep -f Gene_id.txt /data1/home/yafei/009_GWAS/gene/gene_v1.1_Lulab.gff3 | awk '{print $1"\t"$2"\t"$3"\t"$4-1000000"\t"$5+1000000"\t"$6"\t"$7"\t"$8"\t"$9}' | sed '1i ##gff-version 3' > Related_gene_1M.gff3

@@ -1,14 +1,14 @@
 #shell requirement---------
 #计算RDA：环境变量和遗传变异
 #工作目录：/data2/yafei/Project3/Vmap1.1/Out/VCF/VmapE6/Landrace/Select_taxa
-#1:提取计算迁徙路径的样本的VCF文件
+#1. 提取计算迁徙路径的样本的VCF文件
 #vcftools --gzvcf D_Land.vcf.gz --keep Select_taxa.txt --maf 0.0000001 --recode --stdout | bgzip -c > Select_taxa/D_Land_Select.vcf.gz
 
-#2:提取基因区的VCF文件
+#2. 提取基因区的VCF文件
 #bedtools intersect -a Gene.gff3 -b A_Land_Select.vcf.gz -wb > A_Land_Select_gene.vcf
 #cat VCF.header A_Land_Select_gene.vcf | bgzip -c > A_Land_Select_gene.vcf.gz
 
-#3:合并vcf并随机选取3000个位点
+#3. 合并vcf并随机选取3000个位点
 #vcf-concat A_Land_Select_gene.vcf.gz B_Land_Select_gene.vcf.gz D_Land_Select_gene.vcf.gz | bgzip -c > All_gene.vcf.gz
 #run_pipeline.pl -Xms10g -Xmx200g -vcf All_gene.vcf.gz -sortPositions -export All_gene.hmp.txt -exportType HapmapDiploid
 
@@ -19,13 +19,16 @@
 #run_pipeline.pl -SortGenotypeFilePlugin -inputFile shuf_5000.hmp.txt -outputFile shuf_5000.sort.hmp.txt -fileType Hapmap
 #run_pipeline.pl -Xmx100g -fork1 -h shuf_5000.sort.hmp.txt -export -exportType VCF
 
-#4:RDA analysis----
+#4. 样本分区：EU, WA, CA, SA, NW_A, SW_A, NE_A, SE_A, Tibet
+
+#5. RDA analysis----
 #input files:
 #env_table: data frame, row: sample name, col: environment variables
 #genotype_table: data frame, row: sample name, col: snp site
 #code----
 library(vegan)
 library(RColorBrewer)
+library(ggplot2)
 setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment")
 #input environment variants file and genetic variants file and RDA analysis----
 phylum <- read.delim('All_noMiss_0.05_2000.txt',  sep = '\t', stringsAsFactors = FALSE, check.names = FALSE)
@@ -51,7 +54,7 @@ rda_tb.scaling1
 #rda_part <- rda(phylum~elevation+one+two+three+four+five+six+seven+eight+nine+ten+eleven+twelve+thirteen+fourteen+fifteen+sixteen+seventeen+eighteen+nineteen, data = env, scale = FALSE)
 
 #plot point-line graph---------
-library(ggplot2)
+
 #color = c("#838B8B", "#8470FF", "#D8BFD8", "#FF6349", "#FFD700") 
 color <- brewer.pal(n = 5, name = "Accent")[c(1:5)]
 DeleteName <-  c("ZN109","TW004","TW005","TW053","TW054","TW060","TW088","TW109","TW110","XI_29")
@@ -116,55 +119,63 @@ p <- ggplot(F, aes(RDA1, RDA2)) +
 p
 
 #分类样本提取----
-taxa <- read.table("select_taxa3.txt",header=T,stringsAsFactors = F)
-taxa_EA_N <- taxa[which(taxa$Region=="EA-N"),1]
-taxa_EA_S <- taxa[which(taxa$Region=="EA-S"),1]
-taxa_WA <- taxa[which(taxa$Region=="WA"),1]
-taxa_SCA <- taxa[which(taxa$Region=="SCA"),1]
-#taxa_AF <- taxa[which(taxa$Region=="AF"),1]
-taxa_EU <- taxa[which(taxa$Region=="EU"),1]
+taxa <- read.table("select_taxa4.txt",header=T,stringsAsFactors = F)
+taxa_CA <- taxa[which(taxa$Xp_clr=="CA"),1]
+taxa_EU <- taxa[which(taxa$Xp_clr=="EU"),1]
+taxa_NE_A <- taxa[which(taxa$Xp_clr=="NE_A"),1]
+taxa_NW_A <- taxa[which(taxa$Xp_clr=="NW_A"),1]
+taxa_SA <- taxa[which(taxa$Xp_clr=="SA"),1]
+taxa_SE_A <- taxa[which(taxa$Xp_clr=="SE_A"),1]
+taxa_SW_A <- taxa[which(taxa$Xp_clr=="SW_A"),1]
+taxa_Tibet <- taxa[which(taxa$Xp_clr=="Tibet"),1]
+taxa_WA <- taxa[which(taxa$Xp_clr=="WA"),1]
+
+taxa_region = list(taxa_CA,taxa_EU,taxa_NE_A,taxa_NW_A,taxa_SA,taxa_SE_A,taxa_SW_A,taxa_Tibet,taxa_WA)
 #区域环境变量提取----
-phylum_EA_N <- phylum_hel[taxa_EA_N,]
-phylum_EA_S <- phylum_hel[taxa_EA_S,]
-phylum_WA <- phylum_hel[taxa_WA,]
-phylum_SCA <- phylum_hel[taxa_SCA,]
-phylum_EU <- phylum_hel[taxa_EU,]
-#样本的环境（温度）变量--------
-temp_EA_N <- env_temp[taxa_EA_N,]
-temp_EA_S <- env_temp[taxa_EA_S,]
-temp_WA <- env_temp[taxa_WA,]
-temp_SCA <- env_temp[taxa_SCA,]
-temp_EU <- env_temp[taxa_EU,]
-#样本的环境（降水）变量--------
-prec_EA_N <- env_prec[taxa_EA_N,]
-prec_EA_S <- env_prec[taxa_EA_S,]
-prec_WA <- env_prec[taxa_WA,]
-prec_SCA <- env_prec[taxa_SCA,]
-prec_EU <- env_prec[taxa_EU,]
-#样本的环境（all）变量--------
-env_EA_N <- env_all[taxa_EA_N,]
-env_EA_S <- env_all[taxa_EA_S,]
-env_WA <- env_all[taxa_WA,]
-env_SCA <- env_all[taxa_SCA,]
-env_EU <- env_all[taxa_EU,]
-#RDA分析(EU)----
-EU_temp_rda <- rda(phylum_EU~., temp_EU, scale = FALSE)
-EU_temp.scaling1 <- summary(EU_temp_rda, scaling = 2)
-EU_temp.scaling1
-RsquareAdj(EU_temp_rda)
-EU_prec_rda <- rda(phylum_EU~., prec_EU, scale = FALSE)
-EU_prec.scaling1 <- summary(EU_prec_rda, scaling = 2)
-EU_prec.scaling1
-RsquareAdj(EU_prec_rda)
-EU_all_rda <- rda(phylum_EU~., env_EU, scale = FALSE)
-EU_all.scaling1 <- summary(EU_all_rda, scaling = 2)
-EU_all.scaling1
-RsquareAdj(EU_all_rda)
-#选择TAXA_old-----
-#taxa_EA_25 <- c("TW030","TW032","ZN160","TW033","TW154","TW166","TW138","ZN177","ZN001","TW153","TW158","TW167","ZN083","TW160","TW155","TW151","TW159","TW162","TW145","TW144","ZN167","ZN097","ZN166","TW134","TW147")
-#taxa_SCA_25 <- c("ZN112","ZN179","TW029","TW051","TW025","TW028","TW094","TW027","ZN111","ZN119","TW057","XI_33","TW074","TW073","TW056","TW001","TW055","TW102","ZN113","ZN118","TW113","ZN121","XI_36","ZN115","TW087")
-#taxa_EU_25 <- c("TW085","XI_10","TW070","XI_7","TW065","XI_8","TW089","XI_5","XI_6","XI_4","TW052","TW071","TW059","TW108","TW062","TW072","TW026","XI_1","TW058","TW096","TW107","TW064","TW091","TW097","TW099")
-#taxa_WA_25 <- c("ZN176","TW078","ZN175","XI_31","XI_32","TW076","TW100","TW077","TW101","TW079","TW080","TW081","TW082","TW104","TW075","TW103","TW105","ZN110","ZN174","TW002","TW003","TW106","XI_16","XI_17","TW069")
+
+#100次重复，计算SE
+alltemp <- vector()
+allprec <- vector()
+for(i in c(2,3,9)){
+  taxaTemp <- vector()
+  taxaPrec <- vector()
+  
+  x <- 1
+  while (x < 100){
+    sample_taxa <- taxa_region[[i]][sort(sample(c(1:length(taxa_region[[i]])),size=20))]
+    phylum_taxa <- phylum_hel[sample_taxa,]
+    temp_taxa <- env_temp[sample_taxa,]
+    prec_taxa <- env_prec[sample_taxa,]
+    #env_taxa <- env_all[sample_taxa,]
+    taxa_temp_rda <- rda(phylum_taxa~., temp_taxa, scale = FALSE)
+    #RsquareAdj(taxa_temp_rda)
+    taxa_prec_rda <- rda(phylum_taxa~., prec_taxa, scale = FALSE)
+    #RsquareAdj(taxa_prec_rda)
+    #taxa_all_rda <- rda(phylum_taxa~., env_taxa, scale = FALSE)
+    #RsquareAdj(taxa_all_rda)
+    #生成画图输入文件----
+    #Rsq
+    #tempName1 <- c(as.numeric(RsquareAdj(WA_temp_rda)[1]),as.numeric(RsquareAdj(EU_temp_rda)[1]),as.numeric(RsquareAdj(SCA_temp_rda)[1]),as.numeric(RsquareAdj(north_temp_rda)[1]),as.numeric(RsquareAdj(South_temp_rda)[1]))
+    #precName1 <- c(as.numeric(RsquareAdj(WA_prec_rda)[1]),as.numeric(RsquareAdj(EU_prec_rda)[1]),as.numeric(RsquareAdj(SCA_prec_rda)[1]),as.numeric(RsquareAdj(north_prec_rda)[1]),as.numeric(RsquareAdj(South_prec_rda)[1]))
+    #alltemp1 <- cbind(alltemp1,tempName1)
+    #allprec1 <- cbind(allprec1,precName1)
+    #Adjust Rsq
+    taxaTemp <- append(taxaTemp,as.numeric(RsquareAdj(taxa_temp_rda)[2]))
+    taxaPrec <- append(taxaPrec,as.numeric(RsquareAdj(taxa_prec_rda)[2]))
+    x <- x+1
+  }
+  alltemp <- cbind(alltemp,taxaTemp)
+  allprec <- cbind(allprec,taxaPrec)
+}
+taxa_name <- c("taxa_CA","taxa_EU","taxa_NE_A","taxa_NW_A","taxa_SA","taxa_SE_A","taxa_SW_A","taxa_Tibet","taxa_WA")
+colnames(alltemp) <- taxa_name
+colnames(allprec) <- taxa_name
+AdjRsq <- cbind(apply(alltemp,2,mean,na.omit=T),apply(allprec,2,mean),apply(alltemp,2,sd),apply(allprec,2,sd))
+colnames(AdjRsq)<- c("temp_mean","prec_mean","temp_sd","prec_sd")
+write.table(AdjRsq, "RDA_AdjRsq.txt", row.names = T,sep="\t",col.names = T)
+
+
+
 alltemp1 <- vector()
 allprec1 <- vector()
 alltemp2 <- vector()
@@ -172,11 +183,15 @@ allprec2 <- vector()
 x <- 1
 while (x < 100){
   #选择TAXA_new-----
-  taxa_north <- taxa_EA_N[sort(sample(c(1:length(taxa_EA_N)),size=23))]
-  taxa_south <- taxa_EA_S[sort(sample(c(1:length(taxa_EA_S)),size=23))]
-  taxa_WA_25 <- taxa_WA[sort(sample(c(1:length(taxa_WA)),size=23))]
-  taxa_EU_25 <- taxa_EU[sort(sample(c(1:length(taxa_EU)),size=23))]
-  taxa_SCA_25 <- taxa_SCA[sort(sample(c(1:length(taxa_SCA)),size=23))]
+  taxa_CA <- taxa_EA_N[sort(sample(c(1:length(taxa_EA_N)),size=23))]
+  taxa_EU <- taxa_EA_S[sort(sample(c(1:length(taxa_EA_S)),size=23))]
+  taxa_NE_A <- taxa_WA[sort(sample(c(1:length(taxa_WA)),size=23))]
+  taxa_NW_A <- taxa_EU[sort(sample(c(1:length(taxa_EU)),size=23))]
+  taxa_SA <- taxa_SCA[sort(sample(c(1:length(taxa_SCA)),size=23))]
+  taxa_SE_A <- taxa_EA_N[sort(sample(c(1:length(taxa_EA_N)),size=23))]
+  taxa_SW_A <- taxa_EA_S[sort(sample(c(1:length(taxa_EA_S)),size=23))]
+  taxa_Tibet <- taxa_WA[sort(sample(c(1:length(taxa_WA)),size=23))]
+  taxa_WA <- taxa_EU[sort(sample(c(1:length(taxa_EU)),size=23))]
   #筛选样本变异----
   phylum_EA_N <- phylum_hel[taxa_north,]
   phylum_EA_S <- phylum_hel[taxa_south,]
@@ -252,13 +267,13 @@ while (x < 100){
   allprec2 <- cbind(allprec2,precName2)
   x <- x+1
 }
-#Rsq
-rownames(alltemp1) <- c("WA","EU","SCA","EA_N","EA_S")
-rownames(allprec1) <- c("WA","EU","SCA","EA_N","EA_S")
-Rsq <- cbind(apply(alltemp1,1,mean),apply(allprec1,1,mean),apply(alltemp1,1,sd),apply(allprec1,1,sd))
-colnames(Rsq)<- c("temp_mean","prec_mead","temp_sd","prec_sd")
-write.table(Rsq, "RDA_Rsq.txt", sep="\t")
-#Adjust Rsq
+#Rsq----
+#rownames(alltemp1) <- c("WA","EU","SCA","EA_N","EA_S")
+#rownames(allprec1) <- c("WA","EU","SCA","EA_N","EA_S")
+#Rsq <- cbind(apply(alltemp1,1,mean),apply(allprec1,1,mean),apply(alltemp1,1,sd),apply(allprec1,1,sd))
+#colnames(Rsq)<- c("temp_mean","prec_mead","temp_sd","prec_sd")
+#write.table(Rsq, "RDA_Rsq.txt", sep="\t")
+#Adjust Rsq(后续使用)----
 rownames(alltemp2) <- c("WA","EU","SCA","EA_N","EA_S")
 rownames(allprec2) <- c("WA","EU","SCA","EA_N","EA_S")
 AdjRsq <- cbind(apply(alltemp2,1,mean),apply(allprec2,1,mean),apply(alltemp2,1,sd),apply(allprec2,1,sd))
@@ -287,23 +302,28 @@ points(South_west_temp_rda, choices = 1:2, scaling = 1, display = 'wa', pch = 19
 text(South_west_temp_rda, choices = 1:2, scaling = 1, display = 'cn', col = 'brown', cex = 1)
 
 #画整体barplot----
-data <- read.table("plot_data.txt", header=T, row.names = 1,stringsAsFactors = F)
-data<-t(as.matrix(data))
-barplot(data, beside = TRUE,
-        col = c("lightblue", "mistyrose"),
-        legend = rownames(data), ylim = c(0, 0.3))
+#old version ----
+#version 1
+#data <- read.table("plot_data.txt", header=T, row.names = 1,stringsAsFactors = F)
+#data<-t(as.matrix(data))
+#barplot(data, beside = TRUE,
+#        col = c("lightblue", "mistyrose"),
+#        legend = rownames(data), ylim = c(0, 0.3))
 
-
-Rsq <- read.table("RDA_Rsq.txt", header=T,sep="\t")
-Rsq$Region = factor(Rsq$Region, levels=c('EU','WA','SCA','EA_N','EA_S'))
-Rsq$Type = factor(Rsq$Type, levels=c("temp_mean","prec_mead"))
-
-ggplot(Rsq, aes(x=Region, y=Mean, fill=Type)) + 
+# version 2----
+color2 <- brewer.pal(n = 4, name = "Accent")
+AdjRsq <- read.table("RDA_AdjRsq.txt", header=T,sep="\t")
+AdjRsq$Region = factor(AdjRsq$Region, levels=c('EU','WA','SCA','EA_N','EA_S'))
+AdjRsq$Type = factor(AdjRsq$Type, levels=c("Temperature","Precipitation"))
+ggplot(AdjRsq, aes(x=Region, y=Mean, group=Type,fill=Type)) + 
   geom_bar(position=position_dodge(), stat="identity") +
-  geom_errorbar(aes(ymin=Mean-Sd, ymax=Mean+Sd),
+  geom_errorbar(aes(ymin=Mean-se, ymax=Mean+se),
                 width=.2, # 设置误差线的宽度 
-                position=position_dodge(.9))
+                position=position_dodge(.9))+
+  theme_classic()+
+  scale_fill_manual(values = c("#FDC086","#BEAED4")) 
 
+#version 3----
 color2 <- brewer.pal(n = 4, name = "Accent")
 AdjRsq <- read.table("RDA_AdjRsq.txt", header=T,sep="\t")
 AdjRsq$Region = factor(AdjRsq$Region, levels=c('EU','WA','SCA','EA_N','EA_S'))
@@ -316,6 +336,5 @@ ggplot(AdjRsq, aes(x=Region, y=Mean, group=Type,fill=Type)) +
                 position=position_dodge(.9))+
   theme_classic()+
   scale_fill_manual(values = c("#FDC086","#BEAED4")) 
-  #scale_fill_brewer(palette = "Accent")
 
 

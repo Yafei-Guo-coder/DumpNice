@@ -115,8 +115,6 @@ p <- ggplot(F, aes(RDA1, RDA2)) +
 #geom_label_repel(aes(label =sample, color = group), size = 3, box.padding = unit(0, 'lines'), show.legend = FALSE)
 p
 
-
-
 #分类样本提取----
 taxa <- read.table("select_taxa3.txt",header=T,stringsAsFactors = F)
 taxa_EA_N <- taxa[which(taxa$Region=="EA-N"),1]

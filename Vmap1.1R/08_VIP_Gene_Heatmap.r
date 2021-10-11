@@ -6,12 +6,14 @@ data2 <- read.table("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_�
                     row.names= 1, stringsAsFactors=F,sep="\t")
 data <- as.matrix(data2)
 x=vector()
-for ( i in c(1:87)){
+for ( i in c(1:93)){
   x <- c(x,strsplit(colnames(data), "type_")[[i]][2])
 }
 colnames(data)<-x
-region <- c("Strang_WA", "WA_EU", "WA_CA", "WA_NW_A", "WA_NE_A", "WA_SA", "WA_SW_A", "WA_Tibet", "WA_SE_A", "CA_SA", "SA_SW_A", "SA_Tibet", "NW_A_NE_A", "SW_A_NE_A", "SE_A_NE_A")
+#region <- c("Strang_WA", "WA_EU", "WA_CA", "WA_NW_A", "WA_NE_A", "WA_SA", "WA_SW_A", "WA_Tibet", "WA_SE_A", "CA_SA", "SA_SW_A", "SA_Tibet", "NW_A_NE_A", "SW_A_NE_A", "SE_A_NE_A")
+region <- c("Strang_WA", "WA_EU", "WA_CA", "CA_SA", "CA_NW_A","NW_A_NE_A","SA_Tibet", "SA_SW_A", "SW_A_NE_A")
 data <- data[region,]
+
 #非nlr基因的颜色
 colsA = c("#F7FCFD","#8C96C6","#F7FCF5","#74C476","#FFFFCC","#FD8D3C")
 pheatmap(data,cluster_rows = F,cluster_cols = T,border_color=NA,color = colsA,fontsize=8)

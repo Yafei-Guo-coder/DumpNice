@@ -86,6 +86,9 @@ WA_SW_A_smooth_D	91140	911	4557
 WA_Tibet_smooth_A	116230	1162	5811
 WA_Tibet_smooth_B	138922	1389	6946
 WA_Tibet_smooth_D	112125	1121	5606
+CA_NW_A_smooth_A	102932  1029  5146
+CA_NW_A_smooth_B	141978  1420  7099
+CA_NW_A_smooth_D	143149  1431  7157
 for i in `ls *txt`; do  wc -l $i; done | awk '{print $2"\t"$1"\t"$1*0.01"\t"$1*0.05}' | awk -F"[.|\t]" '{print $1"\t"$3"\t"$4"\t"$6}' | awk '{print "tail -n "$3,$1".txt > Top1%/"$1".top1.bed"}'
 #阈值3-4
 for i in `ls *txt`; do  wc -l $i; done | awk '{print $2"\t"$1"\t"$1*0.01"\t"$1*0.05}' | awk -F"[.|\t]" '{print $1"\t"$3"\t"$4"\t"$6}' | awk '{print "tail -n "$4,$1".txt > Top5%/"$1".top5.bed"}'

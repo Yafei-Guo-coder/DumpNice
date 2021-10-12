@@ -45,7 +45,8 @@ env <- read.delim('select_bio2.txt', row.names = 1, header=T,sep = '\t', strings
 env_all <- data.frame(env[,1:20])
 env_all <- env_all[which(rownames(env_all)!="TW095"),]
 
-env_temp <- env_all[,1:12]
+env_ele <- env_all[,1,drop=F]
+env_temp <- env_all[,2:12]
 env_prec <- env_all[,13:20]
 #直接使用原始数据，不做转化。对于群落物种组成数据来讲（因为通常包含很多 0 值），不是很推荐
 #rda_result <- rda(phylum~., env, scale = FALSE)
@@ -56,6 +57,8 @@ phylum_hel <- decostand(phylum, method = 'hellinger')
 rda_tb_all <- rda(phylum_hel~., env_all, scale = FALSE)
 rda_tb_temp <- rda(phylum_hel~., env_temp, scale = FALSE)
 rda_tb_prec <- rda(phylum_hel~., env_prec, scale = FALSE)
+rda_tb_ele <- rda(phylum_hel~., env_ele, scale = FALSE)
+
 rda_tb.scaling1 <- summary(rda_tb_all, scaling = 2)
 rda_tb.scaling1
 
@@ -129,50 +132,13 @@ p
 
 #分类样本提取----
 taxa <- read.table("select_taxa4.txt",header=T,stringsAsFactors = F,sep="\t")
-taxa_EA_N <- taxa[which(taxa$Region=="Cen_A" ),1]
+taxa_EA_N <- taxa[which(taxa$Region=="Cen_A" | taxa$Region=="NE_A" ),1]
 taxa_EA_S <- taxa[which(taxa$Region=="SW_A"| taxa$Region=="Tibet" | taxa$Region=="SA"),1]
 taxa_WA <- taxa[which(taxa$Region=="WA"),1]
 taxa_SCA <- taxa[which(taxa$Region=="NW_A" | taxa$Region=="CA"),1]
 #taxa_AF <- taxa[which(taxa$Region=="AF"),1]
 taxa_EU <- taxa[which(taxa$Region=="EU"),1]
 
-#区域环境变量提取----
-phylum_EA_N <- phylum_hel[taxa_EA_N,]
-phylum_EA_S <- phylum_hel[taxa_EA_S,]
-phylum_WA <- phylum_hel[taxa_WA,]
-phylum_SCA <- phylum_hel[taxa_SCA,]
-phylum_EU <- phylum_hel[taxa_EU,]
-#样本的环境（温度）变量--------
-temp_EA_N <- env_temp[taxa_EA_N,]
-temp_EA_S <- env_temp[taxa_EA_S,]
-temp_WA <- env_temp[taxa_WA,]
-temp_SCA <- env_temp[taxa_SCA,]
-temp_EU <- env_temp[taxa_EU,]
-#样本的环境（降水）变量--------
-prec_EA_N <- env_prec[taxa_EA_N,]
-prec_EA_S <- env_prec[taxa_EA_S,]
-prec_WA <- env_prec[taxa_WA,]
-prec_SCA <- env_prec[taxa_SCA,]
-prec_EU <- env_prec[taxa_EU,]
-#样本的环境（all）变量--------
-env_EA_N <- env_all[taxa_EA_N,]
-env_EA_S <- env_all[taxa_EA_S,]
-env_WA <- env_all[taxa_WA,]
-env_SCA <- env_all[taxa_SCA,]
-env_EU <- env_all[taxa_EU,]
-#RDA分析(EU)----
-EU_temp_rda <- rda(phylum_EU~., temp_EU, scale = FALSE)
-EU_temp.scaling1 <- summary(EU_temp_rda, scaling = 2)
-EU_temp.scaling1
-RsquareAdj(EU_temp_rda)
-EU_prec_rda <- rda(phylum_EU~., prec_EU, scale = FALSE)
-EU_prec.scaling1 <- summary(EU_prec_rda, scaling = 2)
-EU_prec.scaling1
-RsquareAdj(EU_prec_rda)
-EU_all_rda <- rda(phylum_EU~., env_EU, scale = FALSE)
-EU_all.scaling1 <- summary(EU_all_rda, scaling = 2)
-EU_all.scaling1
-RsquareAdj(EU_all_rda)
 #选择TAXA_old-----
 #taxa_EA_25 <- c("TW030","TW032","ZN160","TW033","TW154","TW166","TW138","ZN177","ZN001","TW153","TW158","TW167","ZN083","TW160","TW155","TW151","TW159","TW162","TW145","TW144","ZN167","ZN097","ZN166","TW134","TW147")
 #taxa_SCA_25 <- c("ZN112","ZN179","TW029","TW051","TW025","TW028","TW094","TW027","ZN111","ZN119","TW057","XI_33","TW074","TW073","TW056","TW001","TW055","TW102","ZN113","ZN118","TW113","ZN121","XI_36","ZN115","TW087")
@@ -180,11 +146,13 @@ RsquareAdj(EU_all_rda)
 #taxa_WA_25 <- c("ZN176","TW078","ZN175","XI_31","XI_32","TW076","TW100","TW077","TW101","TW079","TW080","TW081","TW082","TW104","TW075","TW103","TW105","ZN110","ZN174","TW002","TW003","TW106","XI_16","XI_17","TW069")
 alltemp1 <- vector()
 allprec1 <- vector()
+allele1 <- vector()
 alltemp2 <- vector()
 allprec2 <- vector()
+allele2 <- vector()
 #100次重复，计算SE
 x <- 1
-while (x < 100){
+while (x < 500){
   #选择TAXA_new-----
   taxa_north <- taxa_EA_N[sort(sample(c(1:length(taxa_EA_N)),size=20))]
   taxa_south <- taxa_EA_S[sort(sample(c(1:length(taxa_EA_S)),size=20))]
@@ -197,12 +165,18 @@ while (x < 100){
   phylum_WA <- phylum_hel[taxa_WA_25,]
   phylum_SCA <- phylum_hel[taxa_SCA_25,]
   phylum_EU <- phylum_hel[taxa_EU_25,]
+  #筛选样本的环境（海拔）变量----
+  ele_EA_N <- env_ele[taxa_north,,drop=F]
+  ele_EA_S <- env_ele[taxa_south,,drop=F]
+  ele_WA <- env_ele[taxa_WA_25,,drop=F]
+  ele_SCA <- env_ele[taxa_SCA_25,,drop=F]
+  ele_EU <- env_ele[taxa_EU_25,,drop=F]
   #筛选样本的环境（温度）变量----
-  temp_EA_N <- env_temp[taxa_north,]
-  temp_EA_S <- env_temp[taxa_south,]
-  temp_WA <- env_temp[taxa_WA_25,]
-  temp_SCA <- env_temp[taxa_SCA_25,]
-  temp_EU <- env_temp[taxa_EU_25,]
+  temp_EA_N <- env_temp[taxa_north,,drop=F]
+  temp_EA_S <- env_temp[taxa_south,,drop=F]
+  temp_WA <- env_temp[taxa_WA_25,,drop=F]
+  temp_SCA <- env_temp[taxa_SCA_25,,drop=F]
+  temp_EU <- env_temp[taxa_EU_25,,drop=F]
   #筛选样本的环境（降水）变量----
   prec_EA_N <- env_prec[taxa_north,]
   prec_EA_S <- env_prec[taxa_south,]
@@ -221,49 +195,63 @@ while (x < 100){
   RsquareAdj(EU_temp_rda)
   EU_prec_rda <- rda(phylum_EU~., prec_EU, scale = FALSE)
   RsquareAdj(EU_prec_rda)
-  EU_all_rda <- rda(phylum_EU~., env_EU, scale = FALSE)
-  RsquareAdj(EU_all_rda)
+  #EU_all_rda <- rda(phylum_EU~., env_EU, scale = FALSE)
+  #RsquareAdj(EU_all_rda)
+  EU_ele_rda <- rda(phylum_EU~., ele_EU, scale = FALSE)
+  RsquareAdj(EU_ele_rda)
   #RDA分析(SCA_25)----
   #SCA
   SCA_temp_rda <- rda(phylum_SCA~., temp_SCA, scale = FALSE)
   RsquareAdj(SCA_temp_rda)
   SCA_prec_rda <- rda(phylum_SCA~., prec_SCA, scale = FALSE)
   RsquareAdj(SCA_prec_rda)
-  SCA_all_rda <- rda(phylum_SCA~., env_SCA, scale = FALSE)
-  RsquareAdj(SCA_all_rda)
+  #SCA_all_rda <- rda(phylum_SCA~., env_SCA, scale = FALSE)
+  #RsquareAdj(SCA_all_rda)
+  SCA_ele_rda <- rda(phylum_SCA~., ele_SCA, scale = FALSE)
+  RsquareAdj(SCA_ele_rda)
   #RDA分析(WA_25)----
   #WA
   WA_temp_rda <- rda(phylum_WA~., temp_WA, scale = FALSE)
   RsquareAdj(WA_temp_rda)
   WA_prec_rda <- rda(phylum_WA~., prec_WA, scale = FALSE)
   RsquareAdj(WA_prec_rda)
-  WA_all_rda <- rda(phylum_WA~., env_WA, scale = FALSE)
-  RsquareAdj(WA_all_rda)
+  #WA_all_rda <- rda(phylum_WA~., env_WA, scale = FALSE)
+  #RsquareAdj(WA_all_rda)
+  WA_ele_rda <- rda(phylum_WA~., ele_WA, scale = FALSE)
+  RsquareAdj(WA_ele_rda)
   #RDA分析(north_25)----
   #north
   north_temp_rda <- rda(phylum_EA_N~., temp_EA_N, scale = FALSE)
   RsquareAdj(north_temp_rda)
   north_prec_rda <- rda(phylum_EA_N~., prec_EA_N, scale = FALSE)
   RsquareAdj(north_prec_rda)
-  north_all_rda <- rda(phylum_EA_N~., env_EA_N, scale = FALSE)
-  RsquareAdj(north_all_rda)
+  #north_all_rda <- rda(phylum_EA_N~., env_EA_N, scale = FALSE)
+  #RsquareAdj(north_all_rda)
+  north_ele_rda <- rda(phylum_EA_N~., ele_EA_N, scale = FALSE)
+  RsquareAdj(north_ele_rda)
   #RDA分析(south_25)----
   #South
   South_temp_rda <- rda(phylum_EA_S~., temp_EA_S, scale = FALSE)
   RsquareAdj(South_temp_rda)
   South_prec_rda <- rda(phylum_EA_S~., prec_EA_S, scale = FALSE)
   RsquareAdj(South_prec_rda)
+  South_ele_rda <- rda(phylum_EA_S~., ele_EA_S, scale = FALSE)
+  RsquareAdj(South_ele_rda)
   #生成画图输入文件----
   #Rsq
-  tempName1 <- c(as.numeric(RsquareAdj(WA_temp_rda)[1]),as.numeric(RsquareAdj(EU_temp_rda)[1]),as.numeric(RsquareAdj(SCA_temp_rda)[1]),as.numeric(RsquareAdj(north_temp_rda)[1]),as.numeric(RsquareAdj(South_temp_rda)[1]))
-  precName1 <- c(as.numeric(RsquareAdj(WA_prec_rda)[1]),as.numeric(RsquareAdj(EU_prec_rda)[1]),as.numeric(RsquareAdj(SCA_prec_rda)[1]),as.numeric(RsquareAdj(north_prec_rda)[1]),as.numeric(RsquareAdj(South_prec_rda)[1]))
-  alltemp1 <- cbind(alltemp1,tempName1)
-  allprec1 <- cbind(allprec1,precName1)
+  #tempName1 <- c(as.numeric(RsquareAdj(WA_temp_rda)[1]),as.numeric(RsquareAdj(EU_temp_rda)[1]),as.numeric(RsquareAdj(SCA_temp_rda)[1]),as.numeric(RsquareAdj(north_temp_rda)[1]),as.numeric(RsquareAdj(South_temp_rda)[1]))
+  #precName1 <- c(as.numeric(RsquareAdj(WA_prec_rda)[1]),as.numeric(RsquareAdj(EU_prec_rda)[1]),as.numeric(RsquareAdj(SCA_prec_rda)[1]),as.numeric(RsquareAdj(north_prec_rda)[1]),as.numeric(RsquareAdj(South_prec_rda)[1]))
+  #eleName1 <- c(as.numeric(RsquareAdj(WA_ele_rda)[1]),as.numeric(RsquareAdj(EU_ele_rda)[1]),as.numeric(RsquareAdj(SCA_ele_rda)[1]),as.numeric(RsquareAdj(north_ele_rda)[1]),as.numeric(RsquareAdj(South_ele_rda)[1]))
+  #alltemp1 <- cbind(alltemp1,tempName1)
+  #allprec1 <- cbind(allprec1,precName1)
+  #allele1 <- cbind(allele1,eleName1)
   #Adjust Rsq
   tempName2 <- c(as.numeric(RsquareAdj(WA_temp_rda)[2]),as.numeric(RsquareAdj(EU_temp_rda)[2]),as.numeric(RsquareAdj(SCA_temp_rda)[2]),as.numeric(RsquareAdj(north_temp_rda)[2]),as.numeric(RsquareAdj(South_temp_rda)[2]))
   precName2 <- c(as.numeric(RsquareAdj(WA_prec_rda)[2]),as.numeric(RsquareAdj(EU_prec_rda)[2]),as.numeric(RsquareAdj(SCA_prec_rda)[2]),as.numeric(RsquareAdj(north_prec_rda)[2]),as.numeric(RsquareAdj(South_prec_rda)[2]))
+  eleName2 <- c(as.numeric(RsquareAdj(WA_ele_rda)[2]),as.numeric(RsquareAdj(EU_ele_rda)[2]),as.numeric(RsquareAdj(SCA_ele_rda)[2]),as.numeric(RsquareAdj(north_ele_rda)[2]),as.numeric(RsquareAdj(South_ele_rda)[2]))
   alltemp2 <- cbind(alltemp2,tempName2)
   allprec2 <- cbind(allprec2,precName2)
+  allele2 <- cbind(allele2,eleName2)
   x <- x+1
 }
 #Rsq----
@@ -275,8 +263,11 @@ while (x < 100){
 #Adjust Rsq(后续使用)----
 rownames(alltemp2) <- c("WA","EU","SCA","EA_N","EA_S")
 rownames(allprec2) <- c("WA","EU","SCA","EA_N","EA_S")
-AdjRsq <- cbind(apply(alltemp2,1,mean),apply(allprec2,1,mean),apply(alltemp2,1,sd),apply(allprec2,1,sd))
-colnames(AdjRsq)<- c("temp_mean","prec_mean","temp_sd","prec_sd")
+rownames(allele2) <- c("WA","EU","SCA","EA_N","EA_S")
+AdjRsq <- cbind(apply(alltemp2,1,mean),apply(allprec2,1,mean),apply(allele2,1,mean),apply(alltemp2,1,sd),apply(allprec2,1,sd),apply(allele2,1,sd))
+colnames(AdjRsq)<- c("temp_mean","prec_mean","ele_mean","temp_sd","prec_sd","ele_sd")
+
+
 write.table(AdjRsq, "RDA_AdjRsq.txt", row.names = T,sep="\t",col.names = T)
 
 #画各区域RDA分解图----

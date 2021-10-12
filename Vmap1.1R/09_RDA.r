@@ -1,12 +1,16 @@
 #shell requirement------
 #计算RDA：环境变量和遗传变异
-#工作目录：/data2/yafei/Project3/Vmap1.1/Out/VCF/VmapE6/Landrace/Select_taxa
+#工作目录：204:yafei:/data2/yafei/003_Project3/Vmap1.1/E6/Landrace_locate_225/Lineages
 #1. 提取计算迁徙路径的样本的VCF文件
-#vcftools --gzvcf D_Land.vcf.gz --keep Select_taxa.txt --maf 0.0000001 --recode --stdout | bgzip -c > Select_taxa/D_Land_Select.vcf.gz
+vcftools --gzvcf ABlineage.E6_Landrace_locate.vcf.gz --max-missing 1 --maf 0.05 --recode --stdout | bgzip -c > AB_noMiss_0.05.vcf.gz
+vcftools --gzvcf Dlineage.E6_Landrace_locate.vcf.gz --max-missing 1 --maf 0.05 --recode --stdout | bgzip -c > D_noMiss_0.05.vcf.gz
+vcf-concat AB_noMiss_0.05.vcf.gz D_noMiss_0.05.vcf.gz | bgzip -c > noSort_noMiss_0.05.vcf.gz 
+zcat noSort_noMiss_0.05.vcf.gz |  vcf-sort |bgzip -c > Sorted_noMiss_0.05.vcf.gz
 
 #2. 提取基因区的VCF文件
-#bedtools intersect -a Gene.gff3 -b A_Land_Select.vcf.gz -wb > A_Land_Select_gene.vcf
-#cat VCF.header A_Land_Select_gene.vcf | bgzip -c > A_Land_Select_gene.vcf.gz
+zcat D_noMiss_0.05.vcf.gz | head -n 40 > header.txt
+bedtools intersect -b gene_v1.1_Lulab.gff3 -a sorted_noMiss_0.05.vcf.gz -wa | shuf -n 3000 | sort -k1,1n -k2,2n > Select_gene_noHeader.vcf
+cat header.txt Select_gene_noHeader.vcf > gene_3000.vcf
 
 #3. 合并vcf并随机选取3000个位点
 #vcf-concat A_Land_Select_gene.vcf.gz B_Land_Select_gene.vcf.gz D_Land_Select_gene.vcf.gz | bgzip -c > All_gene.vcf.gz
@@ -30,7 +34,8 @@ library(ggplot2)
 setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment")
 #input environment variants file and genetic variants file and RDA analysis----
 phylum <- read.delim('All_noMiss_0.05_2000.txt',  sep = '\t', stringsAsFactors = FALSE, check.names = FALSE)
-row.names(phylum) <- c(1:2000)
+phylum <- read.delim('all_noMiss_0.05_3000.txt',  sep = ' ', stringsAsFactors = FALSE, check.names = FALSE)
+row.names(phylum) <- c(1:3000)
 phylum <- data.frame(t(phylum))
 env <- read.delim('select_bio.txt', row.names = 1, header=T,sep = '\t', stringsAsFactors = FALSE, check.names = FALSE)
 env_all <- data.frame(env[,1:20])
@@ -117,14 +122,13 @@ p <- ggplot(F, aes(RDA1, RDA2)) +
 p
 
 #分类样本提取----
-taxa <- read.table("select_taxa3.txt",header=T,stringsAsFactors = F)
-taxa_EA_N <- taxa[which(taxa$Region=="EA-N"),1]
-taxa_EA_S <- taxa[which(taxa$Region=="EA-S"),1]
+taxa <- read.table("select_taxa4.txt",header=T,stringsAsFactors = F,sep="\t")
+taxa_EA_N <- taxa[which(taxa$Region=="Cen_A" ),1]
+taxa_EA_S <- taxa[which(taxa$Region=="SW_A"| taxa$Region=="Tibet" | taxa$Region=="SA"),1]
 taxa_WA <- taxa[which(taxa$Region=="WA"),1]
-taxa_SCA <- taxa[which(taxa$Region=="SCA"),1]
+taxa_SCA <- taxa[which(taxa$Region=="NW_A" | taxa$Region=="CA"),1]
 #taxa_AF <- taxa[which(taxa$Region=="AF"),1]
 taxa_EU <- taxa[which(taxa$Region=="EU"),1]
-
 
 #区域环境变量提取----
 phylum_EA_N <- phylum_hel[taxa_EA_N,]
@@ -174,13 +178,13 @@ alltemp2 <- vector()
 allprec2 <- vector()
 #100次重复，计算SE
 x <- 1
-while (x < 100){
+while (x < 50){
   #选择TAXA_new-----
-  taxa_north <- taxa_EA_N[sort(sample(c(1:length(taxa_EA_N)),size=23))]
-  taxa_south <- taxa_EA_S[sort(sample(c(1:length(taxa_EA_S)),size=23))]
-  taxa_WA_25 <- taxa_WA[sort(sample(c(1:length(taxa_WA)),size=23))]
-  taxa_EU_25 <- taxa_EU[sort(sample(c(1:length(taxa_EU)),size=23))]
-  taxa_SCA_25 <- taxa_SCA[sort(sample(c(1:length(taxa_SCA)),size=23))]
+  taxa_north <- taxa_EA_N[sort(sample(c(1:length(taxa_EA_N)),size=20))]
+  taxa_south <- taxa_EA_S[sort(sample(c(1:length(taxa_EA_S)),size=20))]
+  taxa_WA_25 <- taxa_WA[sort(sample(c(1:length(taxa_WA)),size=20))]
+  taxa_EU_25 <- taxa_EU[sort(sample(c(1:length(taxa_EU)),size=20))]
+  taxa_SCA_25 <- taxa_SCA[sort(sample(c(1:length(taxa_SCA)),size=20))]
   #筛选样本变异----
   phylum_EA_N <- phylum_hel[taxa_north,]
   phylum_EA_S <- phylum_hel[taxa_south,]

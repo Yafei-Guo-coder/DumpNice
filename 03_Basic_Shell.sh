@@ -51,6 +51,9 @@ do
     #fi
 done
 
+vcf-concat AB_noMiss_0.05.vcf.gz D_noMiss_0.05.vcf.gz | bgzip -c > noSort_noMiss_0.05.vcf.gz 
+
+
 #bedtools
 #提取vcf的特定区域
 for chr in {1,2,7,8,13,14,19,20,25,26,31,32,37,38}
@@ -67,3 +70,10 @@ for chr in {5,6,11,12,17,18,23,24,29,30,35,36,41,42}
 do
 bedtools intersect -a /data2/xuebo/Projects/Speciation/tree/withBarley_segregate/chr${chr}.withBarley.vcf.gz -b merge_D.bed -header > chr${chr}.withBarley.vcf &
   done
+  
+#删除行首空格
+sed 's/^[ \t]*//g'
+#删除行尾空格
+sed 's/[ \t]*$//g'
+
+

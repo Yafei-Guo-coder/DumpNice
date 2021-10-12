@@ -48,6 +48,6 @@ tavg41 <- raster("wc2.1_30s_tavg_10.tif")
 tavg42 <- raster("wc2.1_30s_tavg_11.tif")
 tavg43 <- raster("wc2.1_30s_tavg_12.tif")
 
-location <- read.table("/Volumes/HP x750w/1083_germplasm.txt", sep="\t",header=T, stringsAsFactors = F)
+location <- read.table("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/select_taxa4.txt", sep="\t",header=T, stringsAsFactors = F)
 all <- cbind(location, temp.data)
 write.table(all, "1083_climate.txt", sep="\t", row.names = F,quote=F)

@@ -11,6 +11,8 @@ zcat noSort_noMiss_0.05.vcf.gz |  vcf-sort |bgzip -c > Sorted_noMiss_0.05.vcf.gz
 zcat D_noMiss_0.05.vcf.gz | head -n 40 > header.txt
 bedtools intersect -b gene_v1.1_Lulab.gff3 -a sorted_noMiss_0.05.vcf.gz -wa | shuf -n 3000 | sort -k1,1n -k2,2n > Select_gene_noHeader.vcf
 cat header.txt Select_gene_noHeader.vcf > gene_3000.vcf
+sed '/^##/d' gene_3000.vcf | awk '{$1=null;$2=null;$3=null;$4=null;$5=null;$6=null;$7=null;$8=null;$9=null;print $0'} | sed 's/^[ \t]*//g' > all_noMiss_0.05_3000.txt
+sed 's@0/0@0@g' all_noMiss_0.05_3000.txt | sed 's@0/1@1@g' |sed 's@1/1@2@g' |sed 's@1/0@1@g' > All_noMiss_0.05_3000.txt
 
 #3. 合并vcf并随机选取3000个位点
 #vcf-concat A_Land_Select_gene.vcf.gz B_Land_Select_gene.vcf.gz D_Land_Select_gene.vcf.gz | bgzip -c > All_gene.vcf.gz
@@ -33,12 +35,16 @@ library(RColorBrewer)
 library(ggplot2)
 setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment")
 #input environment variants file and genetic variants file and RDA analysis----
-phylum <- read.delim('All_noMiss_0.05_2000.txt',  sep = '\t', stringsAsFactors = FALSE, check.names = FALSE)
-phylum <- read.delim('all_noMiss_0.05_3000.txt',  sep = ' ', stringsAsFactors = FALSE, check.names = FALSE)
+#phylum1 <- read.delim('All_noMiss_0.05_2000.txt',  sep = '\t', stringsAsFactors = FALSE, check.names = FALSE)
+phylum <- read.delim('All_noMiss_0.05_3000.txt',  sep = ' ', stringsAsFactors = FALSE, check.names = FALSE)
 row.names(phylum) <- c(1:3000)
 phylum <- data.frame(t(phylum))
-env <- read.delim('select_bio.txt', row.names = 1, header=T,sep = '\t', stringsAsFactors = FALSE, check.names = FALSE)
+phylum <- phylum[which(rownames(phylum)!="TW095"),]
+env <- read.delim('select_bio2.txt', row.names = 1, header=T,sep = '\t', stringsAsFactors = FALSE, check.names = FALSE)
+
 env_all <- data.frame(env[,1:20])
+env_all <- env_all[which(rownames(env_all)!="TW095"),]
+
 env_temp <- env_all[,1:12]
 env_prec <- env_all[,13:20]
 #直接使用原始数据，不做转化。对于群落物种组成数据来讲（因为通常包含很多 0 值），不是很推荐
@@ -178,7 +184,7 @@ alltemp2 <- vector()
 allprec2 <- vector()
 #100次重复，计算SE
 x <- 1
-while (x < 50){
+while (x < 100){
   #选择TAXA_new-----
   taxa_north <- taxa_EA_N[sort(sample(c(1:length(taxa_EA_N)),size=20))]
   taxa_south <- taxa_EA_S[sort(sample(c(1:length(taxa_EA_S)),size=20))]

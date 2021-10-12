@@ -13,10 +13,10 @@
 #VCF 变异注释分析
 203:yafei:/data1/home/yafei/008_Software/snpEff/
 
-#SNPeff----52个GA通路相关基因的变异分析
-#参考网站：https://www.jianshu.com/p/a6e46d0c07ee(SnpEff使用方法)
-#https://www.jianshu.com/p/f898ffc4ef48(SnpEff结果解读)
-#fasta文件: 203: /data1/home/yafei/Project3/HaploType/Fulab/Fa/
-#vcf文件: 203: /data1/home/yafei/Project3/HaploType/Fulab/Vcf/
-#软件位置: 203: /data1/home/yafei/Software/snpEff/
-#结果文件: 203: /data1/home/yafei/Software/snpEff/data/
+SNPeff----52个GA通路相关基因的变异分析
+参考网站：https://www.jianshu.com/p/a6e46d0c07ee(SnpEff使用方法)
+https://www.jianshu.com/p/f898ffc4ef48(SnpEff结果解读)
+fasta文件: 203: /data1/home/yafei/Project3/HaploType/Fulab/Fa/
+vcf文件: 203: /data1/home/yafei/Project3/HaploType/Fulab/Vcf/
+软件位置: 203: /data1/home/yafei/Software/snpEff/
+结果文件: 203: /data1/home/yafei/Software/snpEff/data/

@@ -119,12 +119,12 @@ p <- ggplot(F, aes(RDA1, RDA2)) +
 p
 
 #分类样本提取----
-taxa <- read.table("select_taxa4.txt",header=T,stringsAsFactors = F)
-taxa_EA_N <- taxa[which(taxa$RDA=="N_A"),1]
-taxa_EA_S <- taxa[which(taxa$RDA=="SW_A"),1]
-taxa_EU <- taxa[which(taxa$RDA=="EU"),1]
-taxa_SCA <- taxa[which(taxa$RDA=="SCA"),1]
-taxa_WA <- taxa[which(taxa$RDA=="WA"),1]
+taxa <- read.table("select_taxa3.txt",header=T,stringsAsFactors = F)
+taxa_EA_N <- taxa[which(taxa$Region=="EA-N"),1]
+taxa_EA_S <- taxa[which(taxa$Region=="EA-S"),1]
+taxa_EU <- taxa[which(taxa$Region=="EU"),1]
+taxa_SCA <- taxa[which(taxa$Region=="SCA"),1]
+taxa_WA <- taxa[which(taxa$Region=="WA"),1]
 
 #taxa_CA <- taxa[which(taxa$RDA=="CA"),1]
 taxa_EU <- taxa[which(taxa$RDA=="EU"),1]
@@ -149,7 +149,7 @@ for(i in c(1:length(taxa_region))){
   taxaPrec <- vector()
   x <- 1
   while (x < 100){
-    sample_taxa <- taxa_region[[i]][sort(sample(c(1:length(taxa_region[[i]])),size=20))]
+    sample_taxa <- taxa_region[[i]][sort(sample(c(1:length(taxa_region[[i]])),size=17))]
     phylum_taxa <- phylum_hel[sample_taxa,]
     temp_taxa <- env_temp[sample_taxa,]
     prec_taxa <- env_prec[sample_taxa,]

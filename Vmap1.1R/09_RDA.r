@@ -1,4 +1,4 @@
-#shell requirement---------
+#shell requirement------
 #计算RDA：环境变量和遗传变异
 #工作目录：/data2/yafei/Project3/Vmap1.1/Out/VCF/VmapE6/Landrace/Select_taxa
 #1. 提取计算迁徙路径的样本的VCF文件
@@ -124,6 +124,8 @@ taxa_WA <- taxa[which(taxa$Region=="WA"),1]
 taxa_SCA <- taxa[which(taxa$Region=="SCA"),1]
 #taxa_AF <- taxa[which(taxa$Region=="AF"),1]
 taxa_EU <- taxa[which(taxa$Region=="EU"),1]
+
+
 #区域环境变量提取----
 phylum_EA_N <- phylum_hel[taxa_EA_N,]
 phylum_EA_S <- phylum_hel[taxa_EA_S,]

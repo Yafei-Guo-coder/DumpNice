@@ -65,7 +65,7 @@ allprec2 <- vector()
 allele2 <- vector()
 #100次重复，计算SE
 x <- 1
-while (x < 500){
+while (x < 50){
   #选择TAXA_new-----
   taxa_north <- taxa_EA_N[sort(sample(c(1:length(taxa_EA_N)),size=20))]
   taxa_south <- taxa_EA_S[sort(sample(c(1:length(taxa_EA_S)),size=20))]
@@ -258,7 +258,3 @@ text(north_temp_rda, choices = 1:2, scaling = 1, display = 'cn', col = 'brown', 
 plot(South_west_temp_rda, type = 'n', display = c('wa', 'cn'), choices = 1:2, scaling = 1)
 points(South_west_temp_rda, choices = 1:2, scaling = 1, display = 'wa', pch = 19, cex = 1)
 text(South_west_temp_rda, choices = 1:2, scaling = 1, display = 'cn', col = 'brown', cex = 1)
-
-
-
-

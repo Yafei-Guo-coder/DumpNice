@@ -51,7 +51,7 @@ rda_tb_ele <- rda(phylum_hel~., env_ele, scale = FALSE)
 #分类样本提取
 taxa <- read.table("select_taxa4.txt",header=T,stringsAsFactors = F,sep="\t")
 taxa_EA_N <- taxa[which(taxa$Region=="Cen_A" | taxa$Region=="NE_A" ),1]
-taxa_EA_S <- taxa[which(taxa$Region=="SW_A"| taxa$Region=="Tibet" | taxa$Region=="SA"),1]
+taxa_EA_S <- taxa[which(taxa$Region=="SW_A" | taxa$Region=="SA"),1]
 taxa_WA <- taxa[which(taxa$Region=="WA"),1]
 taxa_SCA <- taxa[which(taxa$Region=="NW_A" | taxa$Region=="CA"),1]
 #taxa_AF <- taxa[which(taxa$Region=="AF"),1]
@@ -195,17 +195,11 @@ ggplot(AdjRsq, aes(x=ID, y=Mean, group=Type,fill=Type)) +
   scale_fill_manual(values = color2) 
 
 
-#-----
-
-
+##plot point-line graph----
 rda_tb.scaling1 <- summary(rda_tb_all, scaling = 2)
 rda_tb.scaling1
 #若只关注局部环境数据，除了在原始表格中修改变量个数外，还可直接在 rda() 中指定
 #rda_part <- rda(phylum~elevation+one+two+three+four+five+six+seven+eight+nine+ten+eleven+twelve+thirteen+fourteen+fifteen+sixteen+seventeen+eighteen+nineteen, data = env, scale = FALSE)
-#plot point-line graph---------
-
-#color = c("#838B8B", "#8470FF", "#D8BFD8", "#FF6349", "#FFD700") 
-
 label <- read.table("select_taxa4.txt", header=T, stringsAsFactors = F)
 DeleteName <-  label[is.na(label$RDA_Region),1]
 label$RDA_Region <- as.factor(label$RDA_Region)
@@ -223,20 +217,22 @@ p <- ggplot(all, aes(RDA1, RDA2,color=RDA_Region)) +
   geom_point( size=3) +
   #geom_point( size=3) +
   #stat_ellipse(aes(group=label$cols), level = 0.95, show.legend = FALSE, linetype = 2) +
-  #scale_color_manual(values = color) +
-  theme(panel.grid = element_blank(), panel.background = element_rect(color = 'black', fill = 'transparent'), plot.title = element_text(hjust = 0.5), legend.key = element_rect(fill = 'transparent')) + 
+  scale_color_manual(values = c("#66C2A5","#FC8D62","#8DA0CB","#E78AC3","#FFD92F")) +
+  #scale_color_brewer(brewer.pal(6, "Set2")[c(1,2,3,4,6)])+
   theme_classic()+
-  theme(panel.grid =element_blank()) +   ## 删去网格线
+  theme(panel.grid = element_blank(), panel.background = element_rect(color = 'black', fill = 'transparent'), plot.title = element_text(hjust = 0.5), legend.key = element_rect(fill = 'transparent')) + 
+  
+  #theme(panel.grid =element_blank()) +   ## 删去网格线
   #theme(axis.text = element_blank()) +   ## 删去刻度标签
   #theme(axis.ticks = element_blank()) +   ## 删去刻度线
   theme(panel.border = element_blank()) +
-  theme(panel.grid.major = element_line(color = 'gray', size = 0.1), panel.background = element_rect(color = 'black', fill = 'transparent'))+
+  #theme(panel.grid.major = element_line(color = 'gray', size = 0.1), panel.background = element_rect(color = 'black', fill = 'transparent'))+
   #legend.title = (element_blank(), legend.key = element_rect(fill = 'transparent'), plot.title = element_text(hjust = 0.5)) + 
   labs(x = 'RDA1 (34.96%)', y = 'RDA2 (11.23%)') +
   geom_vline(xintercept = 0, color = 'gray', size = 0.5) + 
   geom_hline(yintercept = 0, color = 'gray', size = 0.5) +
-  geom_segment(data = rda_tb_forward_r.env, aes(x = 0, y = 0, xend = RDA1, yend = RDA2), arrow = arrow(length = unit(0.3, 'cm')), size = 1, color = 'brown',alpha=0.2) +
-  geom_text(data = rda_tb_forward_r.env, aes(RDA1 * 1.1, RDA2 * 1.1, label = sample), color = 'brown', size = 5)+
+  geom_segment(data = rda_tb_forward_r.env, aes(x = 0, y = 0, xend = RDA1, yend = RDA2), arrow = arrow(length = unit(0.4, 'cm')), size = 1, color = 'brown',alpha=0.5) +
+  geom_text(data = rda_tb_forward_r.env, aes(RDA1 * 1.1, RDA2 * 1.1, label = sample), color = 'brown', size = 6)+
   #scale_colour_discrete(breaks = c("#838B8B","#FFD700", "#97FFFF", "#D8BFD8", "#FF6349"), labels = c('EU','WA','SCA','EA-N','EA-S'))+
   guides(fill=guide_legend(title=NULL))
 #geom_label_repel(aes(label =sample, color = group), size = 3, box.padding = unit(0, 'lines'), show.legend = FALSE)

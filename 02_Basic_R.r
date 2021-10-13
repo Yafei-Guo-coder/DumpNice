@@ -37,5 +37,7 @@ display.brewer.all()
 brewer.pal(9, "Set3")[c(9,7,2,3)]
 scale_fill_brewer(palette = "Accent")
 scale_fill_manual(values = c("#FDC086","#BEAED4")) 
+scale_color_manual(values = color) 
+scale_colour_discrete(breaks = c("#838B8B","#FFD700", "#97FFFF", "#D8BFD8", "#FF6349"), labels = c('EU','WA','SCA','EA-N','EA-S'))
 
 

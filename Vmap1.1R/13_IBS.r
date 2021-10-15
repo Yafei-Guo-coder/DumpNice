@@ -319,7 +319,6 @@ pdf("IBS_A_CS_heat.pdf",width=10,height=10)
 corrplot(ibs,method = "color",tl.col="black",tl.srt = 45, addrect=4,addCoef.col = "grey", type = "lower",number.cex=0.6,number.digits=0.3,tl.cex=1,cl.cex=1.2,cl.lim = c(0, 0.7))
 dev.off()
 
-
 setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/03_基本统计/01_IBS/02_ABD_IBS/")
 #Xinjiang_wheat
 data <- read.table("B_xinjiang.txt",header=T,stringsAsFactors = F)

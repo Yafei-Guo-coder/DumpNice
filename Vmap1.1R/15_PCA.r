@@ -1,23 +1,18 @@
-setwd("/Users/guoyafei/Documents/01_个人项目/04_VmapIII/12_Test_chr001/03_Climate/")
+setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/NegativeContral")
 library("FactoMineR")
 library("ggplot2")
 library("factoextra")
-data <- read.csv("19bio.txt",fill=TRUE,na.strings = "",header = T, sep="\t", stringsAsFactors = F)
-rownames(data) <- data$sample
-anno <- read.table("anno.txt", header=T, stringsAsFactors = F)
-anno2 <- anno[match(data$sample,anno$VcfId),]
-data$ploidy <- anno2$Ploidy
-data$Region <- anno2$ContinentAbbreviation
-
-dt_all <- as.data.frame(data[!duplicated(data, fromLast=TRUE), 2:24])
-dt <- as.matrix(scale(data[!duplicated(data, fromLast=TRUE), 4:22]))
-
+Elevation <- read.csv("Elevation.txt",fill=TRUE, row.names = 1,na.strings = "",header = T, sep="\t", stringsAsFactors = F)
+Temp <- read.table("Temp.txt", header=T,row.names = 1,stringsAsFactors = F)
+Prec <- read.table("Prec.txt",header=T,row.names = 1,stringsAsFactors = F)
+bio <- read.table("20bio.txt",header=T,stringsAsFactors = F)
+dt <- as.matrix(scale(bio[!duplicated(bio, fromLast=TRUE),]))
 rm1<-cor(dt)
 rm1
-rs1<-eigen(rm1)
-rs1
+rs1<- eigen(rm1)
 #提取结果中的特征值，即各主成分的方差；
 val <- rs1$values
+
 #换算成标准差(Standard deviation);
 (Standard_deviation <- sqrt(val))
 #计算方差贡献率和累积贡献率；
@@ -37,13 +32,12 @@ plot(rs1$values,type="b",
 (U<-as.matrix(rs1$vectors))
 #进行矩阵乘法，获得PC score；
 PC <- dt %*% U
-colnames(PC) <- paste("PC",1:19,sep="")
+colnames(PC) <- paste("PC",1:20,sep="")
 head(PC)
 
 #将iris数据集的第5列数据合并进来；
-df<-data.frame(PC, dt_all$ploidy, dt_all$Region)
-head(df)
-
+#df<-data.frame(PC, dt_all$ploidy, dt_all$Region)
+#head(df)
 
 library(ggplot2)
 #提取主成分的方差贡献率，生成坐标轴标题；
@@ -56,10 +50,8 @@ p1<-ggplot(data = df,aes(x=PC1,y=PC2,color=df$dt_all.ploidy))+
   geom_point()+labs(x=xlab,y=ylab,color="")+
   guides(fill=F)+
   theme_classic()
-p2<-ggplot(data = df,aes(x=PC1,y=PC2,color=df$dt_all.Region))+
-  stat_ellipse(aes(fill=df$dt_all.Region),
-               type ="norm", geom ="polygon",alpha=0.2,color=NA)+
-  geom_point()+labs(x=xlab,y=ylab,color="")+
+p2<-ggplot(data = PC,aes(x=PC1,y=PC2))+
+    geom_point()+labs(x=xlab,y=ylab,color="")+
   guides(fill=F)+
   theme_classic()
 p1

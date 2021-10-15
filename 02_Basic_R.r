@@ -35,9 +35,44 @@ c1 <- c1[c(3:5)] #与上面的方式相反，保留想要的元素
 library(RColorBrewer)
 display.brewer.all()
 brewer.pal(9, "Set3")[c(9,7,2,3)]
-scale_fill_brewer(palette = "Accent")
+scale_fill_brewer(palette = "RdYiBu")
 scale_fill_manual(values = c("#FDC086","#BEAED4")) 
 scale_color_manual(values = color) 
 scale_colour_discrete(breaks = c("#838B8B","#FFD700", "#97FFFF", "#D8BFD8", "#FF6349"), labels = c('EU','WA','SCA','EA-N','EA-S'))
 
+#批量读取文件
+path <- "/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/Gene/V2/TXT" ##文件目录
+fileNames <- dir(path)  ##获取该路径下的文件名
+filePath <- sapply(fileNames, function(x){ 
+  paste(path,x,sep='/')})   ##生成读取文件路径
+data <- lapply(filePath, function(x){
+  read.table(x, header=F,stringsAsFactors = F)})
 
+library(reshape)
+melt <- melt(A_addLoc,id=c("ID","Type","Latitude","Logititude"))
+
+p <- ggplot(all, aes(RDA1, RDA2,color=RDA_Region)) +
+  geom_point( size=3) +
+  #geom_point( size=3) +
+  #stat_ellipse(aes(group=label$cols), level = 0.95, show.legend = FALSE, linetype = 2) +
+  scale_color_manual(values = c("#66C2A5","#FC8D62","#8DA0CB","#E78AC3","#FFD92F")) +
+  #scale_color_brewer(brewer.pal(6, "Set2")[c(1,2,3,4,6)])+
+  theme_classic()+
+  theme(panel.grid = element_blank(), panel.background = element_rect(color = 'black', fill = 'transparent'), plot.title = element_text(hjust = 0.5), legend.key = element_rect(fill = 'transparent')) + 
+  
+  #theme(panel.grid =element_blank()) +   ## 删去网格线
+  #theme(axis.text = element_blank()) +   ## 删去刻度标签
+  #theme(axis.ticks = element_blank()) +   ## 删去刻度线
+  theme(panel.border = element_blank()) +
+  #theme(panel.grid.major = element_line(color = 'gray', size = 0.1), panel.background = element_rect(color = 'black', fill = 'transparent'))+
+  #legend.title = (element_blank(), legend.key = element_rect(fill = 'transparent'), plot.title = element_text(hjust = 0.5)) + 
+  labs(x = 'RDA1 (34.96%)', y = 'RDA2 (11.23%)') +
+  geom_vline(xintercept = 0, color = 'gray', size = 0.5) + 
+  geom_hline(yintercept = 0, color = 'gray', size = 0.5) +
+  geom_segment(data = rda_tb_forward_r.env, aes(x = 0, y = 0, xend = RDA1, yend = RDA2), arrow = arrow(length = unit(0.4, 'cm')), size = 1, color = 'brown',alpha=0.5) +
+  geom_text(data = rda_tb_forward_r.env, aes(RDA1 * 1.1, RDA2 * 1.1, label = sample), color = 'brown', size = 6)+
+  #scale_colour_discrete(breaks = c("#838B8B","#FFD700", "#97FFFF", "#D8BFD8", "#FF6349"), labels = c('EU','WA','SCA','EA-N','EA-S'))+
+  guides(fill=guide_legend(title=NULL))
+#geom_label_repel(aes(label =sample, color = group), size = 3, box.padding = unit(0, 'lines'), show.legend = FALSE)
+
+geom_smooth(method = "lm", color = "black", fill = "lightgray") 

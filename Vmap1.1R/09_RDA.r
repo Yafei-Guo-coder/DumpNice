@@ -179,7 +179,7 @@ rownames(allprec2) <- c("WA","EU","SCA","EA_N","EA_S")
 rownames(allele2) <- c("WA","EU","SCA","EA_N","EA_S")
 AdjRsq <- cbind(apply(alltemp2,1,mean),apply(allprec2,1,mean),apply(allele2,1,mean),apply(alltemp2,1,sd),apply(allprec2,1,sd),apply(allele2,1,sd))
 colnames(AdjRsq)<- c("temp_mean","prec_mean","ele_mean","temp_sd","prec_sd","ele_sd")
-write.table(AdjRsq, "RDA_AdjRsq_new.txt", row.names = T,sep="\t",col.names = T,quote=F)
+#write.table(AdjRsq, "RDA_AdjRsq_new.txt", row.names = T,sep="\t",col.names = T,quote=F)
 #修改RDA_AdjRsq_new.txt的格式，接下来画图
 
 color2 <- brewer.pal(n = 3, name = "Accent")

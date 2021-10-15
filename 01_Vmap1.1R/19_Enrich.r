@@ -1,11 +1,11 @@
 library(ggplot2)
-setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/")
+setwd("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/02_Environment/02_XP-CLR")
 Go <- read.table("Go.txt", header = T, stringsAsFactors = F, sep = "\t")
 #画单个区域的Go富集图----
 #nameA <- c("Domesticated_einkorn", "Domesticated_emmer","Durum","EA","EU","Indian_dwarf","Khorasan_wheat","Landrace","Macha","Persian_wheat","Polish_wheat","Rivet_wheat","SCA","Spelt","Tibetan_semi_wild","Urartu","Vavilovii","WA","Wild_Einkorn","Wild_emmer","Xinjiang_wheat")
 #nameB <- c("Domesticated_emmer","Durum","EA","EU","Khorasan_wheat", "Landrace","Macha","Persian_wheat","Polish_wheat","Rivet_wheat","SCA","Spelt","Speltoides","Vavilovii","WA","Wild_emmer","Xinjiang_wheat","Yunan_wheat")
 #nameD <- c("Anathera","Club_wheat","EA","EU","Indian_dwarf","Landrace","Macha","Meyeri","SCA","Spelt","Strangulata","Tibetan_semi_wild","Vavilovii","WA","Xinjiang_wheat","Yunan_wheat")
-path <- "/Users/guoyafei/Documents/Lulab/Project-2-Migration/anno_gene/D"
+path <- "/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/01_BasicStatistic/11_Selection/anno_gene/D"
 fileNames <- dir(path) 
 filePath <- sapply(fileNames, function(x){
   paste(path,x,sep='/')})   

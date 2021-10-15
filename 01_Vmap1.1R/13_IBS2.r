@@ -10,8 +10,8 @@ library(psych)
 library(reshape)
 library("corrplot")
 
-setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/03_基本统计/01_IBS/04_795taxaIBS/V2_noAFAM/")
-path <- "/Users/guoyafei/Documents/01_个人项目/02_Migration/03_基本统计/01_IBS/04_795taxaIBS/V2_noAFAM/group" 
+setwd("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/01_BasicStatistic/01_IBS/04_795taxaIBS/V2_noAFAM/")
+path <- "/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/01_BasicStatistic/01_IBS/04_795taxaIBS/V2_noAFAM/group" 
 fileNames <- dir(path)
 filePath <- sapply(fileNames, function(x){ 
   paste(path,x,sep='/')})
@@ -23,7 +23,7 @@ group <- lapply(filePath, function(x){
 #[4] "sub_Persian_wheat.txt"      "sub_Polish_wheat.txt"       "sub_Rivet_wheat.txt"       
 #[7] "sub_Spelt.txt"              "sub_Xinjiang_wheat.txt"   
 
-path <- "/Users/guoyafei/Documents/01_个人项目/02_Migration/03_基本统计/01_IBS/04_795taxaIBS/ibs" 
+path <- "/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/01_BasicStatistic/01_IBS/04_795taxaIBS/ibs" 
 fileNames <- dir(path)
 filePath <- sapply(fileNames, function(x){ 
   paste(path,x,sep='/')})
@@ -33,7 +33,7 @@ ibs <- lapply(filePath, function(x){
 #> names(ibs)
 #[1] "Alineage.ibs.txt" "Blineage.ibs.txt" "Dlineage.ibs.txt"
 
-location <- read.table("/Users/guoyafei/Documents/01_个人项目/02_Migration/03_基本统计/01_IBS/04_795taxaIBS/795_Location.txt",header=T,stringsAsFactors = F)
+location <- read.table("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/01_BasicStatistic/01_IBS/04_795taxaIBS/795_Location.txt",header=T,stringsAsFactors = F)
 
 Spelt <- data.frame(ID=group[[7]][,1],IBS="NA",Type="Spelt")
 Macha <- data.frame(ID=group[[3]][,1],IBS="NA",Type="Macha")

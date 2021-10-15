@@ -1,4 +1,4 @@
-setwd("/Users/guoyafei/Documents/个人项目/Project-2-Migration/migration/IBS_spelt/")
+setwd("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/01_BasicStatistic/01_IBS/01_IBS/IBS_spelt")
 #Xinjiang_wheat
 data <- read.table("B_xinjiang.txt",header=T,stringsAsFactors = F)
 #Macha
@@ -50,7 +50,7 @@ ggplot(L, aes(Logititude, Latitude))+
 
 #热图  
 library("corrplot")
-setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/03_基本统计/13_Plots/03_IBS_heatmap")
+setwd("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/01_BasicStatistic/13_Plots/03_IBS_heatmap")
 #A lineage
 ibs <- read.table("A_ibs.txt",header=T,stringsAsFactors=F)
 names <- ibs$id1
@@ -88,7 +88,7 @@ pdf("IBS_A_CS_heat.pdf",width=10,height=10)
 corrplot(ibs,method = "color",tl.col="black",tl.srt = 45, addrect=4,addCoef.col = "grey", type = "lower",number.cex=0.6,number.digits=0.3,tl.cex=1,cl.cex=1.2,cl.lim = c(0, 0.7))
 dev.off()
 
-setwd("/Users/guoyafei/Documents/Lulab/Project-2-Migration/基本统计/IBS/")
+setwd("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/01_BasicStatistic/01_IBS")
 data <- read.table("126Landrace_barley.txt",header=T,stringsAsFactors = F)
 library(ggplot2)
 library(ggmap)
@@ -129,7 +129,7 @@ library(maptools)
 library(maps)
 library(psych)
 
-setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/03_基本统计/01_IBS/02_ABD_IBS/")
+setwd("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/01_BasicStatistic/01_IBS/02_ABD_IBS")
 #ABD
 data <- read.table("ABD_ibs.txt",sep="\t",header=T,stringsAsFactors = F)
 
@@ -171,9 +171,9 @@ ggplot(D, aes(Logititude, Latitude))+
 
 #####wild_emmer, domesticated emmer, freethreshing Tetra, strangulata and 125 Landrace IBS distribution
 #服务器工作目录：yafei@203:/data2/yafei/003_project3/Project3/CS_Vmap
-setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/03_基本统计/01_IBS/02_ABD_IBS")
+setwd("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/01_BasicStatistic/01_IBS/02_ABD_IBS")
 #读取group名的文件
-path <- "/Users/guoyafei/Documents/01_个人项目/02_Migration/03_基本统计/14_Subspecies"
+path <- "/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/01_BasicStatistic/14_Subspecies"
 fileNames <- dir(path) 
 filePath <- sapply(fileNames, function(x){
   paste(path,x,sep='/')})   
@@ -216,7 +216,7 @@ cbind(W_A$mean,W_B$mean)
 cbind(D_A$mean,D_B$mean)
 
 #plot
-setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/03_基本统计/01_IBS/02_ABD_IBS/")
+setwd("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/01_BasicStatistic/01_IBS/02_ABD_IBS")
 #ABD
 data <- read.table("ABD_ibs.txt",sep="\t",header=T,stringsAsFactors = F)
 AB <- data[which(data$value=="1" | data$value=="2" | data$value=="5" ),]
@@ -319,7 +319,7 @@ pdf("IBS_A_CS_heat.pdf",width=10,height=10)
 corrplot(ibs,method = "color",tl.col="black",tl.srt = 45, addrect=4,addCoef.col = "grey", type = "lower",number.cex=0.6,number.digits=0.3,tl.cex=1,cl.cex=1.2,cl.lim = c(0, 0.7))
 dev.off()
 
-setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/03_基本统计/01_IBS/02_ABD_IBS/")
+setwd("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/01_BasicStatistic/01_IBS/02_ABD_IBS")
 #Xinjiang_wheat
 data <- read.table("B_xinjiang.txt",header=T,stringsAsFactors = F)
 #Macha

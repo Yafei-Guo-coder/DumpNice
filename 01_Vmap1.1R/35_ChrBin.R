@@ -1,13 +1,3 @@
-install.packages('RIdeogram')
-require(RIdeogram)
-
-setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/03_基本统计/13_Plots/01_Density")
-#gene_density <- read.table("ArinaLrFor_LTR_1.txt", header=T,stringsAsFactors = F)
-gene_density2 <- read.table("gene_density.txt", header=T, stringsAsFactors = F)
-wheat_karyotype <- read.table("wheat_karyotype.txt", header=T, stringsAsFactors = F)
-ideogram(karyotype = wheat_karyotype, overlaid = gene_density2)
-convertSVG("chromosome.svg", device = "png")
-
 library(CMplot)
 setwd("/Users/guoyafei/Documents/个人项目/Project-4-VmapIII/Fastcall2/测试数据/")
 

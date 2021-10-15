@@ -1,7 +1,7 @@
 #XP-CLR negative contral
 library(RColorBrewer)
 library(ggplot2)
-setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/NegativeContral")
+setwd("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/02_Environment/02_XP-CLR/NegativeContral")
 dist <- read.table("dis_matrix.txt",header=T,stringsAsFactors = F)
 out <- strsplit(dist[,1], ":")
 dist$ID1 <- NA
@@ -13,10 +13,10 @@ for (i in c(1:length(out))){
   a <- a+1
 }
 #dim(dist[which(dist$geopolitical_dis>100 & dist$TEMP_dis<10),])
-WA <- read.table("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/NegativeContral/group_V2/WA.txt",header =F,stringsAsFactors = F)
-North1 <- read.table("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/NegativeContral/group_V2/North1.txt",header=F,stringsAsFactors = F)
-North2 <- read.table("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/NegativeContral/group_V2/North2.txt",header=F,stringsAsFactors = F)
-#precipitation
+WA <- read.table("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/02_Environment/02_XP-CLR/NegativeContral/group_V2/WA.txt",header =F,stringsAsFactors = F)
+North1 <- read.table("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/02_Environment/02_XP-CLR/NegativeContral/group_V2/North1.txt",header=F,stringsAsFactors = F)
+North2 <- read.table("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/02_Environment/02_XP-CLR/NegativeContral/group_V2/North2.txt",header=F,stringsAsFactors = F)
+#Temperature
 pdf("Temperature_dist.pdf",height = 10,width = 10)
 #WA VS North1
 dist$Type1 <- NA

@@ -2,7 +2,7 @@ library(pheatmap)
 library(RColorBrewer)
 display.brewer.all()
 ##Top5_R----
-data2 <- read.table("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/HeatMap/heatmap_format2.txt",header=T,
+data2 <- read.table("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/02_Environment/02_XP-CLR/HeatMap/heatmap_format2.txt",header=T,
                     row.names= 1, stringsAsFactors=F,sep="\t")
 data <- as.matrix(data2)
 x=vector()

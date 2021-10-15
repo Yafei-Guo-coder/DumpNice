@@ -24,21 +24,21 @@ done
 
 library(ggplot2)
 library(ggseqlogo)
-setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/Gene/VIP_gene/Plot")
+setwd("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/02_Environment/02_XP-CLR/Gene/VIP_gene/Plot")
 substrRight <- function(x){
   num = nchar(x)-2
   gsub('[0-9.]', '', substr(x, 6, nchar(x)))
 }
-names <- read.table("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/Gene/VIP_gene/names.txt",header=F,stringsAsFactors = F)
+names <- read.table("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/02_Environment/02_XP-CLR/Gene/VIP_gene/names.txt",header=F,stringsAsFactors = F)
 names <- names[,1]
 #names <- c("","","","","","","","","","","","","","","","","GA2ox3-A1","","GA2ox3-D1","","","","","","","","","","","","","","","","","","","","","","","","","","","","NGR5_1","NGR5_2","NGR5_3","PIF_1","PIF_2","PIF_3")
 
 pdf("plot1.pdf", width = 60, height = 8)
 for (i in c(1:9)){
-  file1 <- paste("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/Gene/VIP_gene/SeqLog/",names[i],".logo.seq",sep="")
+  file1 <- paste("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/02_Environment/02_XP-CLR/Gene/VIP_gene/SeqLog/",names[i],".logo.seq",sep="")
   fasta_file = read.table(file1,header=F,stringsAsFactors = F)
   fasta = fasta_file[,2]
-  file2 <- paste("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/Gene/VIP_gene/SnpEff/",names[i],".snpEff",sep="")
+  file2 <- paste("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/02_Environment/02_XP-CLR/Gene/VIP_gene/SnpEff/",names[i],".snpEff",sep="")
   snpEff <- read.table(file2,header=F,stringsAsFactors = F,fill=TRUE,sep="\t")
   p1 <- ggseqlogo(fasta,method="prob")+theme(axis.text.x = element_blank())+labs(title = names[i])+theme(plot.title = element_text(hjust = 0.5,size = 25))
   Ref <- as.data.frame(snpEff$V3)

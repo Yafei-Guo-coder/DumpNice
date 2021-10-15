@@ -29,7 +29,7 @@
 library(vegan)
 library(RColorBrewer)
 library(ggplot2)
-setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment")
+setwd("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/02_Environment")
 #input environment variants file and genetic variants file and RDA analysis----
 phylum <- read.delim('All_noMiss_0.05_2000.txt',  sep = '\t', stringsAsFactors = FALSE, check.names = FALSE)
 row.names(phylum) <- c(1:2000)

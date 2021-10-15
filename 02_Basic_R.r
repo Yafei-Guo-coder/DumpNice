@@ -76,3 +76,5 @@ p <- ggplot(all, aes(RDA1, RDA2,color=RDA_Region)) +
 #geom_label_repel(aes(label =sample, color = group), size = 3, box.padding = unit(0, 'lines'), show.legend = FALSE)
 
 geom_smooth(method = "lm", color = "black", fill = "lightgray") 
+ggtitle("North1 VS North2")+
+  theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=20),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))

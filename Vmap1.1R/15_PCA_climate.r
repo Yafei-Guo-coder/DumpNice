@@ -1,3 +1,5 @@
+#working directory
+#/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/NegativeContral
 setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/NegativeContral")
 library(RColorBrewer)
 location <- read.table("/Users/guoyafei/Documents/01_个人项目/02_Migration/03_基本统计/01_IBS/04_795taxaIBS/795_Location.txt",header=T,stringsAsFactors = F)

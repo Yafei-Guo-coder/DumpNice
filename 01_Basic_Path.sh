@@ -24,3 +24,6 @@ fasta文件: 203: /data1/home/yafei/Project3/HaploType/Fulab/Fa/
 vcf文件: 203: /data1/home/yafei/Project3/HaploType/Fulab/Vcf/
 软件位置: 203: /data1/home/yafei/Software/snpEff/
 结果文件: 203: /data1/home/yafei/Software/snpEff/data/
+
+#XP-CLR negative contral
+/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/NegativeContral

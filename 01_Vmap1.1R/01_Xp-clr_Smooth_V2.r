@@ -14,6 +14,9 @@
 #XPCLRresult_neg_North1_North2
 #XPCLRresult_neg_WA_North1
 #XPCLRresult_neg_WA_North2
+
+#其中三个是negative contral.
+
 #!/usr/bin/Rscript.R
 library(GenWin)
 library(dplyr)
@@ -42,4 +45,4 @@ for (num in c(1:9)){
 #Rscript smooth.R
 #GenWin(smooth)的结果是这样的"WindowStart" "WindowStop" "SNPcount" "MeanY" "Wstat"，没有染色体，要加上染色体的信息
 #工作路径：xuebo@204:/data2/xuebo/Projects/Speciation/xpclr/North_South_SCA/XPCLRresultSouth_SCA/smooth
-#接下来给smooth结果添加染色体号并进行排序，并且合并成A，B，D lineage.
+#接下来使用02_Xp-clr_SelectGene.sh脚本给smooth结果添加染色体号并进行排序，并且合并成A，B，D lineage.

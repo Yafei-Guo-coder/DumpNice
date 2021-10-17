@@ -81,7 +81,6 @@ ggtitle("North1 VS North2")+
 
 out <- strsplit(sub('_',':', dist[,1]) , ":")
 
-R cmd install clusterProfiler_4.0.5.tar.gz 
-
 R CMD INSTALL clusterProfiler_4.0.5.tar.gz 
+
 

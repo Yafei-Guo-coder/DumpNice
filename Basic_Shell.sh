@@ -96,4 +96,10 @@ grep -v -f neg_WA_North2_smooth_${i}.top5.txt ${j}_smooth_${i}.top5.txt > ${j}_$
 done
 done
 
+tar -zxvf wheatGO-v1.1.tar.gz 
+
+conda create -n R4
+conda activate R4
+conda install -c bioconda bioconductor-clusterprofiler
+conda update R
 

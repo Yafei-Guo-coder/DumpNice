@@ -42,5 +42,25 @@ grep -v -f neg_WA_North2_smooth_${i}.top5.txt ${j}_smooth_${i}.top5.txt > ${j}.g
 done
 done
 
+#由于clusterProfiler安装的原因，转移到66上继续
+#66@yafei:/data1/home/yafei/008_Software/wheatGO-v1.1
+
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/North2_South_smooth_A.top5.txt -m GOMAP -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s A
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/Tibet_South_smooth_A.top5.txt -m GOMAP -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s A
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/WA_EU_smooth_A.top5.txt -m GOMAP -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s A
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/WA_South_smooth_A.top5.txt -m GOMAP -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s A
+
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/North2_South_smooth_B.top5.txt -m GOMAP -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s B
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/Tibet_South_smooth_B.top5.txt -m GOMAP -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s B
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/WA_EU_smooth_B.top5.txt -m GOMAP -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s B
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/WA_South_smooth_B.top5.txt -m GOMAP -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s B
+
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/North2_South_smooth_D.top5.txt -m GOMAP -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s D
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/Strang_WA_smooth_D.top5.txt -m GOMAP -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s D
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/WA_South_smooth_D.top5.txt -m GOMAP -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s D
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/Tibet_South_smooth_D.top5.txt -m GOMAP -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s D
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/WA_EU_smooth_D.top5.txt -m GOMAP -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s D
+
+sort -k11,11g table-North2_South_A.go.gene-Parent-Child-Intersection-Benjamini-Hochberg.txt | awk '{if($11<0.05) {print $0}}' | sed '1i ID\tPop.total\tPop.term\tStudy.total\tStudy.term\tPop.family\tStudy.family\tnparents\tis.trivial\tp\tp.adjusted\tp.min\tname'        
 
 

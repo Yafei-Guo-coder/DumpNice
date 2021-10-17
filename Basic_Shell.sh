@@ -86,6 +86,7 @@ done
 #国内github镜像
 https://hub.fastgit.org/
 
+datamash
 
 
 

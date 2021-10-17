@@ -46,6 +46,7 @@ do
 bedtools intersect -a ../gene_v1.1_Lulab.gff3 -b $i -wa | awk '{print $1"\t"$4"\t"$5"\t"$9}' | awk -F";" '{print $1}' | sort | uniq > ${i::-3}gff.gene
 done
 
+
 #定位已克隆基因:cloned gene
 for i in `ls *gff.gene`
 do
@@ -128,6 +129,12 @@ for ( i in c(1:3)){
   name<-merge(name,st,by="file") 
 }
 write.table(name,"heatmap_format2.txt",quote=F,row.names=F,col.names=T,sep="\t")
+
+#Go_analysis
+for i in `ls *gff.gene`
+do
+awk -F"=" '{print $2}' $i |sort | uniq > Go/${i::-8}txt
+done
 
 #画top5% nlr基因的曼哈顿图
 204@xuebo:/data2/xuebo/Projects/Speciation/xpclr/North_South_SCA/smooth/Top5%/gene/Manhattan/gene

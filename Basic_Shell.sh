@@ -88,5 +88,12 @@ https://hub.fastgit.org/
 
 datamash
 
+for i in A B D
+do
+for j in `cat names`
+do
+grep -v -f neg_WA_North2_smooth_${i}.top5.txt ${j}_smooth_${i}.top5.txt > ${j}_${i}.go.gene.txt
+done
+done
 
 

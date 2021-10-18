@@ -1,4 +1,5 @@
 library(ggplot2)
+
 setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Go/V3/clusterProfiler/GOMAP")
 
 path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Go/V3/clusterProfiler/GOMAP/all"
@@ -51,7 +52,7 @@ for (i in 1:4) {
 #画整体的Go富集图----
 library(RColorBrewer)
 display.brewer.all()
-col <- brewer.pal(n = 8, name = "Purples")[c(6,8)]
+col <- brewer.pal(n = 8, name = "Purples")[c(5,8)]
 p <- ggplot(data=Go)+
     geom_bar(aes(x= Description, y=Number_in_input_list, fill=(FDR)), stat='identity') +
     coord_flip() +

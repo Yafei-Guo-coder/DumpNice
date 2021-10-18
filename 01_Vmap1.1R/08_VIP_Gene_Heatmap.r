@@ -61,6 +61,18 @@ done
 ./wheatGO-v1.1-Ontologizer -g All_VIP_gene/Tibet_South_smooth_D.top5.txt -m GOSLIM -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s All
 ./wheatGO-v1.1-Ontologizer -g All_VIP_gene/WA_EU_smooth_D.top5.txt -m GOSLIM -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s All
 
-sort -k11,11g table-North2_South_A.go.gene-Parent-Child-Intersection-Benjamini-Hochberg.txt | awk '{if($11<0.05) {print $0}}' | sed '1i ID\tPop.total\tPop.term\tStudy.total\tStudy.term\tPop.family\tStudy.family\tnparents\tis.trivial\tp\tp.adjusted\tp.min\tname'        
+#文件目录
+#ABD_GOMAP
+#ABD_GOMAP_All
+#ABD_GOSLIM
+#ABD_GOSLIM_All
+#A_B_D_GOMAP
+#A_B_D_GOMAP_All
+#A_B_D_GOSLIM
+#A_B_D_GOSLIM_All
 
+for i in `cat all_names`
+do
+sort -k11,11g A_B_D_GOSLIM_All/table-${i}.top5-Parent-Child-Intersection-Benjamini-Hochberg.txt | awk '{if($11<0.05) {print $0}}' | sed '1i ID\tPop.total\tPop.term\tStudy.total\tStudy.term\tPop.family\tStudy.family\tnparents\tis.trivial\tp\tp.adjusted\tp.min\tname' > A_B_D_GOSLIM_All/${i}.go.txt   
+done
 

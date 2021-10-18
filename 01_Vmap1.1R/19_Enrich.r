@@ -1,11 +1,7 @@
 library(ggplot2)
-setwd("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/02_Environment/02_XP-CLR")
-Go <- read.table("Go.txt", header = T, stringsAsFactors = F, sep = "\t")
-#画单个区域的Go富集图----
-#nameA <- c("Domesticated_einkorn", "Domesticated_emmer","Durum","EA","EU","Indian_dwarf","Khorasan_wheat","Landrace","Macha","Persian_wheat","Polish_wheat","Rivet_wheat","SCA","Spelt","Tibetan_semi_wild","Urartu","Vavilovii","WA","Wild_Einkorn","Wild_emmer","Xinjiang_wheat")
-#nameB <- c("Domesticated_emmer","Durum","EA","EU","Khorasan_wheat", "Landrace","Macha","Persian_wheat","Polish_wheat","Rivet_wheat","SCA","Spelt","Speltoides","Vavilovii","WA","Wild_emmer","Xinjiang_wheat","Yunan_wheat")
-#nameD <- c("Anathera","Club_wheat","EA","EU","Indian_dwarf","Landrace","Macha","Meyeri","SCA","Spelt","Strangulata","Tibetan_semi_wild","Vavilovii","WA","Xinjiang_wheat","Yunan_wheat")
-path <- "/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/01_BasicStatistic/11_Selection/anno_gene/D"
+setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Go/V3/clusterProfiler/GOMAP")
+
+path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Go/V3/clusterProfiler/GOMAP/all"
 fileNames <- dir(path) 
 filePath <- sapply(fileNames, function(x){
   paste(path,x,sep='/')})   
@@ -19,9 +15,9 @@ data <- lapply(filePath, function(x){
 #  all <- rbind(all, data[[i]])
 #}
 plot_list = list() 
-for(i in 1:16){
+for(i in 1:4){
   p <- ggplot(data=data[[i]])+
-    geom_bar(aes(x= Description, y=Number.in.input.list, fill=(FDR)), stat='identity') +
+    geom_bar(aes(x= name, y=Number.in.input.list, fill=(FDR)), stat='identity') +
     coord_flip() +
     #facet_grid(.~Name,scales="free") +
     #facet_wrap(~Name,ncol = 1)+
@@ -45,7 +41,7 @@ for(i in 1:16){
   
   plot_list[[i]] = p
 }
-for (i in 1:16) { 
+for (i in 1:4) { 
   file_name = paste("D",i,".pdf",sep="") 
   pdf(file_name,height = 12,width = 9) 
   print(plot_list[[i]]) 

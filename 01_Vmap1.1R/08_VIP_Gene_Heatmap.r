@@ -76,3 +76,5 @@ do
 sort -k11,11g A_B_D_GOSLIM_All/table-${i}.top5-Parent-Child-Intersection-Benjamini-Hochberg.txt | awk '{if($11<0.05) {print $0}}' | sed '1i ID\tPop.total\tPop.term\tStudy.total\tStudy.term\tPop.family\tStudy.family\tnparents\tis.trivial\tp\tp.adjusted\tp.min\tname' > A_B_D_GOSLIM_All/${i}.go.txt   
 done
 
+
+

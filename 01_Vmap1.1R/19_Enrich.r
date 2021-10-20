@@ -11,7 +11,6 @@ done
 done
 #由于clusterProfiler安装的原因，转移到66上继续
 #66@yafei:/data1/home/yafei/008_Software/wheatGO-v1.1
-
 ./wheatGO-v1.1-Ontologizer -g All_VIP_gene/North2_South_smooth_A.top5.txt -m GOSLIM -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s All
 ./wheatGO-v1.1-Ontologizer -g All_VIP_gene/Tibet_South_smooth_A.top5.txt -m GOSLIM -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s All
 ./wheatGO-v1.1-Ontologizer -g All_VIP_gene/WA_EU_smooth_A.top5.txt -m GOSLIM -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s All
@@ -98,4 +97,3 @@ for (i in 1:length(data)) {
   print(plot_list[[i]]) 
   dev.off() 
 } 
-

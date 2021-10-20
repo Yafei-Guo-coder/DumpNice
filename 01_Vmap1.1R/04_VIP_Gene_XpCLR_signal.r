@@ -1,8 +1,7 @@
 library(qqman)
 #画信号位点基因的XP-CLR的染色体信号
 #Working directory
-#xuebo@204:/data2/xuebo/Projects/Speciation/xpclr/Selection_V3/smooth/lineage/Top5%/VIP_gene_XpCLR
-
+#xuebo@204:/data2/xuebo/Projects/Speciation/xpclr/Selection_V3/smooth/lineage_V2/Top5%/VIP_gene_XpCLR
 #VIP_gene
 #1. TraesCS4D02G364400	Vrn2-2	24	58277633	58279728	chr4D:509282253-509284348(-)	Transcription factor GHD7 [UniProtKB/Swiss-Prot:E5RQA1]	Os10g0560400	NA
 #2. TraesCS2D02G079600	Ppd-1(PRR)	11	33952048	33956269	chr2D:33952048-33956269(-)	Two-component response regulator-like PRR37 [UniProtKB/Swiss-Prot:A2YQ93]	Os07g0695100	NA
@@ -10,8 +9,7 @@ library(qqman)
 #4. TraesCS5A02G473800	Q-5A	26	196896739	196900381	chr5A:650127258-650130900(-)	APETALA2-like protein 2 [UniProtKB/Swiss-Prot:Q84TB5]	Os03g0818800	NA
 #5. TraesCS4B02G043100	Rht-B1	21	30861268	30863723	chr4B:30861268-30863723(+)	DELLA protein RHT-1 [UniProtKB/Swiss-Prot:Q9ST59]	Os03g0707600	AT1G66350
 #6. TraesCS1D02G029100	Sr33	5	11451423	11459353	chr1D:11451423-11459353(+)	Disease resistance protein RGA5 [UniProtKB/Swiss-Prot:F7J0N2]	NA	AT3G46530
-#7. TraesCS1D02G040400	Sr45	5	19341296	19346065	chr1D:19341296-19346065(+)	Putative disease resistance protein RGA4 [UniProtKB/Swiss-Prot:Q7XA39]	Os10g0130800	NA
-
+#7. TraesCS1D02G040400	Sr45	5	19341296	19346065	chr1D:19341296-19346065(+)	Putative disease resistance protein RGA4 [UniProtKB/Swiss-Prot:Q7XA39]	Os10g0130800	N
 #File Gene_Name Chr Start Stop
 #North2_South_smooth_A Ppd-A1 7	36933684	36938202
 #North2_South_smooth_B Rht-B1 21	30861268	30863723
@@ -24,14 +22,11 @@ library(qqman)
 #WA_South_smooth_D Flowering1 24	58277633	58279728
 #WA_South_smooth_D Sr33 5	11451423	11459353
 #Tibet_South_smooth_D  Ppd-1(PRR) 11	33952048	33956269
-
 cat $1 |while read file chr1 chr2
 do
 awk '{if($1== "'${chr1}'" || $1=="'${chr2}'") {print $0}}' ../../${file}| sort -k1,1n -k2,2g |sed '1i  Chr\tWindowStart\tWindowStop\tSNPcount\tMeanY\tWstat' > ${file::-4}.${chr1}.${chr2}.txt
 done
-
 #把42条染色体合并成21条
-
 #转移到本地画图
 #/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Xpclr/V3
 setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Xpclr/V3")

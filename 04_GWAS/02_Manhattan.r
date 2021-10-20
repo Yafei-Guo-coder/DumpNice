@@ -453,12 +453,12 @@ highsnp <- c("4-28222453","5-346668758","14-196323275","14-196324770","14-196327
 highsnp <- c("14-196327488","21-30861571")
 #-lop的值大于5的位置
 snp <- read.table("logP5_50k.snp",header=F,stringsAsFactors = F)
-anno <- read.table("logP5.pos.txt",header=F,stringsAsFactors = F)
+anno <- read.table("/Users/guoyafei/Documents/04_FuGWAS/07_气孔导度数据/20211007/anno.txt",header=F,stringsAsFactors = F)
 snpsOfInterest <- snp[,1]
 snpsOfAnno <- anno[,1]
 pdf("stoma_Fu_gene_1M.pdf",height = 5,width = 15)
 for (i in c(1:20)){
-  all <- data[[i]]
+  all <- data[[1]]
   colnames(all) <- c("SNP", "CHR", "BP","P")
   #sub <- data[order(data$P),]
   #sub$logP <- -log10(sub$P)
@@ -484,6 +484,7 @@ do
 awk '{print $2"\t"$3"\t"$4"\t"$7"\t"(-log($7)/log(10))}' $i | awk '{if($5>5 && $4!="NaN") print $0}' |awk '{print $2"\t"$3}' |sed '1d' | awk '{print $0"\t"NR}' |sed 's/\t/-/'
 done > logP5/logP5.pos.txt
 
+sed 's/-/\t/' logP5.pos.txt | awk '{print $1"\t"$2-1"\t"$2}' > logP5.pos.bed
 #把-lopP5 bed 上下游50k的区域在1M之内的合并在一起
 for i in {1..7}
 do
@@ -496,6 +497,8 @@ for i in `ls *50k.merge.bed`
 do
 awk '{print $0"\t"FILENAME"\t"NR}' $i >> All_50k_region.bed
 done
+
+bedtools intersect -a All_50k_region.bed -b logP5.pos.bed -wo|sort -k1,1n -k2,2n >test.txt
 #曼哈顿图注释表
 bedtools intersect -a /data1/home/yafei/009_GWAS/gene/gene_v1.1_Lulab.gff3 -b All_50k_region.bed -wb | awk 'split($9, array, ";") {print $1"\t"$4"\t"$5"\t"array[1]"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14}' | sed '1i gene_chr\tgene_start\tgene_end\tgene_id\tsnpBlock_chr\tsnpBlock_start\tsnpBlock_end\tfileName\tsnpBlock_id'> snpBlock_annotation3.txt
 #bedtools intersect -a /data1/home/yafei/009_GWAS/gene/gene_v1.1_Lulab.gff3 -b All_50k_NoMerge.bed -wb | awk 'split($9, array, ";") {print $1"\t"$4"\t"$5"\t"array[1]"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14}' | sed '1i gene_chr\tgene_start\tgene_end\tgene_id\tsnpBlock_chr\tsnpBlock_start\tsnpBlock_end\tfileName\tsnpBlock_id'> snpBlock_annotation3.txt
@@ -516,7 +519,7 @@ done
 done | awk '{print $4"\t"$6}'|sort -k1,1n -k2,2n | uniq | sed 's/\t/-/' > logP5_50k.snp
 
 
-#QQ plot
+#QQ plot-----
 setwd("/Users/guoyafei/Documents/01_个人项目/05_FuGWAS/07_气孔导度数据/20210928/")
 data <- read.table("height_all.mlm.txt",header=F,stringsAsFactors = F)
 colnames(data) <- c("SNP", "CHR", "BP","P")
@@ -542,9 +545,13 @@ png("height_qq.png")
 pd_qq
 dev.off()
 
+#----
 
+for (i in c(1:20)){
+  i=20
+gwasResults <- data[[i]]
+colnames(gwasResults) <- c("SNP", "CHR", "BP","P")
 don <- gwasResults %>% 
-  
   # Compute chromosome size
   group_by(CHR) %>% 
   summarise(chr_len=max(BP)) %>% 
@@ -565,10 +572,9 @@ don <- gwasResults %>%
 
 # Prepare X axis
 axisdf <- don %>% group_by(CHR) %>% summarize(center=( max(BPcum) + min(BPcum) )/ 2)
-
-
+a<-i+1
+pdf(paste(a,".png",sep=""),height = 5,width = 15)
 ggplot(don, aes(x=BPcum, y=-log10(P))) +
-  
   # Show all points
   geom_point( aes(color=as.factor(CHR)), alpha=0.8, size=1.3) +
   scale_color_manual(values = rep(c("grey", "skyblue"), 22 )) +
@@ -591,5 +597,6 @@ ggplot(don, aes(x=BPcum, y=-log10(P))) +
     panel.grid.major.x = element_blank(),
     panel.grid.minor.x = element_blank()
   )
+dev.off()
 
 

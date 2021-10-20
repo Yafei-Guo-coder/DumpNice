@@ -1,13 +1,58 @@
+#Go analysis
+#Working directory
+#xuebo@204:/data2/xuebo/Projects/Speciation/xpclr/Selection_V3/smooth/lineage/Top5%/Go
+#以下invalid
+for i in A B D
+do
+for j in `cat names`
+do
+grep -v -f neg_WA_North2_smooth_${i}.top5.txt ${j}_smooth_${i}.top5.txt > ${j}.go.gene.txt
+done
+done
+#由于clusterProfiler安装的原因，转移到66上继续
+#66@yafei:/data1/home/yafei/008_Software/wheatGO-v1.1
+
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/North2_South_smooth_A.top5.txt -m GOSLIM -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s All
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/Tibet_South_smooth_A.top5.txt -m GOSLIM -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s All
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/WA_EU_smooth_A.top5.txt -m GOSLIM -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s All
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/WA_South_smooth_A.top5.txt -m GOSLIM -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s All
+
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/North2_South_smooth_B.top5.txt -m GOSLIM -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s All
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/Tibet_South_smooth_B.top5.txt -m GOSLIM -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s All
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/WA_EU_smooth_B.top5.txt -m GOSLIM -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s All
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/WA_South_smooth_B.top5.txt -m GOSLIM -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s All
+
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/North2_South_smooth_D.top5.txt -m GOSLIM -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s All
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/Strang_WA_smooth_D.top5.txt -m GOSLIM -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s All
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/WA_South_smooth_D.top5.txt -m GOSLIM -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s All
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/Tibet_South_smooth_D.top5.txt -m GOSLIM -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s All
+./wheatGO-v1.1-Ontologizer -g All_VIP_gene/WA_EU_smooth_D.top5.txt -m GOSLIM -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s All
+
+#文件目录
+#ABD_GOMAP
+#ABD_GOMAP_All
+#ABD_GOSLIM
+#ABD_GOSLIM_All
+#A_B_D_GOMAP
+#A_B_D_GOMAP_All
+#A_B_D_GOSLIM
+#A_B_D_GOSLIM_All
+
+for i in `cat all_names`
+do
+sort -k11,11g A_B_D_GOSLIM_All/table-${i}.top5-Parent-Child-Intersection-Benjamini-Hochberg.txt | awk '{if($11<0.05) {print $0}}' | sed '1i ID\tPop.total\tPop.term\tStudy.total\tStudy.term\tPop.family\tStudy.family\tnparents\tis.trivial\tp\tp.adjusted\tp.min\tname' > A_B_D_GOSLIM_All/${i}.go.txt   
+done
+
 library(ggplot2)
 library(RColorBrewer)
 display.brewer.all()
 col <- brewer.pal(n = 8, name = "Blues")[c(4,7)]
 col <- brewer.pal(n = 8, name = "Oranges")[c(4,7)]
 col <- brewer.pal(n = 8, name = "Greens")[c(4,7)]
-setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Go/V3/clusterProfiler/GOMAP")
+setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Go/V3/GOMAP")
 
 #画整体的Go富集图----
-path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Go/V3/clusterProfiler/GOMAP/lineage/B"
+path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Go/V3/GOMAP/D"
 fileNames <- dir(path) 
 filePath <- sapply(fileNames, function(x){
   paste(path,x,sep='/')})   
@@ -23,9 +68,9 @@ for(i in 1:length(data)){
     #A
     #scale_fill_gradient(expression(p.adjust),low="#9ECAE1", high = "#2171B5") +
     #B
-    scale_fill_gradient(expression(p.adjust),low="#FDAE6B", high = "#D94801") +
+    #scale_fill_gradient(expression(p.adjust),low="#FDAE6B", high = "#D94801") +
     #D
-    #scale_fill_gradient(expression(p.adjust),low="#A1D99B", high = "#238B45") +
+    scale_fill_gradient(expression(p.adjust),low="#A1D99B", high = "#238B45") +
     ylab("Gene number") +
     xlab("GO term description") +
     #expand_limits(y=c(0,8))+

@@ -4,10 +4,10 @@ display.brewer.all()
 col <- brewer.pal(n = 8, name = "Blues")[c(4,7)]
 col <- brewer.pal(n = 8, name = "Oranges")[c(4,7)]
 col <- brewer.pal(n = 8, name = "Greens")[c(4,7)]
-setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Go/V3/clusterProfiler/GOSLIM")
+setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Go/V3/clusterProfiler/GOMAP")
 
 #画整体的Go富集图----
-path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Go/V3/clusterProfiler/GOSLIM/lineage/B"
+path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Go/V3/clusterProfiler/GOMAP/lineage/B"
 fileNames <- dir(path) 
 filePath <- sapply(fileNames, function(x){
   paste(path,x,sep='/')})   

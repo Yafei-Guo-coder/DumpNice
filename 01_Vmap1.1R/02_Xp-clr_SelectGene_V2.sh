@@ -13,20 +13,20 @@
 #smooth结果添加染色体号并进行排序，并且合并成A，B，D lineage.
 
 Name=(EU_South North2_South Strang_WA Tibet_South WA_EU WA_South neg_North1_North2 neg_WA_North1 neg_WA_North2)
-for num in {1..9}
+for num in {0..8}
 do
   for i in {1,2,7,8,13,14,19,20,25,26,31,32,37,38}
     do
       sed '1d' ${Name[$num]}_smooth${i}.txt | awk '{print "'$i'""\t"$0}'  
-    done |sed '/NA/d' | sort -k5,5n -k1,1n -k2,2n | sed '1i Chr\tWindowStart\tWindowStop\tSNPcount\tMeanY\tWstat' > ${Name[$num]}_smooth_A.txt
+    done |sed '/NA/d' | sort -k5,5g -k1,1n -k2,2n | sed '1i Chr\tWindowStart\tWindowStop\tSNPcount\tMeanY\tWstat' > ${Name[$num]}_smooth_A.txt
   for i in {3,4,9,10,15,16,21,22,27,28,33,34,39,40}
     do
       sed '1d' ${Name[$num]}_smooth${i}.txt | awk '{print "'$i'""\t"$0}'  
-    done |sed '/NA/d' | sort -k5,5n -k1,1n -k2,2n | sed '1i Chr\tWindowStart\tWindowStop\tSNPcount\tMeanY\tWstat' > ${Name[$num]}_smooth_B.txt
+    done |sed '/NA/d' | sort -k5,5g -k1,1n -k2,2n | sed '1i Chr\tWindowStart\tWindowStop\tSNPcount\tMeanY\tWstat' > ${Name[$num]}_smooth_B.txt
   for i in {5,6,11,12,17,18,23,24,29,30,35,36,41,42}
     do
       sed '1d' ${Name[$num]}_smooth${i}.txt | awk '{print "'$i'""\t"$0}'  
-    done |sed '/NA/d' | sort -k5,5n -k1,1n -k2,2n | sed '1i Chr\tWindowStart\tWindowStop\tSNPcount\tMeanY\tWstat' > ${Name[$num]}_smooth_D.txt
+    done |sed '/NA/d' | sort -k5,5g -k1,1n -k2,2n | sed '1i Chr\tWindowStart\tWindowStop\tSNPcount\tMeanY\tWstat' > ${Name[$num]}_smooth_D.txt
 done
 
 #42条染色体合并成21条(因为gff文件是42条染色体,此步可以跳过)
@@ -45,7 +45,6 @@ for i in `ls *bed`
 do
 bedtools intersect -a ../gene_v1.1_Lulab.gff3 -b $i -wa | awk '{print $1"\t"$4"\t"$5"\t"$9}' | awk -F";" '{print $1}' | sort | uniq > ${i::-3}gff.gene
 done
-
 
 #定位已克隆基因:cloned gene
 for i in `ls *gff.gene`
@@ -69,6 +68,7 @@ done
 ls *cloned.gene |xargs -n1 > cloned_gene.txt
 for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done | awk '{print $1}' | awk -F"_smooth" '{print $1}'|uniq > file_prefix.txt
 #change file format to plot heatmap(A,B,D lineage seperate)
+
 #A lineage
 ls *A.top5.cloned.gene |xargs -n1 > A_cloned_gene.txt
 sed 's/$/_smooth_A.top5.cloned.gene/' file_prefix.txt > A_file.txt
@@ -84,7 +84,7 @@ ls *D.top5.cloned.gene |xargs -n1 > D_cloned_gene.txt
 sed 's/$/_smooth_D.top5.cloned.gene/' file_prefix.txt > D_file.txt
 for i in `cat D_cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $2}' | sort | uniq > D_gene.txt
 
-R
+#R
 v <- c("A","B","D")
 for ( i in c(1:3)){
   filename <- paste(v[i],"_file.txt",sep="")
@@ -130,7 +130,7 @@ for ( i in c(1:3)){
 }
 write.table(name,"heatmap_format2.txt",quote=F,row.names=F,col.names=T,sep="\t")
 
-#Go_analysis
+#Go_analysis(invalid:应该用全部的信号基因)
 for i in `ls *gff.gene`
 do
 awk -F"=" '{print $2}' $i |sort | uniq > Go/${i::-8}txt
@@ -139,4 +139,3 @@ done
 #画top5% nlr基因的曼哈顿图
 204@xuebo:/data2/xuebo/Projects/Speciation/xpclr/North_South_SCA/smooth/Top5%/gene/Manhattan/gene
 for i in `ls *A_gene.txt`; do grep -f ../../../nlr_gene.txt $i; echo $i; done
-

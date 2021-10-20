@@ -412,8 +412,8 @@ manhattan(gwasR, annotateTop = T, highlight = highsnp, col = c("#b2df8a","#33a02
 #20210902 FuGWAS----
 #准备文件来自：01_GWAS_gwas.sh
 #Manhattan plot
-setwd("/Users/guoyafei/Documents/01_个人项目/05_FuGWAS/07_气孔导度数据/20211007/Manhattan/logP2")
-path <- "/Users/guoyafei/Documents/01_个人项目/05_FuGWAS/07_气孔导度数据/20211007/Manhattan/logP2" ##文件目录
+setwd("/Users/guoyafei/Documents/04_FuGWAS/07_气孔导度数据/20211007/Manhattan/logP2")
+path <- "/Users/guoyafei/Documents/04_FuGWAS/07_气孔导度数据/20211007/Manhattan/logP2/TXT" ##文件目录
 fileNames <- dir(path)  ##获取该路径下的文件名
 filePath <- sapply(fileNames, function(x){ 
   paste(path,x,sep='/')})   ##生成读取文件路径
@@ -453,8 +453,9 @@ highsnp <- c("4-28222453","5-346668758","14-196323275","14-196324770","14-196327
 highsnp <- c("14-196327488","21-30861571")
 #-lop的值大于5的位置
 snp <- read.table("logP5_50k.snp",header=F,stringsAsFactors = F)
-highsnp <- snp[,1]
-
+anno <- read.table("logP5.pos.txt",header=F,stringsAsFactors = F)
+snpsOfInterest <- snp[,1]
+snpsOfAnno <- anno[,1]
 pdf("stoma_Fu_gene_1M.pdf",height = 5,width = 15)
 for (i in c(1:20)){
   all <- data[[i]]
@@ -476,6 +477,13 @@ for i in `cat txt.names`
 do 
 awk '{print $2"\t"$3"\t"$4"\t"$7"\t"(-log($7)/log(10))}' $i | awk '{if($5>5 && $4!="NaN") print $0}' |awk '{print $2"\t"$3-50000"\t"$3+50000}' |sed '1d' > logP5/${i::-15}.50k.bed
 done
+
+#提取-lopP5 bed的位点
+for i in `cat txt.names`
+do 
+awk '{print $2"\t"$3"\t"$4"\t"$7"\t"(-log($7)/log(10))}' $i | awk '{if($5>5 && $4!="NaN") print $0}' |awk '{print $2"\t"$3}' |sed '1d' | awk '{print $0"\t"NR}' |sed 's/\t/-/'
+done > logP5/logP5.pos.txt
+
 #把-lopP5 bed 上下游50k的区域在1M之内的合并在一起
 for i in {1..7}
 do
@@ -489,7 +497,8 @@ do
 awk '{print $0"\t"FILENAME"\t"NR}' $i >> All_50k_region.bed
 done
 #曼哈顿图注释表
-bedtools intersect -a /data1/home/yafei/009_GWAS/gene/gene_v1.1_Lulab.gff3 -b All_50k_region.bed -wb | awk 'split($9, array, ";") {print $1"\t"$4"\t"$5"\t"array[1]"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14}' | sed '1i gene_chr\tgene_start\tgene_end\tgene_id\tsnpBlock_chr\tsnpBlock_start\tsnpBlock_end\tfileName\tsnpBlock_id'> snpBlock_annotation.txt
+bedtools intersect -a /data1/home/yafei/009_GWAS/gene/gene_v1.1_Lulab.gff3 -b All_50k_region.bed -wb | awk 'split($9, array, ";") {print $1"\t"$4"\t"$5"\t"array[1]"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14}' | sed '1i gene_chr\tgene_start\tgene_end\tgene_id\tsnpBlock_chr\tsnpBlock_start\tsnpBlock_end\tfileName\tsnpBlock_id'> snpBlock_annotation3.txt
+#bedtools intersect -a /data1/home/yafei/009_GWAS/gene/gene_v1.1_Lulab.gff3 -b All_50k_NoMerge.bed -wb | awk 'split($9, array, ";") {print $1"\t"$4"\t"$5"\t"array[1]"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14}' | sed '1i gene_chr\tgene_start\tgene_end\tgene_id\tsnpBlock_chr\tsnpBlock_start\tsnpBlock_end\tfileName\tsnpBlock_id'> snpBlock_annotation3.txt
 
 #mlm bed
 for i in `cat txt.names`
@@ -505,7 +514,6 @@ do
 bedtools intersect -a ${i}${j}.50k.bed -b ${i}${j}.mlm.bed -wb
 done
 done | awk '{print $4"\t"$6}'|sort -k1,1n -k2,2n | uniq | sed 's/\t/-/' > logP5_50k.snp
-
 
 
 #QQ plot
@@ -534,5 +542,54 @@ png("height_qq.png")
 pd_qq
 dev.off()
 
-sub3 <- sub[which(sub$logP>5),]
+
+don <- gwasResults %>% 
+  
+  # Compute chromosome size
+  group_by(CHR) %>% 
+  summarise(chr_len=max(BP)) %>% 
+  
+  # Calculate cumulative position of each chromosome
+  mutate(tot=cumsum(chr_len)-chr_len) %>%
+  select(-chr_len) %>%
+  
+  # Add this info to the initial dataset
+  left_join(gwasResults, ., by=c("CHR"="CHR")) %>%
+  
+  # Add a cumulative position of each SNP
+  arrange(CHR, BP) %>%
+  mutate( BPcum=BP+tot) %>%
+  # ！！！！！！Add highlight and annotation information
+  mutate( is_highlight=ifelse(SNP %in% snpsOfInterest, "yes", "no")) %>%
+  mutate( is_annotate=ifelse(SNP %in% snpsOfAnno, "yes", "no")) 
+
+# Prepare X axis
+axisdf <- don %>% group_by(CHR) %>% summarize(center=( max(BPcum) + min(BPcum) )/ 2)
+
+
+ggplot(don, aes(x=BPcum, y=-log10(P))) +
+  
+  # Show all points
+  geom_point( aes(color=as.factor(CHR)), alpha=0.8, size=1.3) +
+  scale_color_manual(values = rep(c("grey", "skyblue"), 22 )) +
+  
+  # custom X axis:
+  scale_x_continuous( label = axisdf$CHR, breaks= axisdf$center ) +
+  scale_y_continuous(expand = c(0, 0) ) +     # remove space between plot area and x axis
+  
+  # Add highlighted points
+  geom_point(data=subset(don, is_highlight=="yes"), color="orange", size=2) +
+  
+  # Add label using ggrepel to avoid overlapping
+  geom_label_repel( data=subset(don, is_annotate=="yes"), aes(label=SNP), size=2) +
+  
+  # Custom the theme:
+  theme_bw() +
+  theme( 
+    legend.position="none",
+    panel.border = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+  )
+
 

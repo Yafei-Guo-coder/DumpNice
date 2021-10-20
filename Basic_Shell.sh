@@ -12,7 +12,6 @@ awk 'ORS=NR%2?" ":"\n"{print}'
 ps aux|grep Volca|tail -n 20 | awk '{print $2}' > id
 for i in `cat id`; do kill -9 $i; done
 
-
 ## split by chromosome
 for chr in {0..42}
 do
@@ -102,4 +101,17 @@ conda create -n R4
 conda activate R4
 conda install -c bioconda bioconductor-clusterprofiler
 conda update R
+
+#计算bam文件的depth
+#bams.txt格式为 /data3/wgs/bam/ABD/ABD_0165.bam，一行一个bam文件
+for i in {5,6,11,12,17,18,23,24,29,30,35,36,41,42}
+do
+for j in `cat JIC_bam_D.txt`
+do
+var=${j##*/} 
+mosdepth -c ${i} -n -t 32 JIC_D/out_${i}_${var::-4} $j
+done
+done
+
+java -jar /data2/xuebo/Projects/Speciation/javaCode/C41_getIBS_distance2.jar --file1 /data2/xuebo/Projects/Speciation/tree/withBarley_segregate/lineage/Alineage_withBarley.vcf.gz --out Alineage_withBarley.all.ibs.txt > logA.txt
 

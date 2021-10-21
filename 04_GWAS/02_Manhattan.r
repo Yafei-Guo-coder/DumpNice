@@ -548,7 +548,6 @@ dev.off()
 #----
 
 for (i in c(1:20)){
-  i=20
 gwasResults <- data[[i]]
 colnames(gwasResults) <- c("SNP", "CHR", "BP","P")
 don <- gwasResults %>% 
@@ -574,7 +573,7 @@ don <- gwasResults %>%
 axisdf <- don %>% group_by(CHR) %>% summarize(center=( max(BPcum) + min(BPcum) )/ 2)
 a<-i+1
 pdf(paste(a,".png",sep=""),height = 5,width = 15)
-ggplot(don, aes(x=BPcum, y=-log10(P))) +
+p <- ggplot(don, aes(x=BPcum, y=-log10(P))) +
   # Show all points
   geom_point( aes(color=as.factor(CHR)), alpha=0.8, size=1.3) +
   scale_color_manual(values = rep(c("grey", "skyblue"), 22 )) +
@@ -597,6 +596,8 @@ ggplot(don, aes(x=BPcum, y=-log10(P))) +
     panel.grid.major.x = element_blank(),
     panel.grid.minor.x = element_blank()
   )
+print(p)
 dev.off()
+}
 
 

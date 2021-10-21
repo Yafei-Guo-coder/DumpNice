@@ -1,6 +1,6 @@
 #Go analysis
 #Working directory
-#xuebo@204:/data2/xuebo/Projects/Speciation/xpclr/Selection_V3/smooth/lineage/Top5%/Go
+#xuebo@204:/data2/xuebo/Projects/Speciation/xpclr/Selection_V3/smooth/lineage_V2/Top5%/Go
 #以下invalid
 for i in A B D
 do
@@ -65,11 +65,11 @@ for(i in 1:length(data)){
     #facet_grid(.~Name,scales="free") +
     #facet_wrap(~Name,ncol = 1)+
     #A
-    #scale_fill_gradient(expression(p.adjust),low="#9ECAE1", high = "#2171B5") +
+    scale_fill_gradient(expression(p.adjust),low="#FDAE6B", high = "#D94801") +
     #B
-    #scale_fill_gradient(expression(p.adjust),low="#FDAE6B", high = "#D94801") +
+    #scale_fill_gradient(expression(p.adjust),low="#9ECAE1", high = "#2171B5") +
     #D
-    scale_fill_gradient(expression(p.adjust),low="#A1D99B", high = "#238B45") +
+    #scale_fill_gradient(expression(p.adjust),low="#A1D99B", high = "#238B45") +
     ylab("Gene number") +
     xlab("GO term description") +
     #expand_limits(y=c(0,8))+

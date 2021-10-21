@@ -167,12 +167,14 @@ while (x < 50){
   allele2 <- cbind(allele2,eleName2)
   x <- x+1
 }
+
 #Rsq
 #rownames(alltemp1) <- c("WA","EU","SCA","EA_N","EA_S")
 #rownames(allprec1) <- c("WA","EU","SCA","EA_N","EA_S")
 #Rsq <- cbind(apply(alltemp1,1,mean),apply(allprec1,1,mean),apply(alltemp1,1,sd),apply(allprec1,1,sd))
 #colnames(Rsq)<- c("temp_mean","prec_mead","temp_sd","prec_sd")
 #write.table(Rsq, "RDA_Rsq.txt", sep="\t")
+
 #Adjust Rsq(后续使用)
 rownames(alltemp2) <- c("WA","EU","SCA","EA_N","EA_S")
 rownames(allprec2) <- c("WA","EU","SCA","EA_N","EA_S")

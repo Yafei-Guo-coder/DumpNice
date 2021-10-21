@@ -50,7 +50,7 @@ ggplot(L, aes(Logititude, Latitude))+
 
 #热图  
 library("corrplot")
-setwd("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/01_BasicStatistic/13_Plots/03_IBS_heatmap")
+setwd("/Users/guoyafei/Documents/01_Migration/01_BasicStatistic/13_Plots/03_IBS_heatmap")
 #A lineage
 ibs <- read.table("A_ibs.txt",header=T,stringsAsFactors=F)
 names <- ibs$id1
@@ -61,7 +61,7 @@ colnames(ibs) <- names
 
 #A:0.5 B:0.5 D:0.7
 pdf("IBS_A_CS_heat.pdf",width=10,height=10)
-corrplot(ibs,method = "color",tl.col="black",tl.srt = 45, addrect=4,addCoef.col = "grey", type = "lower",number.cex=0.6,number.digits=0.3,tl.cex=1,cl.cex=1.2,cl.lim = c(0, 0.5))
+corrplot(ibs,method = "color",col=color,tl.col="black",tl.srt = 45, addrect=4,addCoef.col = "grey", type = "lower",number.cex=0.6,number.digits=3,tl.cex=1,cl.cex=1.2,cl.lim = c(0, 0.5))
 dev.off()
 
 #B lineage
@@ -73,8 +73,15 @@ rownames(ibs) <- names
 colnames(ibs) <- names
 
 pdf("IBS_B_CS_heat.pdf",width=10,height=10)
-corrplot(ibs,method = "color",tl.col="black",tl.srt = 45, addrect=4,addCoef.col = "grey", type = "lower",number.cex=0.6,number.digits=0.3,tl.cex=1,cl.cex=1.2,cl.lim = c(0, 0.5))
+corrplot2(ibs,method = "color",tl.col="black",tl.srt = 45, addrect=4,addCoef.col = "grey", type = "lower",number.cex=0.6,number.digits=0.3,tl.cex=1,cl.cex=1.2,cl.lim = c(0, 0.5))
 dev.off()
+
+corrplot2 <- function(corr) {
+  a = 2 / (max(corr) - min(corr))
+  b = 1 - (2 / (1 - (min(corr) / max(corr))))
+  y = a * corr + b
+  corrplot(y, col= c("white","red"),method = "color",tl.col="black",tl.srt = 45, addrect=4,addCoef.col = "grey", type = "lower",number.cex=0.6,number.digits=2,tl.cex=1,cl.cex=1.2, cl.lim=c(-1, 1))
+}
 
 #D lineage
 ibs <- read.table("D_ibs.txt",header=T,stringsAsFactors=F)
@@ -292,7 +299,7 @@ colnames(ibs) <- names
 
 #A:0.5 B:0.5 D:0.7
 pdf("IBS_A_CS_heat.pdf",width=10,height=10)
-corrplot(ibs,method = "color",tl.col="black",tl.srt = 45, addrect=4,addCoef.col = "grey", type = "lower",number.cex=0.6,number.digits=0.3,tl.cex=1,cl.cex=1.2,cl.lim = c(0, 0.5))
+corrplot(ibs,method = "color",tl.col="black",tl.srt = 45, addrect=4,addCoef.col = "grey", type = "lower",number.cex=0.6,number.digits=3,tl.cex=1,cl.cex=1.2,cl.lim = c(0, 0.5))
 dev.off()
 
 #B lineage

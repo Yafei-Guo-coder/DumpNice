@@ -23,12 +23,13 @@ sed 's@0/0@0@g' all_noMiss_0.05_3000.txt | sed 's@0/1@1@g' |sed 's@1/1@2@g' |sed
 library(vegan)
 library(RColorBrewer)
 library(ggplot2)
-setwd("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/02_Environment")
+setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/01_RDA_plot")
 #input environment variants file and genetic variants file and RDA analysis----
 #phylum1 <- read.delim('All_noMiss_0.05_2000.txt',  sep = '\t', stringsAsFactors = FALSE, check.names = FALSE)
 phylum <- read.delim('All_noMiss_0.05_3000.txt',  sep = ' ', stringsAsFactors = FALSE, check.names = FALSE)
 row.names(phylum) <- c(1:3000)
 phylum <- data.frame(t(phylum))
+colnames(phylum) <- c(1:3000)
 phylum <- phylum[which(rownames(phylum)!="TW095"),]
 env <- read.delim('select_bio2.txt', row.names = 1, header=T,sep = '\t', stringsAsFactors = FALSE, check.names = FALSE)
 
@@ -36,7 +37,7 @@ env_all <- data.frame(env[,1:20])
 env_all <- env_all[which(rownames(env_all)!="TW095"),]
 
 env_ele <- env_all[,1,drop=F]
-env_temp <- env_all[,2:12]
+env_temp <- env_all[,1:12]
 env_prec <- env_all[,13:20]
 #直接使用原始数据，不做转化。对于群落物种组成数据来讲（因为通常包含很多 0 值），不是很推荐
 #rda_result <- rda(phylum~., env, scale = FALSE)
@@ -47,7 +48,7 @@ phylum_hel <- decostand(phylum, method = 'hellinger')
 rda_tb_all <- rda(phylum_hel~., env_all, scale = FALSE)
 rda_tb_temp <- rda(phylum_hel~., env_temp, scale = FALSE)
 rda_tb_prec <- rda(phylum_hel~., env_prec, scale = FALSE)
-rda_tb_ele <- rda(phylum_hel~., env_ele, scale = FALSE)
+#rda_tb_ele <- rda(phylum_hel~., env_ele, scale = FALSE)
 #分类样本提取
 taxa <- read.table("select_taxa4.txt",header=T,stringsAsFactors = F,sep="\t")
 taxa_EA_N <- taxa[which(taxa$Region=="Cen_A" | taxa$Region=="NE_A" ),1]
@@ -241,6 +242,11 @@ p <- ggplot(all, aes(RDA1, RDA2,color=RDA_Region)) +
 p
 
 #画各区域RDA分解图----
+plot(EU_temp_rda, type="n")
+text(EU_temp_rda, dis="cn")
+points(EU_temp_rda, pch=21, col="red", bg="yellow", cex=1.2)
+text(EU_temp_rda, "species", col="blue", cex=0.8)
+
 plot(EU_temp_rda, type = 'n', display = c('wa', 'cn'), choices = 1:2, scaling = 1)
 points(EU_temp_rda, choices = 1:2, scaling = 1, display = 'wa', pch = 19, cex = 1)
 text(EU_temp_rda, choices = 1:2, scaling = 1, display = 'cn', col = 'brown', cex = 1)
@@ -257,6 +263,26 @@ plot(north_temp_rda, type = 'n', display = c('wa', 'cn'), choices = 1:2, scaling
 points(north_temp_rda, choices = 1:2, scaling = 1, display = 'wa', pch = 19, cex = 1)
 text(north_temp_rda, choices = 1:2, scaling = 1, display = 'cn', col = 'brown', cex = 1)
 
-plot(South_west_temp_rda, type = 'n', display = c('wa', 'cn'), choices = 1:2, scaling = 1)
-points(South_west_temp_rda, choices = 1:2, scaling = 1, display = 'wa', pch = 19, cex = 1)
-text(South_west_temp_rda, choices = 1:2, scaling = 1, display = 'cn', col = 'brown', cex = 1)
+plot(South_temp_rda, type = 'n', display = c('wa', 'cn'), choices = 1:2, scaling = 1)
+points(South_temp_rda, choices = 1:2, scaling = 1, display = 'wa', pch = 19, cex = 1)
+text(South_temp_rda, choices = 1:2, scaling = 1, display = 'cn', col = 'brown', cex = 1)
+
+
+rda_tb.scaling1 <- summary(EU_temp_rda, scaling = 2)
+rda_tb_forward_r.site <- data.frame(rda_tb.scaling1$sites)[1:2]
+rda_tb_forward_r.env <- data.frame(rda_tb.scaling1$biplot)[1:2]
+rda_tb_forward_r.site$sample <- rownames(rda_tb_forward_r.site)
+rda_tb_forward_r.env$sample <- rownames(rda_tb_forward_r.env)
+F <- rda_tb_forward_r.site
+p <- ggplot(F, aes(RDA1, RDA2)) +
+  geom_point( size=3) +
+  scale_color_manual(values = c("#66C2A5","#FC8D62","#8DA0CB","#E78AC3","#FFD92F")) +
+  theme_classic()+
+  theme(panel.grid = element_blank(), panel.background = element_rect(color = 'black', fill = 'transparent'), plot.title = element_text(hjust = 0.5), legend.key = element_rect(fill = 'transparent')) + 
+  theme(panel.border = element_blank()) +
+  labs(x = 'RDA1', y = 'RDA2') +
+  geom_vline(xintercept = 0, color = 'gray', size = 0.5) + 
+  geom_hline(yintercept = 0, color = 'gray', size = 0.5) +
+  geom_segment(data = rda_tb_forward_r.env, aes(x = 0, y = 0, xend = RDA1, yend = RDA2), arrow = arrow(length = unit(0.4, 'cm')), size = 1, color = 'brown',alpha=0.5) +
+  geom_text(data = rda_tb_forward_r.env, aes(RDA1 * 1.1, RDA2 * 1.1, label = sample), color = 'brown', size = 6)+
+  guides(fill=guide_legend(title=NULL))

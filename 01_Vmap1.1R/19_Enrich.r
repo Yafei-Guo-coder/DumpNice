@@ -9,6 +9,7 @@ do
 grep -v -f neg_WA_North2_smooth_${i}.top5.txt ${j}_smooth_${i}.top5.txt > ${j}.go.gene.txt
 done
 done
+
 #由于clusterProfiler安装的原因，转移到66上继续
 #66@yafei:/data1/home/yafei/008_Software/wheatGO-v1.1
 ./wheatGO-v1.1-Ontologizer -g All_VIP_gene/North2_South_smooth_A.top5.txt -m GOSLIM -c Parent-Child-Intersection -p Benjamini-Hochberg -r 100 -s All
@@ -41,6 +42,7 @@ for i in `cat all_names`
 do
 sort -k11,11g A_B_D_GOSLIM_All/table-${i}.top5-Parent-Child-Intersection-Benjamini-Hochberg.txt | awk '{if($11<0.05) {print $0}}' | sed '1i ID\tPop.total\tPop.term\tStudy.total\tStudy.term\tPop.family\tStudy.family\tnparents\tis.trivial\tp\tp.adjusted\tp.min\tname' > A_B_D_GOSLIM_All/${i}.go.txt   
 done
+
 
 library(ggplot2)
 library(RColorBrewer)

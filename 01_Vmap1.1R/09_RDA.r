@@ -242,47 +242,35 @@ p <- ggplot(all, aes(RDA1, RDA2,color=RDA_Region)) +
 p
 
 #画各区域RDA分解图----
-plot(EU_temp_rda, type="n")
-text(EU_temp_rda, dis="cn")
-points(EU_temp_rda, pch=21, col="red", bg="yellow", cex=1.2)
-text(EU_temp_rda, "species", col="blue", cex=0.8)
-
-plot(EU_temp_rda, type = 'n', display = c('wa', 'cn'), choices = 1:2, scaling = 1)
-points(EU_temp_rda, choices = 1:2, scaling = 1, display = 'wa', pch = 19, cex = 1)
-text(EU_temp_rda, choices = 1:2, scaling = 1, display = 'cn', col = 'brown', cex = 1)
-
-plot(WA_temp_rda, type = 'n', display = c('wa', 'cn'), choices = 1:2, scaling = 1)
-points(WA_temp_rda, choices = 1:2, scaling = 1, display = 'wa', pch = 19, cex = 1)
-text(WA_temp_rda, choices = 1:2, scaling = 1, display = 'cn', col = 'brown', cex = 1)
-
-plot(SCA_temp_rda, type = 'n', display = c('wa', 'cn'), choices = 1:2, scaling = 1)
-points(SCA_temp_rda, choices = 1:2, scaling = 1, display = 'wa', pch = 19, cex = 1)
-text(SCA_temp_rda, choices = 1:2, scaling = 1, display = 'cn', col = 'brown', cex = 1)
-
-plot(north_temp_rda, type = 'n', display = c('wa', 'cn'), choices = 1:2, scaling = 1)
-points(north_temp_rda, choices = 1:2, scaling = 1, display = 'wa', pch = 19, cex = 1)
-text(north_temp_rda, choices = 1:2, scaling = 1, display = 'cn', col = 'brown', cex = 1)
-
-plot(South_temp_rda, type = 'n', display = c('wa', 'cn'), choices = 1:2, scaling = 1)
-points(South_temp_rda, choices = 1:2, scaling = 1, display = 'wa', pch = 19, cex = 1)
-text(South_temp_rda, choices = 1:2, scaling = 1, display = 'cn', col = 'brown', cex = 1)
-
-
-rda_tb.scaling1 <- summary(EU_temp_rda, scaling = 2)
-rda_tb_forward_r.site <- data.frame(rda_tb.scaling1$sites)[1:2]
-rda_tb_forward_r.env <- data.frame(rda_tb.scaling1$biplot)[1:2]
-rda_tb_forward_r.site$sample <- rownames(rda_tb_forward_r.site)
-rda_tb_forward_r.env$sample <- rownames(rda_tb_forward_r.env)
-F <- rda_tb_forward_r.site
-p <- ggplot(F, aes(RDA1, RDA2)) +
-  geom_point( size=3) +
-  scale_color_manual(values = c("#66C2A5","#FC8D62","#8DA0CB","#E78AC3","#FFD92F")) +
-  theme_classic()+
-  theme(panel.grid = element_blank(), panel.background = element_rect(color = 'black', fill = 'transparent'), plot.title = element_text(hjust = 0.5), legend.key = element_rect(fill = 'transparent')) + 
-  theme(panel.border = element_blank()) +
-  labs(x = 'RDA1', y = 'RDA2') +
-  geom_vline(xintercept = 0, color = 'gray', size = 0.5) + 
-  geom_hline(yintercept = 0, color = 'gray', size = 0.5) +
-  geom_segment(data = rda_tb_forward_r.env, aes(x = 0, y = 0, xend = RDA1, yend = RDA2), arrow = arrow(length = unit(0.4, 'cm')), size = 1, color = 'brown',alpha=0.5) +
-  geom_text(data = rda_tb_forward_r.env, aes(RDA1 * 1.1, RDA2 * 1.1, label = sample), color = 'brown', size = 6)+
-  guides(fill=guide_legend(title=NULL))
+tit <- c("EU_temp", "WA_temp", "SCA_temp", "North_temp", "South_temp","EU_prec", "WA_prec", "SCA_prec", "North_prec", "South_prec")
+all <- list(EU_temp_rda, WA_temp_rda, SCA_temp_rda, north_temp_rda, South_temp_rda,EU_prec_rda, WA_prec_rda, SCA_prec_rda, north_prec_rda, South_prec_rda)
+pdf("RDA_regions.pdf")
+for(i in c(1:length(all))){
+  exp_by_x <- (as.list(all[[i]]$CCA$eig)$RDA1)/(all[[i]]$tot.chi) * 100
+  exp_by_y <- (as.list(all[[i]]$CCA$eig)$RDA2)/(all[[i]]$tot.chi) * 100
+  rda_tb.scaling1 <- summary(all[[i]], scaling = 2)
+  rda_tb_forward_r.site <- data.frame(rda_tb.scaling1$sites)[1:2]
+  rda_tb_forward_r.env <- data.frame(rda_tb.scaling1$biplot)[1:2]
+  rda_tb_forward_r.site$sample <- rownames(rda_tb_forward_r.site)
+  rda_tb_forward_r.env$sample <- rownames(rda_tb_forward_r.env)
+  F <- rda_tb_forward_r.site
+  p <- ggplot(F, aes(RDA1, RDA2)) +
+    geom_point(size=3,shape = 21,col="red") +
+    #scale_color_manual(values = c("#66C2A5","#FC8D62","#8DA0CB","#E78AC3","#FFD92F")) +
+    theme_classic()+
+    theme(panel.grid = element_blank(), panel.background = element_rect(color = 'black', fill = 'transparent'), plot.title = element_text(hjust = 0.5), legend.key = element_rect(fill = 'transparent')) + 
+    theme(panel.border = element_blank()) +
+    xlab(paste('RDA1 (', round(exp_by_x, 2), '%)', sep = '')) +
+    ylab(paste('RDA2 (', round(exp_by_y, 2), '%)', sep = '')) +
+    geom_vline(xintercept = 0, color = 'gray', size = 0.5) + 
+    geom_hline(yintercept = 0, color = 'gray', size = 0.5) +
+    geom_segment(data = rda_tb_forward_r.env, aes(x = 0, y = 0, xend = RDA1, yend = RDA2), arrow = arrow(length = unit(0.3, 'cm')), size = 1, color = 'blue',alpha=0.5) +
+    geom_text(data = rda_tb_forward_r.env, aes(RDA1 * 1.1, RDA2 * 1.1, label = sample), color = 'blue', size = 5)+
+    guides(fill=guide_legend(title=NULL))+
+    ggtitle(tit[i])+
+    theme(plot.title = element_text(color="black", size=20, face="bold"),legend.text = element_text(size=20),legend.title=element_blank(),axis.title.x = element_text(size = 20),axis.title.y = element_text(size = 20))+
+    theme(axis.text = element_blank()) +   ## 删去刻度标签
+    theme(axis.ticks = element_blank())   ## 删去刻度线
+  print(p)
+}
+dev.off()

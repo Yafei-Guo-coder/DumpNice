@@ -59,7 +59,6 @@ p <- ggplot(all, aes(RDA1, RDA2,color=RDA_Region)) +
   #scale_color_brewer(brewer.pal(6, "Set2")[c(1,2,3,4,6)])+
   theme_classic()+
   theme(panel.grid = element_blank(), panel.background = element_rect(color = 'black', fill = 'transparent'), plot.title = element_text(hjust = 0.5), legend.key = element_rect(fill = 'transparent')) + 
-  
   #theme(panel.grid =element_blank()) +   ## 删去网格线
   #theme(axis.text = element_blank()) +   ## 删去刻度标签
   #theme(axis.ticks = element_blank()) +   ## 删去刻度线
@@ -73,7 +72,7 @@ p <- ggplot(all, aes(RDA1, RDA2,color=RDA_Region)) +
   geom_text(data = rda_tb_forward_r.env, aes(RDA1 * 1.1, RDA2 * 1.1, label = sample), color = 'brown', size = 6)+
   #scale_colour_discrete(breaks = c("#838B8B","#FFD700", "#97FFFF", "#D8BFD8", "#FF6349"), labels = c('EU','WA','SCA','EA-N','EA-S'))+
   guides(fill=guide_legend(title=NULL))
-#geom_label_repel(aes(label =sample, color = group), size = 3, box.padding = unit(0, 'lines'), show.legend = FALSE)
+  #geom_label_repel(aes(label =sample, color = group), size = 3, box.padding = unit(0, 'lines'), show.legend = FALSE)
 
 geom_smooth(method = "lm", color = "black", fill = "lightgray") 
 ggtitle("North1 VS North2")+
@@ -83,4 +82,6 @@ out <- strsplit(sub('_',':', dist[,1]) , ":")
 
 R CMD INSTALL clusterProfiler_4.0.5.tar.gz 
 
-
+for(i in c(1:length(data))){
+  name <- out1[[i]][1]
+}

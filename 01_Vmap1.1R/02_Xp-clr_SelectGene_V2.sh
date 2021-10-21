@@ -128,7 +128,3 @@ for i in `ls *gff.gene`
 do
 awk -F"=" '{print $2}' $i |sort | uniq > Go/${i::-8}txt
 done
-
-#画top5% nlr基因的曼哈顿图
-204@xuebo:/data2/xuebo/Projects/Speciation/xpclr/North_South_SCA/smooth/Top5%/gene/Manhattan/gene
-for i in `ls *A_gene.txt`; do grep -f ../../../nlr_gene.txt $i; echo $i; done

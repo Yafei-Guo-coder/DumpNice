@@ -30,6 +30,7 @@ bash getVcf.sh VIPgene_5k.txt > VIPgene_5k.log
 #提取在六倍体里面分离的位点
 
 for i in `cat VIP_gene.txt`; do sed '/#/d' *$i*.vcf | awk '{print $1"\t"$2}'; done > VIP_gene.pos
+
 for i in `ls *vcf`; do vcftools --vcf $i --positions VIP_gene.pos --recode --out ${i::-11}.pos; done
 #1.传到本地用Java Migration/Haplotype将vcf转换成单倍型txt格式，使用07_VCF_Haplotype_Visual.r进行可视化。
 #本地路径：/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/VIP_gene/

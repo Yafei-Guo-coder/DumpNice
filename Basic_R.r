@@ -41,12 +41,12 @@ scale_color_manual(values = color)
 scale_colour_discrete(breaks = c("#838B8B","#FFD700", "#97FFFF", "#D8BFD8", "#FF6349"), labels = c('EU','WA','SCA','EA-N','EA-S'))
 
 #批量读取文件
-path <- "/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/Gene/V2/TXT" ##文件目录
+path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/VIP_gene/V2/snpEff/snpEff" ##文件目录
 fileNames <- dir(path)  ##获取该路径下的文件名
 filePath <- sapply(fileNames, function(x){ 
   paste(path,x,sep='/')})   ##生成读取文件路径
 data <- lapply(filePath, function(x){
-  read.table(x, header=F,stringsAsFactors = F)})
+  read.table(x, header=F,stringsAsFactors = F,sep="\t")})
 
 library(reshape)
 melt <- melt(A_addLoc,id=c("ID","Type","Latitude","Logititude"))

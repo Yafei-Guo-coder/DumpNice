@@ -74,6 +74,13 @@ bedtools intersect -a /data2/xuebo/Projects/Speciation/tree/withBarley_segregate
 sed 's/^[ \t]*//g'
 #删除行尾空格
 sed 's/[ \t]*$//g'
+#删除空行
+sed '/^$/d' 
+#计算bam的depth
+for i in `cat depth.txt`
+do
+ tail -n1 *${i} | awk '{print $4}' | sed '/^$/d' |awk 'BEGIN{count=0} {count = count+$1} END{print count/NR}'
+done
 
 for i in `cat fqlist.txt`
 do

@@ -7,13 +7,15 @@ for i in `cat /data1/home/yafei/008_Software/snpEff/Xp-clr_9VIP/names.txt`
 do
   java -Xmx10G -jar ../snpEff.jar eff -c ../snpEff.config AT_10 /data1/home/yafei/008_Software/snpEff/Xp-clr_9VIP/${i}.pos.recode.vcf > ${i}.snp.eff.vcf -csvStats ${i}.csv -stats ${i}.html &
 done
-for i in `cat /data1/home/yafei/008_Software/snpEff/Xp-clr_9VIP/names.txt`
+  
+for i in `cat /data1/home/yafei/008_Software/snpEff/Xp-clr_3VIP/names.txt`
 do
   sed '1,45d' ${i}.snp.eff.vcf | awk '{if(NF > 100) print $1"\t"$2"\t"$4"\t"$5}' > ${i}.snpEff1
   sed '1,45d' ${i}.snp.eff.vcf | awk '{if(NF>100) print $8}' |awk -F"ANN=" '{print $2}' | awk -F"|" '{print $2"\t"$3"\t"$11}' > ${i}.snpEff2
   paste -d "\t" ${i}.snpEff1 ${i}.snpEff2 > ${i}.snpEff
   rm ${i}.snpEff1 ${i}.snpEff2
 done
+
 
 #画变异序列分布
 #将VCF通过tassel转换成table格式的table.txt

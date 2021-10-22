@@ -16,31 +16,30 @@ do
   rm ${i}.snpEff1 ${i}.snpEff2
 done
 
-
 #画变异序列分布
 #将VCF通过tassel转换成table格式的table.txt
-for i in `cat /data1/home/yafei/008_Software/snpEff/Xp-clr_9VIP/names.txt`
+for i in `cat /data1/home/yafei/008_Software/snpEff/Xp-clr_3VIP/names.txt`
 do
   sed '1d' table/${i}.txt | sed 's/\t/:/g' | sed 's/:/\t/1' | sed 's/://g' > ${i}.logo.seq
 done
 
 library(ggplot2)
 library(ggseqlogo)
-setwd("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/02_Environment/02_XP-CLR/Gene/VIP_gene/Plot")
+setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/VIP_gene/V2/snpEff/Plot")
 substrRight <- function(x){
   num = nchar(x)-2
   gsub('[0-9.]', '', substr(x, 6, nchar(x)))
 }
-names <- read.table("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/02_Environment/02_XP-CLR/Gene/VIP_gene/names.txt",header=F,stringsAsFactors = F)
+names <- read.table("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/VIP_gene/V2/snpEff/names.txt",header=F,stringsAsFactors = F,sep="\t")
 names <- names[,1]
 #names <- c("","","","","","","","","","","","","","","","","GA2ox3-A1","","GA2ox3-D1","","","","","","","","","","","","","","","","","","","","","","","","","","","","NGR5_1","NGR5_2","NGR5_3","PIF_1","PIF_2","PIF_3")
 
 pdf("plot1.pdf", width = 60, height = 8)
-for (i in c(1:9)){
-  file1 <- paste("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/02_Environment/02_XP-CLR/Gene/VIP_gene/SeqLog/",names[i],".logo.seq",sep="")
+for (i in c(1:length(names))){
+  file1 <- paste("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/VIP_gene/V2/snpEff/logo.seq/",names[i],".logo.seq",sep="")
   fasta_file = read.table(file1,header=F,stringsAsFactors = F)
   fasta = fasta_file[,2]
-  file2 <- paste("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/02_Environment/02_XP-CLR/Gene/VIP_gene/SnpEff/",names[i],".snpEff",sep="")
+  file2 <- paste("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/VIP_gene/V2/snpEff/snpEff/",names[i],".snpEff",sep="")
   snpEff <- read.table(file2,header=F,stringsAsFactors = F,fill=TRUE,sep="\t")
   p1 <- ggseqlogo(fasta,method="prob")+theme(axis.text.x = element_blank())+labs(title = names[i])+theme(plot.title = element_text(hjust = 0.5,size = 25))
   Ref <- as.data.frame(snpEff$V3)

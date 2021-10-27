@@ -109,8 +109,6 @@ for (i in c(1:length(names))){
 }
 dev.off()
     
-  
-  
 pdf("snpEff_Sr45.pdf", width = 50, height = 15)
 for (i in c(5)){
   file1 <- paste("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/logo.seq/",names[i],".logo.seq",sep="")

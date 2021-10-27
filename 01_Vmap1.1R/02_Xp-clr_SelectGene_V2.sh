@@ -53,8 +53,8 @@ awk -F"ID=" '{print $2}' $i > ${i::-8}gene2
 done
 for i in `ls *.gene2`
 do
-#grep -w -f $i ../all_cloned_gene.txt > ${i::-5}cloned.gene
-grep -w -f $i ../nlr_gene.txt > nlr/${i::-5}cloned.gene
+grep -w -f $i ../all_cloned_gene.txt > ${i::-5}cloned.gene
+#grep -w -f $i ../nlr_gene.txt > nlr/${i::-5}cloned.gene
 done
 rm *gene2
 
@@ -63,18 +63,18 @@ for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done | awk '{p
 #change file format to plot heatmap(A,B,D lineage seperate)
 
 #A lineage
-ls *A.top1.cloned.gene |xargs -n1 > A_cloned_gene.txt
-sed 's/$/_smooth_A.top1.cloned.gene/' file_prefix.txt > A_file.txt
+ls *A.top5.cloned.gene |xargs -n1 > A_cloned_gene.txt
+sed 's/$/_smooth_A.top5.cloned.gene/' file_prefix.txt > A_file.txt
 for i in `cat A_cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $2}' | sort | uniq > A_gene.txt
 
 #B lineage
-ls *B.top1.cloned.gene |xargs -n1 > B_cloned_gene.txt
-sed 's/$/_smooth_B.top1.cloned.gene/' file_prefix.txt> B_file.txt
+ls *B.top5.cloned.gene |xargs -n1 > B_cloned_gene.txt
+sed 's/$/_smooth_B.top5.cloned.gene/' file_prefix.txt> B_file.txt
 for i in `cat B_cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $2}' | sort | uniq > B_gene.txt
 
 #D lineage 
-ls *D.top1.cloned.gene |xargs -n1 > D_cloned_gene.txt
-sed 's/$/_smooth_D.top1.cloned.gene/' file_prefix.txt > D_file.txt
+ls *D.top5.cloned.gene |xargs -n1 > D_cloned_gene.txt
+sed 's/$/_smooth_D.top5.cloned.gene/' file_prefix.txt > D_file.txt
 for i in `cat D_cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $2}' | sort | uniq > D_gene.txt
 
 #R
@@ -96,13 +96,13 @@ for ( i in c(1:3)){
 }
 #shell
 #A lineage
-for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep A.top1.cloned.gene > A_postive_file_gene_mode.txt
+for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep A.top5.cloned.gene > A_postive_file_gene_mode.txt
 awk 'NR==FNR{a[$0]=$0}NR!=FNR{if($0 in a) {print a[$0]"\t1"} else print $0"\t"0}' A_postive_file_gene_mode.txt A_file_gene_mode.txt | awk -F"_smooth_" '{print $1"\t"$2}'|sed 's/ /\t/' > A_heatmap_format1.txt
 #B lineage
-for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep B.top1.cloned.gene > B_postive_file_gene_mode.txt
+for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep B.top5.cloned.gene > B_postive_file_gene_mode.txt
 awk 'NR==FNR{a[$0]=$0}NR!=FNR{if($0 in a) {print a[$0]"\t1"} else print $0"\t"0}' B_postive_file_gene_mode.txt B_file_gene_mode.txt | awk -F"_smooth_" '{print $1"\t"$2}'|sed 's/ /\t/' > B_heatmap_format1.txt
 #D lineage
-for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep D.top1.cloned.gene > D_postive_file_gene_mode.txt
+for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep D.top5.cloned.gene > D_postive_file_gene_mode.txt
 awk 'NR==FNR{a[$0]=$0}NR!=FNR{if($0 in a) {print a[$0]"\t1"} else print $0"\t"0}' D_postive_file_gene_mode.txt D_file_gene_mode.txt | awk -F"_smooth_" '{print $1"\t"$2}'|sed 's/ /\t/' > D_heatmap_format1.txt
 #R
 library(reshape)

@@ -5,7 +5,6 @@ require (rworldmap)
 require(rworldxtra)
 library(RColorBrewer)
 setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5")
-
 #annotation_col <- read.table("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/E6_Landrace_locate_225.txt",header=T,stringsAsFactors = T)
 #rownames(annotation_col) = c(1:225)
 #A
@@ -19,9 +18,7 @@ rownames(annotation_col) = c(1:361)
 annotation_col <- read.table("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/D_anno.txt",header=T,stringsAsFactors = T,sep="\t")
 #rownames(annotation_col) = c(1:283)
 rownames(annotation_col) = c(1:250)
-
 seq <- annotation_col[,1]
-
 #plot haplotype heatmap
 anno <- annotation_col[,9,drop=FALSE]
 brewer.pal(9, "YlGnBu")[c(7)]

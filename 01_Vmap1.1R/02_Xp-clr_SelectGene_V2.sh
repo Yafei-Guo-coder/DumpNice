@@ -40,6 +40,15 @@ for i in `ls *txt`; do  wc -l $i; done | awk '{print $2"\t"$1"\t"$1*0.01"\t"$1*0
 for i in `ls *txt`; do  wc -l $i; done | awk '{print $2"\t"$1"\t"$1*0.01"\t"$1*0.05}' | awk -F"[.|\t]" '{print $1"\t"$3"\t"$4"\t"$6}' | awk '{print "tail -n "$4,$1".txt > Top5%/"$1".top5.bed"}'
 #阈值1-2
 
+#计算受选择位点Fst的密度分布
+for i in `ls *txt`; do  wc -l $i; done | awk '{print $2"\t"$1"\t"$1*0.01"\t"$1*0.05}' | awk -F"[.|\t]" '{print $1"\t"$3"\t"$4"\t"$6}' | awk '{print "tail -n "$4,$1".txt > Top5%_Fst/"$1".top5.bed"}'
+for i in `ls *bed`
+do
+bedtools intersect -b ../gene_v1.1_Lulab.gff3 -a $i -wo |awk '{print $1"\t"$2"\t"$3"\t"$4"\t"$8"\t"$9"\t"$13}' | awk -F";" '{print $1}' | awk -F"ID=" '{print $1""$2}'| sed '1i Chr\tRegion1\tRegion2\tXp-clr\tStart\tStop\tID' >${i::-3}gene.txt
+done
+
+
+
 #定位已注释基因:gff
 for i in `ls *bed`
 do

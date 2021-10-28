@@ -49,8 +49,8 @@ for(i in c(1:18)){
     xlab("Fst") + ylab("Proportion") + xlim(0,0.5) +
     #geom_vline(xintercept = 1, color = 'gray', size = 0.5) + 
     geom_point(data = gene[[i]], aes(MEAN_FST, 0), color = 'red') +
-    geom_text_repel(data = gene[[i]],aes(MEAN_FST, 0, label = gene[[i]]$Name))+
-    ggtitle(names[i,2])+
+    geom_text_repel(data = gene[[i]],aes(MEAN_FST, 0, label = gene[[i]]$Name)) +
+    ggtitle(names[i,2]) +
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.position="none",legend.text = element_blank(),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
   print(p)
 }

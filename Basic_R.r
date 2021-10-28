@@ -141,9 +141,9 @@ p1 <- ggplot(Snp_pos, aes(x=BPcum, y=P)) +
     axis.text.y=element_text(size=10),
     axis.title.y=element_text(size = 10),
     axis.title.x=element_text(size = 10),
-  )+
-  ylab('XP-CLR ratio')+xlab('Chromosome Position')+
-  ggtitle()+
+  ) +
+  ylab('XP-CLR ratio')+xlab('Chromosome Position') +
+  ggtitle() + xlim(0,0.5) +
   theme(plot.title = element_text(color="red", size=20, face="bold"))
 print(p)
 

@@ -1,16 +1,4 @@
-#工作路径：xuebo@204:/data2/xuebo/Projects/Speciation/xpclr/Selection_V3/smooth/lineage_V2/Top5%_Fst
-#EU_South*
-#North2_South*
-#Strang_WA*
-#Tibet_South*
-#WA_EU*
-#WA_South*
-#neg_North1_North2*
-#neg_WA_North1*
-#neg_WA_North2*
-
-#GenWin(smooth)的结果是这样的"WindowStart" "WindowStop" "SNPcount" "MeanY" "Wstat"，没有染色体，要加上染色体的信息
-#smooth结果添加染色体号并进行排序，并且合并成A，B，D lineage.
+#工作路径：yafei@203:/data2/yafei/003_project3/Project3/FST_group/VmapData/FST_selection
 
 #计算受选择位点Fst的密度分布
 for i in `ls *txt`; do  wc -l $i; done | awk '{print $2"\t"$1"\t"$1*0.01"\t"$1*0.05}' | awk -F"[.|\t]" '{print $1"\t"$3"\t"$4"\t"$6}' | awk '{print "tail -n "$4,$1".txt > Top5%_Fst/"$1".top5.bed"}'
@@ -39,4 +27,26 @@ do
 bedtools intersect -b ${i}.all.fst -a ${i}.format1.txt  -wo |sed '1i Chr\tStart\tStop\tID\tName\tRegion1\tRegion2\tXp-clr\tCHROM\tBIN_START\tBIN_END\tN_VARIANTS\tWEIGHTED_FST\tMEAN_FST' | awk '{print $1"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$10"\t"$11"\t"$14}' > ${i}.format2.txt
 done
 
-#克隆受选择基因fst的分布
+#生物胁迫，非生物胁迫，背景基因fst的分布
+#input file: ../abioticgene.txt ../backgroudgene.txt ../bioticgene.txt
+grep -w -f ../bioticgene.txt ../gene_v1.1_Lulab.gff3 |awk '{print $1"\t"$4"\t"$5"\t"$9}' | awk -F";" '{print $1}' | awk -F"ID=" '{print $1$2}' > bioticgene.bed
+for i in `cat name_prefix.txt`
+do
+bedtools intersect -b ${i}.all.fst -a bioticgene.bed -wo | awk '{print $5"\t"$6"\t"$7"\t"$10"\t"$2"\t"$3"\t"$4}' | sed '1i CHROM\tBIN_START\tBIN_END\tMEAN_FST\tGene_start\tGene_end\tGene_id'> ${i}.bioticgene.txt
+done
+
+grep -w -f ../abioticgene.txt ../gene_v1.1_Lulab.gff3 |awk '{print $1"\t"$4"\t"$5"\t"$9}' | awk -F";" '{print $1}' | awk -F"ID=" '{print $1$2}' > abioticgene.bed
+for i in `cat name_prefix.txt`
+do
+bedtools intersect -b ${i}.all.fst -a abioticgene.bed -wo | awk '{print $5"\t"$6"\t"$7"\t"$10"\t"$2"\t"$3"\t"$4}' | sed '1i CHROM\tBIN_START\tBIN_END\tMEAN_FST\tGene_start\tGene_end\tGene_id'> ${i}.abioticgene.txt
+done
+
+grep -w -f ../backgroudgene.txt ../gene_v1.1_Lulab.gff3 |awk '{print $1"\t"$4"\t"$5"\t"$9}' | awk -F";" '{print $1}' | awk -F"ID=" '{print $1$2}' > backgroudgene.bed
+for i in `cat name_prefix.txt`
+do
+bedtools intersect -b ${i}.all.fst -a backgroudgene.bed -wo | awk '{print $5"\t"$6"\t"$7"\t"$10"\t"$2"\t"$3"\t"$4}' | sed '1i CHROM\tBIN_START\tBIN_END\tMEAN_FST\tGene_start\tGene_end\tGene_id'> ${i}.backgroudgene.txt
+done
+
+#转移到本地：/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density
+#通过08_Fst_density.r进行统计画图
+

@@ -1,4 +1,4 @@
-#工作路径：xuebo@204:/data2/xuebo/Projects/Speciation/xpclr/Selection_V3/smooth/lineage_V2/Top5%
+#工作路径：xuebo@204:/data2/xuebo/Projects/Speciation/xpclr/Selection_V3/smooth/lineage_V2/Top5%_Fst
 #EU_South*
 #North2_South*
 #Strang_WA*
@@ -38,3 +38,5 @@ for i in `cat name_prefix.txt`
 do
 bedtools intersect -b ${i}.all.fst -a ${i}.format1.txt  -wo |sed '1i Chr\tStart\tStop\tID\tName\tRegion1\tRegion2\tXp-clr\tCHROM\tBIN_START\tBIN_END\tN_VARIANTS\tWEIGHTED_FST\tMEAN_FST' | awk '{print $1"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$10"\t"$11"\t"$14}' > ${i}.format2.txt
 done
+
+#克隆受选择基因fst的分布

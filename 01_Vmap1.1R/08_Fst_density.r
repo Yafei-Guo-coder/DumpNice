@@ -36,8 +36,9 @@ filePath <- sapply(fileNames, function(x){
   paste(path,x,sep='/')})
 gene <- lapply(filePath, function(x){
   read.table(x, header=T,stringsAsFactors = F,sep="\t")})
+
 #画图
-pdf("fst_denstity.pdf",height = 5,width = 10)
+pdf("fst_select_gene.pdf",height = 5,width = 10)
 for(i in c(1:18)){
   gene[[i]]$Pop <- data[[i]][1,7]
   p <- ggplot(data[[i]], aes(MEAN_FST, colour = Pop)) +
@@ -45,7 +46,7 @@ for(i in c(1:18)){
     stat_density(alpha = 0.2) +
     theme_classic()+
     #theme(axis.title.y = element_blank()) +
-    xlab("Fst") + ylab("Proportion") +
+    xlab("Fst") + ylab("Proportion") + xlim(0,0.5) +
     #geom_vline(xintercept = 1, color = 'gray', size = 0.5) + 
     geom_point(data = gene[[i]], aes(MEAN_FST, 0), color = 'red') +
     geom_text_repel(data = gene[[i]],aes(MEAN_FST, 0, label = gene[[i]]$Name))+
@@ -78,6 +79,7 @@ filePath <- sapply(fileNames, function(x){
   paste(path,x,sep='/')})
 gene_back <- lapply(filePath, function(x){
   read.table(x, header=T,stringsAsFactors = F,sep="\t")})
+
 #画图
 pdf("all.pdf",height = 5,width = 10)
 for(i in c(1:18)){

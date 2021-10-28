@@ -32,6 +32,6 @@ vcf文件: 203: /data1/home/yafei/Project3/HaploType/Fulab/Vcf/
 计算FST
 203:/data2/yafei/003_project3/Project3/FST_group
 
-
-
+Fst_population
+203:/data2/yafei/003_project3/Project3/FST_group/VmapData/FST_selection/Fst_pop
 

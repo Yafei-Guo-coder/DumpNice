@@ -46,7 +46,7 @@ for(i in c(1:18)){
     stat_density(alpha = 0.2) +
     theme_classic()+
     #theme(axis.title.y = element_blank()) +
-    xlab("Fst") + ylab("Proportion") + xlim(0,0.5) +
+    xlab("Fst") + ylab("Proportion") + xlim(0,0.6) +
     #geom_vline(xintercept = 1, color = 'gray', size = 0.5) + 
     geom_point(data = gene[[i]], aes(MEAN_FST, 0), color = 'red') +
     geom_text_repel(data = gene[[i]],aes(MEAN_FST, 0, label = gene[[i]]$Name)) +
@@ -97,5 +97,49 @@ for(i in c(1:18)){
   print(p)
 }
 dev.off()
+
+
+#提取resistgene的位置
+path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density/resistgene"
+fileNames <- dir(path)
+filePath <- sapply(fileNames, function(x){ 
+  paste(path,x,sep='/')})
+gene_resis <- lapply(filePath, function(x){
+  read.table(x, header=T,stringsAsFactors = F,sep="\t")})
+
+#提取flowegene的位置
+path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density/flowergene"
+fileNames <- dir(path)
+filePath <- sapply(fileNames, function(x){ 
+  paste(path,x,sep='/')})
+gene_flow <- lapply(filePath, function(x){
+  read.table(x, header=T,stringsAsFactors = F,sep="\t")})
+
+#提取developgene的位置
+path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density/developgene"
+fileNames <- dir(path)
+filePath <- sapply(fileNames, function(x){ 
+  paste(path,x,sep='/')})
+gene_deve <- lapply(filePath, function(x){
+  read.table(x, header=T,stringsAsFactors = F,sep="\t")})
+
+#画图
+pdf("all2.pdf",height = 5,width = 10)
+for(i in c(1:18)){
+  gene_resis[[i]]$Pop <- "resistgene"
+  gene_flow[[i]]$Pop <- "flowegene"
+  gene_deve[[i]]$Pop <- "developgene"
+  all <- rbind(gene_abio[[i]],gene_bio[[i]],gene_back[[i]])
+  p <- ggplot(all, aes(MEAN_FST, fill= Pop)) +
+    geom_density(alpha = 0.2) +
+    theme_classic()+
+    #theme(axis.title.y = element_blank()) +
+    xlab("Fst") + ylab("Proportion") +
+    ggtitle(names[i,2]) + xlim(0,0.5) +
+    theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.position="none",legend.text = element_blank(),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+  print(p)
+}
+dev.off()
+
 
 

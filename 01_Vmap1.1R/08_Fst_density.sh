@@ -27,7 +27,7 @@ do
 bedtools intersect -b ${i}.all.fst -a ${i}.format1.txt  -wo |sed '1i Chr\tStart\tStop\tID\tName\tRegion1\tRegion2\tXp-clr\tCHROM\tBIN_START\tBIN_END\tN_VARIANTS\tWEIGHTED_FST\tMEAN_FST' | awk '{print $1"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$10"\t"$11"\t"$14}' > ${i}.format2.txt
 done
 
-#生物胁迫，非生物胁迫，背景基因fst的分布
+#生物胁迫，非生物胁迫，背景基因fst的分布(所有基因)
 #input file: ../abioticgene.txt ../backgroudgene.txt ../bioticgene.txt
 grep -w -f ../bioticgene.txt ../gene_v1.1_Lulab.gff3 |awk '{print $1"\t"$4"\t"$5"\t"$9}' | awk -F";" '{print $1}' | awk -F"ID=" '{print $1$2}' > bioticgene.bed
 for i in `cat name_prefix.txt`
@@ -46,6 +46,29 @@ for i in `cat name_prefix.txt`
 do
 bedtools intersect -b ${i}.all.fst -a backgroudgene.bed -wo | awk '{print $5"\t"$6"\t"$7"\t"$10"\t"$2"\t"$3"\t"$4}' | sed '1i CHROM\tBIN_START\tBIN_END\tMEAN_FST\tGene_start\tGene_end\tGene_id'> ${i}.backgroudgene.txt
 done
+
+#发育，开花，抗病基因fst的分布(已克隆基因)
+#input file: ../developgene.txt ../flowergene.txt ../resistgene.txt
+grep -w -f ../developgene.txt ../gene_v1.1_Lulab.gff3 |awk '{print $1"\t"$4"\t"$5"\t"$9}' | awk -F";" '{print $1}' | awk -F"ID=" '{print $1$2}' > developgene.bed
+for i in `cat name_prefix.txt`
+do
+bedtools intersect -b ${i}.all.fst -a developgene.bed -wo | awk '{print $5"\t"$6"\t"$7"\t"$10"\t"$2"\t"$3"\t"$4}' | sed '1i CHROM\tBIN_START\tBIN_END\tMEAN_FST\tGene_start\tGene_end\tGene_id'> ${i}.developgene.txt
+done
+grep -w -f ../flowergene.txt ../gene_v1.1_Lulab.gff3 |awk '{print $1"\t"$4"\t"$5"\t"$9}' | awk -F";" '{print $1}' | awk -F"ID=" '{print $1$2}' > flowergene.bed
+for i in `cat name_prefix.txt`
+do
+bedtools intersect -b ${i}.all.fst -a flowergene.bed -wo | awk '{print $5"\t"$6"\t"$7"\t"$10"\t"$2"\t"$3"\t"$4}' | sed '1i CHROM\tBIN_START\tBIN_END\tMEAN_FST\tGene_start\tGene_end\tGene_id'> ${i}.flowergene.txt
+done
+grep -w -f ../resistgene.txt ../gene_v1.1_Lulab.gff3 |awk '{print $1"\t"$4"\t"$5"\t"$9}' | awk -F";" '{print $1}' | awk -F"ID=" '{print $1$2}' > resistgene.bed
+for i in `cat name_prefix.txt`
+do
+bedtools intersect -b ${i}.all.fst -a resistgene.bed -wo | awk '{print $5"\t"$6"\t"$7"\t"$10"\t"$2"\t"$3"\t"$4}' | sed '1i CHROM\tBIN_START\tBIN_END\tMEAN_FST\tGene_start\tGene_end\tGene_id'> ${i}.resistgene.txt
+done
+
+
+
+
+
 
 #转移到本地：/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density
 #通过08_Fst_density.r进行统计画图

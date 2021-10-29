@@ -76,6 +76,8 @@ sed 's/^[ \t]*//g'
 sed 's/[ \t]*$//g'
 #删除空行
 sed '/^$/d' 
+#替换多个空格为一个逗号
+sed 's/\s\+/,/g'
 #计算bam的depth
 for i in `cat depth.txt`
 do

@@ -11,7 +11,7 @@ col1 <- c(rep("#FB8072", times=7),rep("#80B1D3", times=6),rep("#FDB462", times=6
 setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density")
 path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density/fst"
 fileNames <- dir(path)
-filePath <- sapply(fileNames, function(x){ 
+filePath <- sapply(fileNames, function(x){
   paste(path,x,sep='/')})
 data <- lapply(filePath, function(x){
   read.table(x, header=T,stringsAsFactors = F,sep="\t")})
@@ -36,22 +36,27 @@ filePath <- sapply(fileNames, function(x){
   paste(path,x,sep='/')})
 gene_deve <- lapply(filePath, function(x){
   read.table(x, header=T,stringsAsFactors = F,sep="\t")})
+#提取已克隆的基因的位置----
+path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density/fst_266clone/"
+fileNames <- dir(path)
+filePath <- sapply(fileNames, function(x){ 
+  paste(path,x,sep='/')})
+gene <- lapply(filePath, function(x){
+  read.table(x, header=T, stringsAsFactors = F, sep="\t")})
 #分页画图----
 names <- read.table("nameMap.txt",header=F,stringsAsFactors = F)
 p <- list()
 for(i in c(1:18)){
   data[[i]]$Pop <- "Overall"
-  sub <- data[[i]][,c(1,2,3,6,2,3,4,7)]
+  sub <- data[[i]][, c(1,2,3,6,2,3,4,7)]
   colnames(sub) <- c("CHROM","BIN_START","BIN_END","MEAN_FST","Gene_start","Gene_end","Gene_id","Pop")
   gene_resis[[i]]$Pop <- "resistgene"
   gene_flow[[i]]$Pop <- "flowegene"
   gene_deve[[i]]$Pop <- "developgene"
-  
   d <- median(gene_deve[[i]][which(gene_deve[[i]]$MEAN_FST >0),4])
   c <- median(gene_flow[[i]][which(gene_flow[[i]]$MEAN_FST >0),4])
   a <- median(sub[which(sub$MEAN_FST >0),4])
   b <- median(gene_resis[[i]][which(gene_resis[[i]]$MEAN_FST >0),4])
-  
   all <- rbind(sub,gene_resis[[i]],gene_flow[[i]],gene_deve[[i]])
   p[[i]] <- ggplot(all, aes(MEAN_FST, fill=Pop)) +
     geom_density(alpha = 0.2) +
@@ -61,29 +66,17 @@ for(i in c(1:18)){
     ggtitle(names[i,2]) + xlim(0,0.6) +
     geom_vline(xintercept = c(d,c,a,b), color = c("#F8766D","#7CAE00","#008FC4","#C77CFF"), size= 0.9, linetype = "dotted") + 
     geom_point(data = gene[[i]], aes(MEAN_FST, 0), color = 'red') +
-    geom_point(data = gene[[i]], aes(MEAN_FST, 0), color = 'red') +
-    geom_point(data = gene[[i]], aes(MEAN_FST, 0), color = 'red') +
-    geom_text_repel(data = gene[[i]],aes(MEAN_FST, 0, label = gene[[i]]$Name)) +
-    geom_text_repel(data = gene[[i]],aes(MEAN_FST, 0, label = gene[[i]]$Name)) +
-    geom_text_repel(data = gene[[i]],aes(MEAN_FST, 0, label = gene[[i]]$Name)) +
-    
+    geom_text_repel(data = gene[[i]], aes(MEAN_FST, 0, label = rownames(gene[[i]]))) +
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"), legend.position = "none",legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y = element_text(size = 15))
-  #print(p)
 }
-pdf("Pop1_sub_fst.pdf",height = 10,width = 12)
+
+pdf("test1.pdf",height = 10,width = 12)
 grid.arrange(p[[1]],p[[7]],p[[13]],p[[2]],p[[8]],p[[14]],p[[3]],p[[9]],p[[15]],nrow=3)
 dev.off()
-pdf("Pop2_sub_fst.pdf",height = 10,width = 12)
+pdf("test2.pdf",height = 10,width = 12)
 grid.arrange(p[[4]],p[[10]],p[[16]],p[[5]],p[[11]],p[[17]],p[[6]],p[[12]],p[[18]],nrow=3)
 dev.off()
 
-#提取已克隆的基因的位置----
-path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density/fst_clone"
-fileNames <- dir(path)
-filePath <- sapply(fileNames, function(x){ 
-  paste(path,x,sep='/')})
-gene <- lapply(filePath, function(x){
-  read.table(x, header=T,stringsAsFactors = F,sep="\t")})
 #画图:密度图&标注关注基因----
 pdf("fst_select_gene.pdf",height = 5,width = 10)
 for(i in c(1:18)){
@@ -105,14 +98,9 @@ dev.off()
 
 for(i in c(1:18)){
   print(gene_resis[[i]][which(gene_resis[[i]]$MEAN_FST > 0.2),])
-}
-
-for(i in c(1:18)){
   print(gene_flow[[i]][which(gene_flow[[i]]$MEAN_FST > 0.2),])
-}
-
-for(i in c(1:18)){
-  print(gene_flow[[i]][which(gene_flow[[i]]$MEAN_FST > 0.2),])
+  print(gene_deve[[i]][which(gene_deve[[i]]$MEAN_FST > 0.2),])
+  print("ok")
 }
 
 #提取abioticgene的位置----
@@ -189,3 +177,40 @@ for(i in c(1:18)){
   print(p)
 }
 dev.off()
+
+
+
+ggplot(all, aes(MEAN_FST, fill=Pop)) +
+  geom_density(alpha = 0.2) +
+  theme_classic()+
+  theme(axis.title.y = element_blank(), axis.title.x = element_blank()) +
+  xlab("Fst") + ylab("Proportion") +
+  ggtitle(names[i,2]) + xlim(0,0.6) +
+  geom_vline(xintercept = c(d,c,a,b), color = c("#F8766D","#7CAE00","#008FC4","#C77CFF"), size= 0.9, linetype = "dotted") + 
+  geom_point(data = gene[[1]], aes(MEAN_FST, 0), color = 'red') +
+  geom_text_repel(data = gene[[1]],aes(MEAN_FST, 0, label = gene[[1]]$Gene_id)) +
+  theme(plot.title = element_text(color="red", size=20, face="bold.italic"), legend.position = "none",legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y = element_text(size = 15))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

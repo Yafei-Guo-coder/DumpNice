@@ -148,3 +148,7 @@ p1 <- ggplot(Snp_pos, aes(x=BPcum, y=P)) +
 print(p)
 
 openstraightmap
+
+#定义一个空的data.frame
+all <- data.frame(CHROM="", BIN_START="", BIN_END="", MEAN_FST="", Gene_start="", Gene_end="",Gene_id="",Pop="", site="", lineage="", stringsAsFactors=FALSE)
+

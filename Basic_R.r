@@ -147,4 +147,4 @@ p1 <- ggplot(Snp_pos, aes(x=BPcum, y=P)) +
   theme(plot.title = element_text(color="red", size=20, face="bold"))
 print(p)
 
-
+openstraightmap

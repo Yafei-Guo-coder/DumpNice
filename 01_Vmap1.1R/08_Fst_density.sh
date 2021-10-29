@@ -1,5 +1,4 @@
 #工作路径：yafei@203:/data2/yafei/003_project3/Project3/FST_group/VmapData/FST_selection
-
 #计算受选择位点Fst的密度分布
 for i in `ls *txt`; do  wc -l $i; done | awk '{print $2"\t"$1"\t"$1*0.01"\t"$1*0.05}' | awk -F"[.|\t]" '{print $1"\t"$3"\t"$4"\t"$6}' | awk '{print "tail -n "$4,$1".txt > Top5%_Fst/"$1".top5.bed"}'
 for i in `ls *bed`
@@ -65,11 +64,5 @@ do
 bedtools intersect -b ${i}.all.fst -a resistgene.bed -wo | awk '{print $5"\t"$6"\t"$7"\t"$10"\t"$2"\t"$3"\t"$4}' | sed '1i CHROM\tBIN_START\tBIN_END\tMEAN_FST\tGene_start\tGene_end\tGene_id'> ${i}.resistgene.txt
 done
 
-
-
-
-
-
 #转移到本地：/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density
 #通过08_Fst_density.r进行统计画图
-

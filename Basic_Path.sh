@@ -8,7 +8,6 @@
 #lineages
 204:yafei:/data2/yafei/003_Project3/Vmap1.1/Out_E6/VCF/VmapE6
 
-
 #XP-clr + smooth
 204:xuebo:/data2/xuebo/Projects/Speciation/xpclr/Selection_V2/smooth/smooth_result/Top5%
 203:xuebo:/data1/home/xuebo/Projects/Speciation/xpclr/Selection_V2

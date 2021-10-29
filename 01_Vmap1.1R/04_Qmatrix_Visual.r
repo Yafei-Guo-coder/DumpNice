@@ -13,7 +13,6 @@ slist <- readQ(files=sfiles)
 tabulateQ(qlist=readQ(sfiles))
 summariseQ(tabulateQ(qlist=readQ(sfiles)))
 
-
 pdf("Q.pdf",width = 24,height = 8)
 p1 <- plotQ(slist[1:7],returnplot=T,exportplot=F,quiet=T,basesize=11,
             sortind="all",showindlab=F,showyaxis=T,showticks=T,sharedindlab=T,clustercol=brewer.pal(7, "Set2"))

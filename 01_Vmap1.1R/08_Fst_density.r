@@ -60,7 +60,6 @@ for(i in c(1:18)){
     xlab("Fst") + ylab("Proportion") +
     ggtitle(names[i,2]) + xlim(0,0.6) +
     geom_vline(xintercept = c(d,c,a,b), color = c("#F8766D","#7CAE00","#008FC4","#C77CFF"), size= 0.9, linetype = "dotted") + 
-    
     geom_point(data = gene[[i]], aes(MEAN_FST, 0), color = 'red') +
     geom_point(data = gene[[i]], aes(MEAN_FST, 0), color = 'red') +
     geom_point(data = gene[[i]], aes(MEAN_FST, 0), color = 'red') +
@@ -103,6 +102,19 @@ for(i in c(1:18)){
   print(p)
 }
 dev.off()
+
+for(i in c(1:18)){
+  print(gene_resis[[i]][which(gene_resis[[i]]$MEAN_FST > 0.2),])
+}
+
+for(i in c(1:18)){
+  print(gene_flow[[i]][which(gene_flow[[i]]$MEAN_FST > 0.2),])
+}
+
+for(i in c(1:18)){
+  print(gene_flow[[i]][which(gene_flow[[i]]$MEAN_FST > 0.2),])
+}
+
 #提取abioticgene的位置----
 path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density/abioticgene"
 fileNames <- dir(path)

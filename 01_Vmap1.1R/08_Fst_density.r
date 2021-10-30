@@ -46,7 +46,7 @@ gene <- lapply(filePath, function(x){
 #分页画图----
 names <- read.table("nameMap.txt",header=F,stringsAsFactors = F)
 p <- list()
-for(i in c(1:18)){
+for(i in c(1,2,3,5)){
   data[[i]]$Pop <- "Overall"
   sub <- data[[i]][, c(1,2,3,6,2,3,4,7)]
   colnames(sub) <- c("CHROM","BIN_START","BIN_END","MEAN_FST","Gene_start","Gene_end","Gene_id","Pop")

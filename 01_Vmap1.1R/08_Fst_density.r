@@ -48,6 +48,7 @@ names <- read.table("nameMap.txt",header=F,stringsAsFactors = F)
 p <- list()
 
 for(i in c(1:18)){
+  rownames(gene[[i]]) <- gene[[i]]$NAME
   data[[i]]$Pop <- "Overall"
   sub <- data[[i]][, c(1,2,3,6,2,3,4,7)]
   colnames(sub) <- c("CHROM","BIN_START","BIN_END","MEAN_FST","Gene_start","Gene_end","Gene_id","Pop")

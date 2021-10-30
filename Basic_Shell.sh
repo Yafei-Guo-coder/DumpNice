@@ -125,3 +125,8 @@ done
 
 java -jar /data2/xuebo/Projects/Speciation/javaCode/C41_getIBS_distance2.jar --file1 /data2/xuebo/Projects/Speciation/tree/withBarley_segregate/lineage/Alineage_withBarley.vcf.gz --out Alineage_withBarley.all.ibs.txt > logA.txt
 
+#合并test_L1.bam和test_L2.bam文件
+samtools merge -h test.sam test_L1_L2.bam test_L1.sorted.bam test_L2.sroted.bam
+
+
+

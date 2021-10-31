@@ -46,9 +46,8 @@ gene <- lapply(filePath, function(x){
 #分页画图----
 names <- read.table("nameMap.txt",header=F,stringsAsFactors = F)
 p <- list()
-
-for(i in c(1:18)){
-  rownames(gene[[i]]) <- gene[[i]]$NAME
+for(i in c(16)){
+  #rownames(gene[[i]]) <- gene[[i]]$NAME
   data[[i]]$Pop <- "Overall"
   sub <- data[[i]][, c(1,2,3,6,2,3,4,7)]
   colnames(sub) <- c("CHROM","BIN_START","BIN_END","MEAN_FST","Gene_start","Gene_end","Gene_id","Pop")
@@ -67,9 +66,9 @@ for(i in c(1:18)){
     xlab("Fst") + ylab("Proportion") +
     ggtitle(names[i,2]) + xlim(0,0.6) +
     geom_vline(xintercept = c(d,c,a,b), color = c("#F8766D","#7CAE00","#008FC4","#C77CFF"), size= 0.9, linetype = "dotted") + 
-    geom_point(data = gene[[i]], aes(MEAN_FST, 0), color = 'red') +
+    #geom_point(data = gene[[i]], aes(MEAN_FST, 0), color = 'red') +
     #geom_text_repel(data = gene[[i]], aes(MEAN_FST, 0, label=rownames(gene[[i]]))) +
-    geom_label_repel(data = gene[[i]],aes(MEAN_FST, Y), label=rownames(gene[[i]]),colour="white", segment.colour="black") +
+    #geom_label_repel(data = gene[[i]],aes(MEAN_FST, Y), label=rownames(gene[[i]]),segment.colour = NA,colour="white", segment.colour="black") +
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"), legend.position = "none",legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y =element_blank() )
 }
 

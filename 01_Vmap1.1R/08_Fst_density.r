@@ -46,7 +46,7 @@ gene <- lapply(filePath, function(x){
 #分页画图----
 names <- read.table("nameMap.txt",header=F,stringsAsFactors = F)
 p <- list()
-for(i in c(16)){
+for(i in c(2)){
   #rownames(gene[[i]]) <- gene[[i]]$NAME
   data[[i]]$Pop <- "Overall"
   sub <- data[[i]][, c(1,2,3,6,2,3,4,7)]

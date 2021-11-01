@@ -59,5 +59,10 @@ do
 bedtools intersect -b ${i}.all.fst -a resistgene.bed -wo | awk '{print $5"\t"$6"\t"$7"\t"$10"\t"$2"\t"$3"\t"$4}' | sed '1i CHROM\tBIN_START\tBIN_END\tMEAN_FST\tGene_start\tGene_end\tGene_id'> ${i}.resistgene.txt
 done
 
+for i in `cat name_prefix.txt`
+do
+bedtools intersect -b ${i}.all.fst -a 266gene.bed -wo | awk '{print $5"\t"$6"\t"$7"\t"$10"\t"$2"\t"$3"\t"$4}' | sed '1i CHROM\tBIN_START\tBIN_END\tMEAN_FST\tGene_start\tGene_end\tGene_id'> fst_266clone/${i}.266gene.txt
+done
+
 #转移到本地：/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density
 #通过08_Fst_density.r进行统计画图

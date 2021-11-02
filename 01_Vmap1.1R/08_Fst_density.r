@@ -36,6 +36,14 @@ filePath <- sapply(fileNames, function(x){
   paste(path,x,sep='/')})
 gene_deve <- lapply(filePath, function(x){
   read.table(x, header=T,stringsAsFactors = F,sep="\t")})
+#提取266clonegene的位置
+#path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density/fst_266out"
+path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density/fst_subout"
+fileNames <- dir(path)
+filePath <- sapply(fileNames, function(x){ 
+  paste(path,x,sep='/')})
+gene_266 <- lapply(filePath, function(x){
+  read.table(x, header=T,stringsAsFactors = F,sep="\t")})
 #提取已克隆的基因的位置----
 path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density/fst_266clone/"
 fileNames <- dir(path)
@@ -127,40 +135,46 @@ filePath <- sapply(fileNames, function(x){
 gene_back <- lapply(filePath, function(x){
   read.table(x, header=T,stringsAsFactors = F,sep="\t")})
 #画图:叠加密度图----
-pdf("all.pdf",height = 5,width = 10)
-for(i in c(1:18)){
-  gene_abio[[i]]$Pop <- "abioticgene"
-  gene_bio[[i]]$Pop <- "bioticgene"
-  gene_back[[i]]$Pop <- "backgroundgene"
-  all <- rbind(gene_abio[[i]],gene_bio[[i]],gene_back[[i]])
-  p <- ggplot(all, aes(MEAN_FST, fill= Pop)) +
+p <- list()
+for(i in c(1,7,13,8,14,3,9)){
+for(i in c(4,10,5,17,6,12,18)){  
+#for(i in c(2,15)){
+for(i in c(11)){  
+for(i in c(16)){ 
+  #gene_abio[[i]]$Pop <- "abioticgene"
+  #gene_bio[[i]]$Pop <- "bioticgene"
+  #gene_back[[i]]$Pop <- "backgroundgene"
+  #all <- rbind(gene_abio[[i]],gene_bio[[i]],gene_back[[i]])
+  a <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Disease_resistance"),4])
+  #b <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Rhythm"),4])
+  c <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Growing"),4])
+  d <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Flowering"),4])
+  e <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Gibberellin_related"),4])
+  point <- gene_266[[i]][which(gene_266[[i]]$Y != 0),]
+  all <- gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno != "Rhythm"),]
+  p[[i]] <- ggplot(all, aes(MEAN_FST, fill= Anno)) +
     geom_density(alpha = 0.2) +
-    theme_classic()+
+    theme_classic() +
     #theme(axis.title.y = element_blank()) +
     xlab("Fst") + ylab("Proportion") +
-    ggtitle(names[i,2]) + xlim(0,0.5) +
-    theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.position="none",legend.text = element_blank(),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
-  print(p)
+    ggtitle(names[i,2]) + 
+    #xlim(0,1) +
+    geom_vline(xintercept = c(a,b,c,d,e), color = c("#F8766D","#879F00","#00BF7D","#00B0F6","#E76BF3"), size= 0.9, linetype = "dotted") + 
+    #geom_point(data = point, aes(MEAN_FST, 0), color = 'red') +
+    #geom_text_repel(data = point, aes(MEAN_FST, 0, label=rownames(gene[[i]]))) +
+    #geom_label_repel(data = point,aes(MEAN_FST, Y), label=point$Name,segment.colour = NA,colour="white", segment.colour="black") +
+    theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.position = "none", legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y =element_blank() )
+  #print(p)
 }
+
+pdf("fst_subclone1.pdf",height = 10,width = 12)
+grid.arrange(p[[1]],p[[7]],p[[13]],p[[2]],p[[8]],p[[14]],p[[3]],p[[9]],p[[15]],nrow=3)
 dev.off()
-#画图:叠加密度图----
-pdf("test.pdf",height = 5,width = 10)
-for(i in c(1:18)){
-  data[[i]]$Pop <- "Overall"
-  gene_resis[[i]]$Pop <- "resistgene"
-  gene_flow[[i]]$Pop <- "flowegene"
-  gene_deve[[i]]$Pop <- "developgene"
-  all <- rbind(data[[i]],gene_resis[[i]],gene_flow[[i]],gene_deve[[i]])
-  p <- ggplot(all, aes(MEAN_FST, fill= Pop)) +
-    geom_density(alpha = 0.2) +
-    theme_classic()+
-    #theme(axis.title.y = element_blank()) +
-    xlab("Fst") + ylab("Proportion") +
-    ggtitle(names[i,2]) + xlim(0,0.5) +
-    theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.position="none",legend.text = element_blank(),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
-  print(p)
-}
+pdf("fst_subclone2.pdf",height = 10,width = 12)
+grid.arrange(p[[4]],p[[10]],p[[16]],p[[5]],p[[11]],p[[17]],p[[6]],p[[12]],p[[18]],nrow=3)
 dev.off()
+
+
 #画图:密度图&标注关注基因位置-----
 pdf("fst_develop_gene.pdf",height = 5,width = 10)
 for(i in c(1:18)){
@@ -179,8 +193,6 @@ for(i in c(1:18)){
   print(p)
 }
 dev.off()
-
-
 
 ggplot(all, aes(MEAN_FST, fill=Pop)) +
   geom_density(alpha = 0.2) +

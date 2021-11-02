@@ -64,5 +64,14 @@ do
 bedtools intersect -b ${i}.all.fst -a 266gene.bed -wo | awk '{print $5"\t"$6"\t"$7"\t"$10"\t"$2"\t"$3"\t"$4}' | sed '1i CHROM\tBIN_START\tBIN_END\tMEAN_FST\tGene_start\tGene_end\tGene_id'> fst_266clone/${i}.266gene.txt
 done
 
+for i in `cat ../name_prefix.txt`
+do
+awk 'NR==FNR{a[$1]=$1;b[$1]=$2}NR!=FNR{if($7 in a) print $0"\t"b[$7]}' SubGeneAnnoMap.txt $i.266gene.txt > $i.txt
+awk 'NR==FNR{a[$2]=$2;b[$2]=$1}NR!=FNR{if($7 in a) print $0"\t"b[$7]}' ../../all_cloned_gene.txt $i.txt | sort -k4,4n | awk '{if($4<0.2) print $0"\t0"; else print $0"\t15"}' | sed '1i CHROM\tBIN_START\tBIN_END\tMEAN_FST\tGene_start\tGene_end\tGene_id\tAnno\tName\tY'> $i.266gene.out.txt
+rm $i.txt
+done
+
+#按照MEAN_FST进行排序。
+
 #转移到本地：/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density
 #通过08_Fst_density.r进行统计画图

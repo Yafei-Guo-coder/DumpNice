@@ -66,8 +66,8 @@ done
 
 for i in `cat ../name_prefix.txt`
 do
-awk 'NR==FNR{a[$1]=$1;b[$1]=$2}NR!=FNR{if($7 in a) print $0"\t"b[$7]}' SubGeneAnnoMap.txt $i.266gene.txt > $i.txt
-awk 'NR==FNR{a[$2]=$2;b[$2]=$1}NR!=FNR{if($7 in a) print $0"\t"b[$7]}' ../../all_cloned_gene.txt $i.txt | sort -k4,4n | awk '{if($4<0.2) print $0"\t0"; else print $0"\t15"}' | sed '1i CHROM\tBIN_START\tBIN_END\tMEAN_FST\tGene_start\tGene_end\tGene_id\tAnno\tName\tY'> $i.266gene.out.txt
+awk 'NR==FNR{a[$1]=$1;b[$1]=$2}NR!=FNR{if($7 in a) print $0"\t"b[$7]}' AllGeneAnnoMap.txt $i.266gene.txt > $i.txt
+awk 'NR==FNR{a[$2]=$2;b[$2]=$1}NR!=FNR{if($7 in a) print $0"\t"b[$7]}' ../../all_cloned_gene.txt $i.txt | sort -k4,4n | awk '{if($4<0.19) print $0"\t0"; else print $0"\t15"}' | sed '1i CHROM\tBIN_START\tBIN_END\tMEAN_FST\tGene_start\tGene_end\tGene_id\tAnno\tName\tY'> $i.266gene.out.txt
 rm $i.txt
 done
 

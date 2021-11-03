@@ -38,7 +38,7 @@ gene_deve <- lapply(filePath, function(x){
   read.table(x, header=T,stringsAsFactors = F,sep="\t")})
 #提取266clonegene的位置
 #path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density/fst_266out"
-path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density/fst_subout"
+path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density/fst_266out"
 fileNames <- dir(path)
 filePath <- sapply(fileNames, function(x){ 
   paste(path,x,sep='/')})
@@ -137,120 +137,145 @@ gene_back <- lapply(filePath, function(x){
 #画图:叠加密度图----
 p <- list()
 for(i in c(1,7,13,8,14,3,9)){
-  a <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Disease_resistance"),4])
-  d <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Flowering"),4])
-  e <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Gibberellin_related"),4])
+  a <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Abiotic_stimulus"),4])
+  b <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Disease_resistance"),4])
   c <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Growing"),4])
-  b <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Rhythm"),4])
+  d <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Processing_quality"),4])
+  e <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Rhythm"),4])
   point <- gene_266[[i]][which(gene_266[[i]]$Y != 0),]
-  all <- gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0),]
+  
+  data[[i]]$Anno <- "Z"
+  f <- median(data[[i]][which(data[[i]]$MEAN_FST >0),6])
+  all <- rbind(data[[i]][,c(1,2,3,6,7)],gene_266[[i]][,c(1,2,3,4,8)])
+  all <- all[which(all$MEAN_FST >0),]
+  
   p[[i]] <- ggplot(all, aes(MEAN_FST, fill= Anno, color=Anno)) +
     geom_density(alpha = 0.2) +
-    scale_color_manual(values = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6")) +
-    scale_fill_manual(values = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6")) +
+    scale_color_manual(values = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6","#780ec4")) +
+    scale_fill_manual(values = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6","#780ec4")) +
     #scale_colour_discrete(breaks = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6"), labels = c("Disease_resistance","Rhythm","Growing","Flowering","Gibberellin_related"))+
-    #“粉”“红”“青绿”“橙”“青”
+    #粉；樱桃红；青绿色；橙黄色；青色
     theme_classic() +
     xlab("Fst") + ylab("Proportion") +
     ggtitle(names[i,2]) + 
     xlim(0,0.6) +
-    geom_vline(xintercept = c(a,d,e,c,b), color = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6"), size= 0.9, linetype = "dotted") + 
+    geom_vline(xintercept = c(a,b,c,d,e,f), color = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6","#780ec4"), size= 0.9, linetype = "dotted") + 
     geom_point(data = point, aes(MEAN_FST, 0), color = 'red') +
     geom_label_repel(data = point,aes(MEAN_FST, Y), label=point$Name,segment.colour = NA,colour="white", segment.colour="black") +
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.position = "none", legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y =element_blank())
 }
 
 for(i in c(4,10,5,17,6,12,18)){  
-  a <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Disease_resistance"),4])
-  b <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Rhythm"),4])
+  a <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Abiotic_stimulus"),4])
+  b <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Disease_resistance"),4])
   c <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Growing"),4])
-  d <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Flowering"),4])
-  e <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Gibberellin_related"),4])
+  d <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Processing_quality"),4])
+  e <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Rhythm"),4])
   point <- gene_266[[i]][which(gene_266[[i]]$Y != 0),]
-  all <- gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0),]
+  
+  data[[i]]$Anno <- "Z"
+  f <- median(data[[i]][which(data[[i]]$MEAN_FST >0),6])
+  all <- rbind(data[[i]][,c(1,2,3,6,7)],gene_266[[i]][,c(1,2,3,4,8)])
+  all <- all[which(all$MEAN_FST >0),]
+  
   p[[i]] <- ggplot(all, aes(MEAN_FST, fill= Anno, color=Anno)) +
     geom_density(alpha = 0.2) +
     theme_classic() +
-    scale_color_manual(values = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6")) +
-    scale_fill_manual(values = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6")) +
+    scale_color_manual(values = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6","#780ec4")) +
+    scale_fill_manual(values = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6","#780ec4")) +
     xlab("Fst") + ylab("Proportion") +
     ggtitle(names[i,2]) + 
     xlim(0,0.8) +
-    geom_vline(xintercept = c(a,d,e,c,b), color = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6"), size= 0.9, linetype = "dotted") + 
+    geom_vline(xintercept = c(a,b,c,d,e,f), color = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6","#780ec4"), size= 0.9, linetype = "dotted") + 
     geom_point(data = point, aes(MEAN_FST, 0), color = 'red') +
     geom_label_repel(data = point,aes(MEAN_FST, Y), label=point$Name,segment.colour = NA,colour="white", segment.colour="black") +
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.position = "none", legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y =element_blank())
 }
 
-for(i in c(2,15)){
-  a <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Disease_resistance"),4])
-  b <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Rhythm"),4])
+for(i in c(2)){
+  a <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Abiotic_stimulus"),4])
+  b <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Disease_resistance"),4])
   c <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Growing"),4])
-  d <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Flowering"),4])
-  e <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Gibberellin_related"),4])
+  d <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Processing_quality"),4])
+  e <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Rhythm"),4])
   point <- gene_266[[i]][which(gene_266[[i]]$Y != 0),]
-  all <- gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 ),]
+  
+  data[[i]]$Anno <- "Z"
+  f <- median(data[[i]][which(data[[i]]$MEAN_FST >0),6])
+  all <- rbind(data[[i]][,c(1,2,3,6,7)],gene_266[[i]][,c(1,2,3,4,8)])
+  all <- all[which(all$MEAN_FST >0),]
+  
   p[[i]] <- ggplot(all, aes(MEAN_FST, fill= Anno, color=Anno)) +
     geom_density(alpha = 0.2) +
     theme_classic() +
-    scale_color_manual(values = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6")) +
-    scale_fill_manual(values = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6")) +
+    scale_color_manual(values = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6","#780ec4")) +
+    scale_fill_manual(values = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6","#780ec4")) +
     xlab("Fst") + ylab("Proportion") +
     ggtitle(names[i,2]) + 
     xlim(0,0.6) +
-    geom_vline(xintercept = c(a,d,e,c,b), color = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6"), size= 0.9, linetype = "dotted") + 
+    geom_vline(xintercept = c(a,b,c,d,e,f), color = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6","#780ec4"), size= 0.9, linetype = "dotted") + 
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.position = "none", legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y =element_blank())
 }
 
-for(i in c(11)){  
-  a <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Disease_resistance"),4])
-  b <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Rhythm"),4])
+for(i in c(14,18)){  
+  #a <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Abiotic_stimulus"),4])
+  b <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Disease_resistance"),4])
   c <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Growing"),4])
-  d <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Flowering"),4])
-  e <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Gibberellin_related"),4])
+  #d <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Processing_quality"),4])
+  e <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Rhythm"),4])
   point <- gene_266[[i]][which(gene_266[[i]]$Y != 0),]
-  all <- gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 ),]
+  
+  data[[i]]$Anno <- "Z"
+  f <- median(data[[i]][which(data[[i]]$MEAN_FST >0),6])
+  all <- rbind(data[[i]][,c(1,2,3,6,7)],gene_266[[i]][,c(1,2,3,4,8)])
+  all <- all[which(all$MEAN_FST >0 & all$Anno != "Abiotic_stimulus" & all$Anno != "Processing_quality"),]
+  
   p[[i]] <- ggplot(all, aes(MEAN_FST, fill= Anno, color=Anno)) +
     geom_density(alpha = 0.2) +
     theme_classic() +
-    scale_color_manual(values = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6")) +
-    scale_fill_manual(values = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6")) +
+    scale_color_manual(values = c("#F8766D","#879F00","#00B0F6","#780ec4")) +
+    scale_fill_manual(values = c("#F8766D","#879F00","#00B0F6","#780ec4")) +
     xlab("Fst") + ylab("Proportion") +
     ggtitle(names[i,2]) + 
     xlim(0,1) +
-    geom_vline(xintercept = c(a,d,e,c,b), color = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6"), size= 0.9, linetype = "dotted") + 
+    geom_vline(xintercept = c(b,c,e,f), color = c("#F8766D","#879F00","#00B0F6","#780ec4"), size= 0.9, linetype = "dotted") + 
     geom_point(data = point, aes(MEAN_FST, 0), color = 'red') +
     geom_label_repel(data = point,aes(MEAN_FST, Y), label=point$Name,segment.colour = NA,colour="white", segment.colour="black") +
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.position = "none", legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y =element_blank())
 }
  
 for(i in c(16)){ 
-  a <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Disease_resistance"),4])
+  #a <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Abiotic_stimulus"),4])
+  b <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Disease_resistance"),4])
   c <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Growing"),4])
-  d <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Flowering"),4])
-  e <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Gibberellin_related"),4])
+  #d <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Processing_quality"),4])
+  e <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Rhythm"),4])
   point <- gene_266[[i]][which(gene_266[[i]]$Y != 0),]
-  all <- gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno != "Rhythm"),]
+  
+  data[[i]]$Anno <- "Z"
+  f <- median(data[[i]][which(data[[i]]$MEAN_FST >0),6])
+  all <- rbind(data[[i]][,c(1,2,3,6,7)],gene_266[[i]][,c(1,2,3,4,8)])
+  all <- all[which(all$MEAN_FST >0 & all$Anno != "Abiotic_stimulus" & all$Anno != "Processing_quality"),]
+
   p[[i]] <- ggplot(all, aes(MEAN_FST, fill= Anno, color=Anno)) +
     geom_density(alpha = 0.2) +
     theme_classic() +
-    scale_color_manual(values = c("#E76BF3","#879F00","#f8c36d","#00B0F6")) +
-    scale_fill_manual(values = c("#E76BF3","#879F00","#f8c36d","#00B0F6")) +
+    scale_color_manual(values = c("#F8766D","#879F00","#00B0F6","#780ec4")) +
+    scale_fill_manual(values = c("#F8766D","#879F00","#00B0F6","#780ec4")) +
     xlab("Fst") + ylab("Proportion") +
     ggtitle(names[i,2]) + 
     xlim(0,0.8) +
-    geom_vline(xintercept = c(a,d,e,c), color = c("#E76BF3","#879F00","#f8c36d","#00B0F6"), size= 0.9, linetype = "dotted") + 
-    geom_point(data = point, aes(MEAN_FST, 0), color = 'red') +
-    geom_label_repel(data = point,aes(MEAN_FST, Y), label=point$Name,segment.colour = NA,colour="white", segment.colour="black") +
+    geom_vline(xintercept = c(b,c,e,f), color = c("#F8766D","#879F00","#00B0F6","#780ec4"), size= 0.9, linetype = "dotted") + 
+    #geom_point(data = point, aes(MEAN_FST, 0), color = 'red') +
+    #geom_label_repel(data = point,aes(MEAN_FST, Y), label=point$Name,segment.colour = NA,colour="white", segment.colour="black") +
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.position = "none", legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y =element_blank())
 }
-pdf("fst_subclone3.pdf",height = 10,width = 12)
+pdf("Test3.pdf",height = 10,width = 12)
 grid.arrange(p[[1]],p[[7]],p[[13]],p[[2]],p[[8]],p[[14]],p[[3]],p[[9]],p[[15]],nrow=3)
 dev.off()
-pdf("fst_subclone4.pdf",height = 10,width = 12)
+pdf("Test4.pdf",height = 10,width = 12)
 grid.arrange(p[[4]],p[[10]],p[[16]],p[[5]],p[[11]],p[[17]],p[[6]],p[[12]],p[[18]],nrow=3)
 dev.off()
-
 
 #画图:密度图&标注关注基因位置-----
 pdf("fst_develop_gene.pdf",height = 5,width = 10)
@@ -282,8 +307,6 @@ ggplot(all, aes(MEAN_FST, fill=Pop)) +
   geom_text_repel(data = gene[[1]],aes(MEAN_FST, 0, label = gene[[1]]$Gene_id)) +
   theme(plot.title = element_text(color="red", size=20, face="bold.italic"), legend.position = "none",legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y = element_text(size = 15))
 
-
-
 for(i in c(1:18)){
   print(gene_resis[[i]][which(gene_resis[[i]]$MEAN_FST > 0.2),])
   print(gene_flow[[i]][which(gene_flow[[i]]$MEAN_FST > 0.2),])
@@ -291,22 +314,23 @@ for(i in c(1:18)){
   print("ok")
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+a <- median(gene_266[[8]][which(gene_266[[8]]$MEAN_FST >0 & gene_266[[8]]$Anno == "Abiotic_stimulus"),4])
+b <- median(gene_266[[8]][which(gene_266[[8]]$MEAN_FST >0 & gene_266[[8]]$Anno == "Disease_resistance"),4])
+c <- median(gene_266[[8]][which(gene_266[[8]]$MEAN_FST >0 & gene_266[[8]]$Anno == "Growing"),4])
+d <- median(gene_266[[8]][which(gene_266[[8]]$MEAN_FST >0 & gene_266[[8]]$Anno == "Processing_quality"),4])
+e <- median(gene_266[[8]][which(gene_266[[8]]$MEAN_FST >0 & gene_266[[8]]$Anno == "Rhythm"),4])
+point <- gene_266[[8]][which(gene_266[[8]]$Y != 0),]
+data[[8]]$Anno <- "Z"
+f <- median(data[[8]][which(data[[8]]$MEAN_FST >0),6])
+all <- rbind(data[[8]][,c(1,2,3,6,7)],gene_266[[8]][,c(1,2,3,4,8)])
+all <- all[which(all$MEAN_FST >0),]
+p[[8]] <- ggplot(all, aes(MEAN_FST, fill= Anno, color=Anno)) +
+  geom_density(alpha = 0.2) +
+  theme_classic() +
+  scale_color_manual(values = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6","#780ec4")) +
+  scale_fill_manual(values = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6","#780ec4")) +
+  xlab("Fst") + ylab("Proportion") +
+  ggtitle(names[8,2]) + 
+  xlim(0,0.6) +
+  geom_vline(xintercept = c(a,b,c,d,e,f), color = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6","#780ec4"), size= 0.9, linetype = "dotted") + 
+  theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.position = "none", legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y =element_blank())

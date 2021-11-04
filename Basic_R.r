@@ -1,7 +1,7 @@
 #循环：for
 v <- LETTERS[1:6]
 for ( i in v) {
-  if (i == "D") {  # D 不会输出，跳过这次循环，进入下一次
+  if (i == "D") { 
     next
   }
   print(i)

@@ -4,7 +4,6 @@ library(ggridges)
 library(RColorBrewer)
 library(ggrepel)
 require(gridExtra)
-#display.brewer.all()
 col1 = c(brewer.pal(9,'Pastel1'),brewer.pal(10,'Set3'))
 col1 <- c(rep("#FB8072", times=7),rep("#80B1D3", times=6),rep("#FDB462", times=6))
 #读取FST文件
@@ -45,14 +44,15 @@ filePath <- sapply(fileNames, function(x){
 gene_266 <- lapply(filePath, function(x){
   read.table(x, header=T,stringsAsFactors = F,sep="\t")})
 #提取已克隆的基因的位置----
-path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density/fst_266clone/"
+names <- read.table("nameMap.txt",header=F,stringsAsFactors = F)
+path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density/fst_266out"
 fileNames <- dir(path)
 filePath <- sapply(fileNames, function(x){ 
   paste(path,x,sep='/')})
 gene <- lapply(filePath, function(x){
   read.table(x, header=T, stringsAsFactors = F, sep="\t")})
 #分页画图----
-names <- read.table("nameMap.txt",header=F,stringsAsFactors = F)
+
 p <- list()
 for(i in c(2)){
   #rownames(gene[[i]]) <- gene[[i]]$NAME
@@ -136,19 +136,17 @@ gene_back <- lapply(filePath, function(x){
   read.table(x, header=T,stringsAsFactors = F,sep="\t")})
 #画图:叠加密度图----
 p <- list()
-for(i in c(1,7,13,8,14,3,9)){
+for(i in c(1,7,13,8,14,3,9,15)){
   a <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Abiotic_stimulus"),4])
   b <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Disease_resistance"),4])
   c <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Growing"),4])
   d <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Processing_quality"),4])
   e <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Rhythm"),4])
   point <- gene_266[[i]][which(gene_266[[i]]$Y != 0),]
-  
   data[[i]]$Anno <- "Z"
   f <- median(data[[i]][which(data[[i]]$MEAN_FST >0),6])
   all <- rbind(data[[i]][,c(1,2,3,6,7)],gene_266[[i]][,c(1,2,3,4,8)])
   all <- all[which(all$MEAN_FST >0),]
-  
   p[[i]] <- ggplot(all, aes(MEAN_FST, fill= Anno, color=Anno)) +
     geom_density(alpha = 0.2) +
     scale_color_manual(values = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6","#780ec4")) +
@@ -165,7 +163,7 @@ for(i in c(1,7,13,8,14,3,9)){
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.position = "none", legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y =element_blank())
 }
 
-for(i in c(4,10,5,17,6,12,18)){  
+for(i in c(11,4,10,5,17,6,12,18)){  
   a <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Abiotic_stimulus"),4])
   b <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Disease_resistance"),4])
   c <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Growing"),4])
@@ -192,12 +190,12 @@ for(i in c(4,10,5,17,6,12,18)){
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.position = "none", legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y =element_blank())
 }
 
-for(i in c(2)){
-  a <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Abiotic_stimulus"),4])
-  b <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Disease_resistance"),4])
-  c <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Growing"),4])
-  d <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Processing_quality"),4])
-  e <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Rhythm"),4])
+for(i in c(2,8)){
+  a <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST > 0 & gene_266[[i]]$Anno == "Abiotic_stimulus"),4])
+  b <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST > 0 & gene_266[[i]]$Anno == "Disease_resistance"),4])
+  c <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST > 0 & gene_266[[i]]$Anno == "Growing"),4])
+  d <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST > 0 & gene_266[[i]]$Anno == "Processing_quality"),4])
+  e <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST > 0 & gene_266[[i]]$Anno == "Rhythm"),4])
   point <- gene_266[[i]][which(gene_266[[i]]$Y != 0),]
   
   data[[i]]$Anno <- "Z"

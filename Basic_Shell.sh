@@ -127,6 +127,10 @@ java -jar /data2/xuebo/Projects/Speciation/javaCode/C41_getIBS_distance2.jar --f
 
 #合并test_L1.bam和test_L2.bam文件
 samtools merge -h test.sam test_L1_L2.bam test_L1.sorted.bam test_L2.sroted.bam
+cat $1 |while read num file
+do
+	bedtools sample -n ${num} -i ${file} -header | bgzip -c > ${file::-13}.shuf.vcf.gz &
+done
 
-
+vcf-concat *shuf.vcf.gz |awk '$1 ~ /^#/ {print $0;next} {print $0 | "sort -k1,1n -k2,2n"}' > Alineage.10000.vcf &
 

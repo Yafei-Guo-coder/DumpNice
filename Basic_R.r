@@ -34,7 +34,7 @@ c1 <- c1[c(3:5)] #与上面的方式相反，保留想要的元素
 #展示调色板
 library(RColorBrewer)
 display.brewer.all()
-brewer.pal(7, "Accent")[c(7)]
+brewer.pal(12, "Set3")
 scale_fill_brewer(palette = "RdYiBu")
 scale_fill_manual(values = c("#FDC086","#BEAED4")) 
 scale_color_manual(values = color) 

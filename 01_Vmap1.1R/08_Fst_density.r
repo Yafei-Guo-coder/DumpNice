@@ -332,3 +332,28 @@ p[[8]] <- ggplot(all, aes(MEAN_FST, fill= Anno, color=Anno)) +
   xlim(0,0.6) +
   geom_vline(xintercept = c(a,b,c,d,e,f), color = c("#E76BF3","#F8766D","#879F00","#f8c36d","#00B0F6","#780ec4"), size= 0.9, linetype = "dotted") + 
   theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.position = "none", legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y =element_blank())
+
+setwd("/Users/guoyafei/Documents/02_VmapIII/04_Statistics/")
+
+pdf("Xp-clr.pdf",width = 10,height = 5)
+for(i in c(1:length(data))){
+  name <- out1[[i]][1]
+  tit <- out2[[i]][1]
+  chr <- strsplit(out1[[i]][2], ".txt")[[1]][1]
+  title <- paste(gene[tit,1],gene[tit,2],sep=":")
+  cen <- centromer[chr,4]
+  plot(data[[i]]$WindowStart/1000000, data[[i]]$MeanY, ylim = c(-2,50),axes = T,col = "skyblue",type="l",cex = 2,lwd = 3,ann = F)
+  abline(v = gene[tit,7]/1000000, col = "red", cex=2,lwd = 1)
+  abline(h=thresHold[name,3], col = "red", lty = 3,cex=2,lwd = 2)
+  title(title,xlab= chr, ylab = 'Xp-clr', font.lab = 1, cex.lab = 1.5)
+  points(cen/1000000,0, pch=20,cex=2,col="grey")
+}
+
+data1 <- read.table("p_1_5.windowed.weir.fst",header=T,stringsAsFactors = F)
+plot(data1$BIN_END/1000000, data1$MEAN_FST, ylim = c(0,0.5),axes = T,col = "skyblue",type="l",cex = 2,lwd = 3,ann = F)
+abline(v=19.69, col = "red", lty = 3,cex=2,lwd = 2)
+
+data1 <- read.table("p_all_5.windowed.weir.fst",header=T,stringsAsFactors = F)
+plot(data1$BIN_END/1000000, data1$MEAN_FST, ylim = c(0,0.5),axes = T,col = "skyblue",type="l",cex = 2,lwd = 3,ann = F)
+abline(v=196.896739, col = "red", lty = 3,cex=2,lwd = 2)
+

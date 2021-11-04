@@ -11,6 +11,9 @@ library(qqman)
 #6. TraesCS1D02G029100	Sr33	5	11451423	11459353	chr1D:11451423-11459353(+)	Disease resistance protein RGA5 [UniProtKB/Swiss-Prot:F7J0N2]	NA	AT3G46530
 #7. TraesCS1D02G040400	Sr45	5	19341296	19346065	chr1D:19341296-19346065(+)	Putative disease resistance protein RGA4 [UniProtKB/Swiss-Prot:Q7XA39]	Os10g0130800	N
 
+19274287
+5	19341296	19341296
+
 #File Gene_Name Chr Start Stop
 #North2_South_smooth_A Ppd-A1 7	36933684	36938202
 #North2_South_smooth_B Rht-B1 21	30861268	30863723

@@ -133,3 +133,6 @@ done
 
 vcf-concat *shuf.vcf.gz |awk '$1 ~ /^#/ {print $0;next} {print $0 | "sort -k1,1n -k2,2n"}' > Alineage.10000.vcf &
 vcftools --vcf file1.snp.vcf --diff file2.snp.vcf --diff-site --out Diff.site
+
+
+

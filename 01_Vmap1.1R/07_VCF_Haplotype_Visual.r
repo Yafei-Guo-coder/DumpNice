@@ -82,3 +82,11 @@ for (i in c(1,4,5,6)){
 dev.off()
 #annotation_colors = ann_colors
 #接下来可以使用06_Qmatrix_PieMap.r来画在地图上的单倍型分布。
+
+annotation_col <- read.table("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/D_anno.txt",header=T,stringsAsFactors = T,sep="\t")
+rownames(annotation_col) = c(1:250)
+anno <- annotation_col[,9,drop=FALSE]
+ann_color = list(
+  #Growing_Habit = c(Facultative = "yellow", Spring="orange", Winter="blue"),
+  Region_sub2 = c(Strangulata = "#8C510A", EU="#66C2A5", WA= "#FC8D62",North1="#8DA0CB", North2 ="#E78AC3",South="#A6D854", Tibet="#FFD92F",Other ="#B3B3B3"))
+

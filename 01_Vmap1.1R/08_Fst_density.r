@@ -82,9 +82,10 @@ for(i in c(2)){
 for(i in c(1:18)){
   thresh <- as.numeric(quantile(data[[i]]$MEAN_FST, 0.9))
   point <- gene[[i]][which(gene[[i]]$MEAN_FST > thresh), ]
-  rownames(point) <- point$Name
+  rownames(point) <- point$Anno
   lab <- rownames(point)
-  Y <- c(1:length(point))
+  #Y <- seq(1,length(point)*2,2)
+  #Y <- c(1:dim(point)[1])
   p[[i]] <- ggplot(data[[i]], aes(MEAN_FST)) +
     stat_density(alpha = 0.4) +
     theme_classic() +
@@ -92,10 +93,10 @@ for(i in c(1:18)){
     xlab("Fst") +
     ylab("Proportion") +
     ggtitle(names[i,2]) +
-    xlim(0,0.6) +
+    xlim(0,0.8) +
     geom_point(data = point, aes(MEAN_FST, 0), color = 'red') +
     #geom_text_repel(data = point, aes(MEAN_FST, Y, col=Anno), label=lab, segment.colour = NA,segment.colour="black") +
-    geom_label_repel(data = point, aes(MEAN_FST, Y, fill=Anno), label=lab,  colour="white", max.overlaps = 15, segment.colour = NA) +
+    geom_label_repel(data = point, aes(MEAN_FST, 15, fill=Anno), label=lab,  colour="white", max.overlaps = 100, segment.colour = NA) +
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"), legend.position = "none", legend.text = element_text(size = 10), legend.title=element_blank(), axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15), axis.text.y = element_text(size = 15), axis.title.y =element_blank())
 }
 
@@ -108,10 +109,11 @@ for(i in c(1,3,10)){
     ggtitle(names[i,2]) + xlim(0,0.6) +
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"), legend.position = "none",legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y =element_blank() )
 }
-pdf("out1.pdf",height = 10,width = 12)
+
+pdf("out1_new.pdf",height = 10,width = 12)
 grid.arrange(p[[1]],p[[7]],p[[13]],p[[2]],p[[8]],p[[14]],p[[3]],p[[9]],p[[15]],nrow=3)
 dev.off()
-pdf("out2.pdf",height = 10,width = 12)
+pdf("out2_new.pdf",height = 10,width = 12)
 grid.arrange(p[[4]],p[[10]],p[[16]],p[[5]],p[[11]],p[[17]],p[[6]],p[[12]],p[[18]],nrow=3)
 dev.off()
 
@@ -385,3 +387,25 @@ data1 <- read.table("p_all_5.windowed.weir.fst",header=T,stringsAsFactors = F)
 plot(data1$BIN_END/1000000, data1$MEAN_FST, ylim = c(0,0.5),axes = T,col = "skyblue",type="l",cex = 2,lwd = 3,ann = F)
 abline(v=196.896739, col = "red", lty = 3,cex=2,lwd = 2)
 
+
+#---------------------------------------------------------------------------
+for(i in c(1:5)){
+  thresh <- as.numeric(quantile(data[[i]]$MEAN_FST, 0.9))
+  point <- gene[[i]][which(gene[[i]]$MEAN_FST > thresh), ]
+  rownames(point) <- point$Anno
+  lab <- rownames(point)
+  #Y <- seq(1,length(point)*2,2)
+  Y <- c(1:dim(point)[1])
+  p[[i]] <- ggplot(data[[i]], aes(MEAN_FST)) +
+    stat_density(alpha = 0.4) +
+    theme_classic() +
+    theme(axis.title.x = element_blank(), axis.title.y = element_blank()) +
+    xlab("Fst") +
+    ylab("Proportion") +
+    ggtitle(names[i,2]) +
+    xlim(0,1) +
+    geom_point(data = point, aes(MEAN_FST, 0), color = 'red') +
+    #geom_text_repel(data = point, aes(MEAN_FST, Y, col=Anno), label=lab, segment.colour = NA,segment.colour="black") +
+    geom_label_repel(data = point, aes(MEAN_FST, Y, fill=Anno), label=lab,  colour="white", max.overlaps = 50, segment.colour = NA) +
+    theme(plot.title = element_text(color="red", size=20, face="bold.italic"), legend.position = "none", legend.text = element_text(size = 10), legend.title=element_blank(), axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15), axis.text.y = element_text(size = 15), axis.title.y =element_blank())
+}

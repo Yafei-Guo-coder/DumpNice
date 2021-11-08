@@ -78,23 +78,28 @@ for(i in c(2)){
     #geom_label_repel(data = gene[[i]],aes(MEAN_FST, Y), label=rownames(gene[[i]]),segment.colour = NA,colour="white", segment.colour="black") +
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"), legend.position = "none",legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y =element_blank() )
 }
+
 for(i in c(1:18)){
-  point <- gene[[i]][which(gene[[i]]$Y > 0),]
+  thresh <- as.numeric(quantile(data[[i]]$MEAN_FST, 0.9))
+  point <- gene[[i]][which(gene[[i]]$MEAN_FST > thresh), ]
   rownames(point) <- point$Name
-  lab <- gene[[i]][which(gene[[i]]$Y > 0),9]
+  lab <- rownames(point)
+  Y <- c(1:length(point))
   p[[i]] <- ggplot(data[[i]], aes(MEAN_FST)) +
     stat_density(alpha = 0.4) +
     theme_classic() +
-    theme(axis.title.y = element_blank(), axis.title.x = element_blank()) +
-    xlab("Fst") + ylab("Proportion") +
-    ggtitle(names[i,2]) + xlim(0,0.6) +
+    theme(axis.title.x = element_blank(), axis.title.y = element_blank()) +
+    xlab("Fst") +
+    ylab("Proportion") +
+    ggtitle(names[i,2]) +
+    xlim(0,0.6) +
     geom_point(data = point, aes(MEAN_FST, 0), color = 'red') +
-    #geom_text_repel(data = point, aes(MEAN_FST, Y, col=Anno),label=lab, segment.colour = NA,segment.colour="black") +
-    geom_label_repel(data = point, aes(MEAN_FST, Y, fill=Anno), label=lab, segment.colour = NA,colour="white", segment.colour="black") +
-    theme(plot.title = element_text(color="red", size=20, face="bold.italic"), legend.position = "none",legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y =element_blank() )
+    #geom_text_repel(data = point, aes(MEAN_FST, Y, col=Anno), label=lab, segment.colour = NA,segment.colour="black") +
+    geom_label_repel(data = point, aes(MEAN_FST, Y, fill=Anno), label=lab,  colour="white", max.overlaps = 15, segment.colour = NA) +
+    theme(plot.title = element_text(color="red", size=20, face="bold.italic"), legend.position = "none", legend.text = element_text(size = 10), legend.title=element_blank(), axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15), axis.text.y = element_text(size = 15), axis.title.y =element_blank())
 }
 
-for(i in c(2,8,16)){
+for(i in c(1,3,10)){
   p[[i]] <- ggplot(data[[i]], aes(MEAN_FST)) +
     stat_density(alpha = 0.4) +
     theme_classic() +
@@ -103,7 +108,6 @@ for(i in c(2,8,16)){
     ggtitle(names[i,2]) + xlim(0,0.6) +
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"), legend.position = "none",legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y =element_blank() )
 }
-
 pdf("out1.pdf",height = 10,width = 12)
 grid.arrange(p[[1]],p[[7]],p[[13]],p[[2]],p[[8]],p[[14]],p[[3]],p[[9]],p[[15]],nrow=3)
 dev.off()

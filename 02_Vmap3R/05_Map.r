@@ -15,7 +15,6 @@ taxa_D <- taxa[which(taxa$Ploidy=="DD"),]
 mp<-NULL
 mapworld<-borders("world",colour = "gray70",fill="white") 
 mp<-ggplot()+mapworld+ylim(-60,90) +theme_classic()
-
 color <- brewer.pal(8, "Dark2")[c(1,2,3,4,6)]
 #AABBDD----
 mp2<-mp+geom_point(aes(x=taxa$Logititude, y=taxa$Latitude, color=taxa$Genome),size=1.5)+

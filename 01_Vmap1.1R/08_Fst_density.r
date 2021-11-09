@@ -45,7 +45,7 @@ gene_266 <- lapply(filePath, function(x){
   read.table(x, header=T,stringsAsFactors = F,sep="\t")})
 #提取已克隆的基因的位置----
 names <- read.table("nameMap.txt",header=F,stringsAsFactors = F)
-path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density/fst_266out/Type2"
+path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density/fst_266out/Type1"
 fileNames <- dir(path)
 filePath <- sapply(fileNames, function(x){ 
   paste(path,x,sep='/')})
@@ -78,16 +78,16 @@ for(i in c(2)){
     #geom_label_repel(data = gene[[i]],aes(MEAN_FST, Y), label=rownames(gene[[i]]),segment.colour = NA,colour="white", segment.colour="black") +
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"), legend.position = "none",legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y =element_blank() )
 }
-for(i in c(1:18)){
-  thresh <- as.numeric(quantile(data[[i]]$MEAN_FST, 0.9))
+for(i in c(2,4,5,6,7,8,9,11,12,13,14,15,16,17,18)){
+  thresh <- as.numeric(quantile(data[[i]]$MEAN_FST, 0.95))
   point <- gene[[i]][which(gene[[i]]$MEAN_FST > thresh), ]
   point$Color <- NA
   point[which(point$Anno=="Abiotic_stimulus"),10] <- "#E76BF3"
   point[which(point$Anno=="Disease_resistance"),10] <- "#F8766D"
   point[which(point$Anno=="Rhythm"),10] <- "#879F00"
   point[which(point$Anno=="Yield"),10] <- "#f8c36d"
-  #point[which(point$Anno=="Processing_quality"),10] <- "#00B0F6"
-  point[which(point$Anno=="DNA-binding"),10] <- "#00B0F6"
+  point[which(point$Anno=="Processing_quality"),10] <- "#00B0F6"
+  #point[which(point$Anno=="DNA-binding"),10] <- "#00B0F6"
   #粉:Abiotic_stimulus；樱桃红:Disease_resistance；青绿色:Rhythm；橙黄色:Yield；青色:DNA-binding/Processing_quality.
   rownames(point) <- point$Name
   lab <- rownames(point)
@@ -99,8 +99,9 @@ for(i in c(1:18)){
     ylab("Proportion") +
     ggtitle(names[i,2]) +
     xlim(0,0.8) +
-    geom_point(data = point, aes(MEAN_FST, 0), color = 'red') +
-    geom_label_repel(data = point, aes(MEAN_FST, 15), label=lab,  colour=point$Color, max.overlaps = 100, segment.colour = NA) +
+    #geom_point(data = point, aes(MEAN_FST, 0)) +
+    geom_label_repel(data = point, aes(MEAN_FST, 0,fill=Anno), label=lab, nudge_x = 0, nudge_y = 9,fontface="bold", color="white",  max.overlaps = 100, segment.colour = point$Color) +
+    scale_fill_manual(values=c("Abiotic_stimulus"="#E76BF3", "Disease_resistance"="#F8766D", "Rhythm"="#879F00","Yield"="#f8c36d", "Processing_quality"="#00B0F6")) +
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"), legend.position = "none", legend.text = element_text(size = 10), legend.title=element_blank(), axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15), axis.text.y = element_text(size = 15), axis.title.y =element_blank())
 }
 
@@ -110,13 +111,13 @@ for(i in c(1,3,10)){
     theme_classic() +
     theme(axis.title.y = element_blank(), axis.title.x = element_blank()) +
     xlab("Fst") + ylab("Proportion") +
-    ggtitle(names[i,2]) + xlim(0,0.6) +
+    ggtitle(names[i,2]) + xlim(0,0.8) +
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"), legend.position = "none",legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y =element_blank() )
 }
-pdf("Type2_0.9_1.pdf",height = 10,width = 12)
+pdf("Type1_0.95_1.pdf",height = 10,width = 12)
 grid.arrange(p[[1]],p[[7]],p[[13]],p[[2]],p[[8]],p[[14]],p[[3]],p[[9]],p[[15]],nrow=3)
 dev.off()
-pdf("Type2_0.9_2.pdf",height = 10,width = 12)
+pdf("Type1_0.95_2.pdf",height = 10,width = 12)
 grid.arrange(p[[4]],p[[10]],p[[16]],p[[5]],p[[11]],p[[17]],p[[6]],p[[12]],p[[18]],nrow=3)
 dev.off()
 

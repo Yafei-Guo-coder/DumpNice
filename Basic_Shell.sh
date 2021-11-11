@@ -131,6 +131,8 @@ do
 	bedtools sample -n ${num} -i ${file} -header | bgzip -c > ${file::-13}.shuf.vcf.gz &
 done
 
+samtools mpileup -A -B -q 30 -Q 20 -f /data1/home/xinyue/ref/byChr/chr032.fa.gz /data3/wgs/bam/ABD/ABD_0372.bam -r 32:89999900-89999996
+
 vcf-concat *shuf.vcf.gz |awk '$1 ~ /^#/ {print $0;next} {print $0 | "sort -k1,1n -k2,2n"}' > Alineage.10000.vcf &
 vcftools --vcf file1.snp.vcf --diff file2.snp.vcf --diff-site --out Diff.site
 

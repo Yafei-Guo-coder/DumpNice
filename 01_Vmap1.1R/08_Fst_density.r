@@ -78,16 +78,17 @@ for(i in c(2)){
     #geom_label_repel(data = gene[[i]],aes(MEAN_FST, Y), label=rownames(gene[[i]]),segment.colour = NA,colour="white", segment.colour="black") +
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"), legend.position = "none",legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y =element_blank() )
 }
-for(i in c(2,4,5,6,7,8,9,11,12,13,14,15,16,17,18)){
+for(i in c(15)){
   thresh <- as.numeric(quantile(data[[i]]$MEAN_FST, 0.95))
   point <- gene[[i]][which(gene[[i]]$MEAN_FST > thresh), ]
   point$Color <- NA
-  point[which(point$Anno=="Abiotic_stimulus"),10] <- "#E76BF3"
-  point[which(point$Anno=="Disease_resistance"),10] <- "#F8766D"
-  point[which(point$Anno=="Rhythm"),10] <- "#879F00"
-  point[which(point$Anno=="Yield"),10] <- "#f8c36d"
-  point[which(point$Anno=="Processing_quality"),10] <- "#00B0F6"
+  point[which(point$Anno=="Abiotic_stimulus"),10] <- "#377EB8"
+  point[which(point$Anno=="Disease_resistance"),10] <- "#984EA3"
+  point[which(point$Anno=="Rhythm"),10] <- "#FF7F00"
+  point[which(point$Anno=="Yield"),10] <- "#A65628"
+  point[which(point$Anno=="Processing_quality"),10] <- "#F781BF"
   #point[which(point$Anno=="DNA-binding"),10] <- "#00B0F6"
+  #"#377EB8" "#984EA3" "#FF7F00" "#A65628" "#F781BF"
   #粉:Abiotic_stimulus；樱桃红:Disease_resistance；青绿色:Rhythm；橙黄色:Yield；青色:DNA-binding/Processing_quality.
   rownames(point) <- point$Name
   lab <- rownames(point)
@@ -101,7 +102,7 @@ for(i in c(2,4,5,6,7,8,9,11,12,13,14,15,16,17,18)){
     xlim(0,0.8) +
     #geom_point(data = point, aes(MEAN_FST, 0)) +
     geom_label_repel(data = point, aes(MEAN_FST, 0,fill=Anno), label=lab, nudge_x = 0, nudge_y = 9,fontface="bold", color="white",  max.overlaps = 100, segment.colour = point$Color) +
-    scale_fill_manual(values=c("Abiotic_stimulus"="#E76BF3", "Disease_resistance"="#F8766D", "Rhythm"="#879F00","Yield"="#f8c36d", "Processing_quality"="#00B0F6")) +
+    scale_fill_manual(values=c("Abiotic_stimulus"="#377EB8", "Disease_resistance"="#984EA3", "Rhythm"="#FF7F00","Yield"="#A65628", "Processing_quality"="#F781BF")) +
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"), legend.position = "none", legend.text = element_text(size = 10), legend.title=element_blank(), axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15), axis.text.y = element_text(size = 15), axis.title.y =element_blank())
 }
 
@@ -114,16 +115,30 @@ for(i in c(1,3,10)){
     ggtitle(names[i,2]) + xlim(0,0.8) +
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"), legend.position = "none",legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y =element_blank() )
 }
-pdf("Type1_0.95_1.pdf",height = 10,width = 12)
+p <- list()
+for(i in c(1:18)){
+  a <- median(data[[i]][,6])
+  p[[i]] <- ggplot(data[[i]], aes(MEAN_FST)) +
+    stat_density(alpha = 0.4) +
+    theme_classic() +
+    theme(axis.title.y = element_blank(), axis.title.x = element_blank()) +
+    geom_vline(xintercept = a, size= 0.9, linetype = "dotted") + 
+    xlab("Fst") + ylab("Proportion") +
+    ggtitle(names[i,2]) + xlim(0,0.8) +
+    theme(plot.title = element_text(color="red", size=20, face="bold.italic"), legend.position = "none",legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y =element_blank() )
+}
+
+pdf("Type1_out1.pdf",height = 10,width = 12)
 grid.arrange(p[[1]],p[[7]],p[[13]],p[[2]],p[[8]],p[[14]],p[[3]],p[[9]],p[[15]],nrow=3)
 dev.off()
-pdf("Type1_0.95_2.pdf",height = 10,width = 12)
+pdf("Type1_out2.pdf",height = 10,width = 12)
 grid.arrange(p[[4]],p[[10]],p[[16]],p[[5]],p[[11]],p[[17]],p[[6]],p[[12]],p[[18]],nrow=3)
 dev.off()
 
 #画图:密度图&标注关注基因----
 pdf("fst_select_gene.pdf",height = 5,width = 10)
 for(i in c(1:18)){
+  
   gene[[i]]$Pop <- data[[i]][1,7]
   p <- ggplot(data[[i]], aes(MEAN_FST, colour = Pop)) +
     scale_fill_manual() +

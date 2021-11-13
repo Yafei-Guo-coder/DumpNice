@@ -18,12 +18,17 @@ slist <- readQ(files=sfiles)
 tabulateQ(qlist=readQ(sfiles))
 summariseQ(tabulateQ(qlist=readQ(sfiles)))
 
+sfiles <- list.files(path="/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Structure/VRN2-2/", full.names=T)
+slist <- readQ(files=sfiles)
+tabulateQ(qlist=readQ(sfiles))
+summariseQ(tabulateQ(qlist=readQ(sfiles)))
+
 name <- read.table("Ppd-1.txt",header=F,stringsAsFactors = F)
 for(i in c(1:length(slist))){
   rownames(slist[[1]]) <- name[,1]
 }
 
-pdf("Q.pdf",width = 24,height = 8)
+pdf("Ppd-1.pdf",width = 24,height = 8)
 p1 <- plotQ(slist[1:4],returnplot=T,exportplot=F,quiet=T,basesize=11,
             sortind="all",showindlab=T,showyaxis=T,showticks=T,sharedindlab=T,clustercol=brewer.pal(5, "Set2"))
 grid.arrange(p1$plot[[1]],p1$plot[[2]],p1$plot[[3]],p1$plot[[4]],nrow=4)

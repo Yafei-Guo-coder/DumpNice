@@ -56,6 +56,3 @@ for (i in c(1:82)){
                 zColours=brewer.pal(8, "Set2"),barOrient='vert',oceanCol="#D1EEEE",landCol="#FFDAB9",main=i)
 }
 dev.off()
-
-
-

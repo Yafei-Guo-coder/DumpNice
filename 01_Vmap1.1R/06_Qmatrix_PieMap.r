@@ -4,10 +4,10 @@ require(reshape)
 require (rworldmap)
 require(rworldxtra)
 library(RColorBrewer)
-setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/Gene/V2/")
+setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5")
 
-annotation_col <- read.table("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/E6_Landrace_locate_225.txt",header=T,stringsAsFactors = F)
-rownames(annotation_col) = c(1:225)
+annotation_col <- read.table("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Taxa_Region_225.txt",header=T,stringsAsFactors = F)
+rownames(annotation_col) = c(1:325)
 seq <- annotation_col[,1]
 
 #cluster samples: 按照算Xp-clr的区域划分
@@ -29,7 +29,7 @@ mode$V2 <- as.numeric(mode$V2)
 mode$V3 <- as.numeric(mode$V3)
 
 #map
-path <- "/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/Gene/V2/TXT" ##文件目录
+path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/TXT" ##文件目录
 fileNames <- dir(path)  ##获取该路径下的文件名
 filePath <- sapply(fileNames, function(x){ 
         paste(path,x,sep='/')})   ##生成读取文件路径

@@ -137,4 +137,14 @@ vcf-concat *shuf.vcf.gz |awk '$1 ~ /^#/ {print $0;next} {print $0 | "sort -k1,1n
 vcftools --vcf file1.snp.vcf --diff file2.snp.vcf --diff-site --out Diff.site
 
 
+cd Out/vcf/VCF/
+sed '/^#/d' chr001.vcf | awk '{print $1"\t"$2"\t"$10"\t"$11"\t"$12}'  > ../../../pos.txt
+cd ../../../
+zcat trueSet.txt.gz | datamash transpose| awk '{$2=$2$2;if($2==$4 && $4==$5 && $5==$6) next;else print $0}' > test.out
+awk 'NR==FNR{a[$2]=$2;b[$2]==$0}NR!=FNR{if($1+1 in a) print $0}' pos.txt test.out
+awk 'NR==FNR{a[$2]=$2;b[$2]==$0}NR!=FNR{if($1+1 in a) print "ok";else print $0}' pos.txt test.out
+samtools mpileup -A -B -q 30 -Q 20 -f test_1M.fa.gz sample2.rmdup.bam -r 1:489865-489890
 
+
+/mnt/usb/155D_fastq_part2/fastq1/BW_01190_DDPL00390-W_HG32HALXX_L7_1.clean.fq.gz
+/mnt/usb/155D_fastq_part2/fastq1/BW_01190_DDPL00390-W_HG32HALXX_L7_2.clean.fq.gz

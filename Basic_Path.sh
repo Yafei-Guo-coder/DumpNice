@@ -12,6 +12,7 @@
 204:xuebo:/data2/xuebo/Projects/Speciation/xpclr/Selection_V2/smooth/smooth_result/Top5%
 203:xuebo:/data1/home/xuebo/Projects/Speciation/xpclr/Selection_V2
 #VIP gene分析
+204:yafei:/data2/yafei/003_Project3/Vmap1.1/E6/Xp-CLR_V2/VIP_genes
 204:yafei:/data2/yafei/003_Project3/Vmap1.1/E6/Xp-CLR_V2
 #VCF 变异注释分析
 203:yafei:/data1/home/yafei/008_Software/snpEff/

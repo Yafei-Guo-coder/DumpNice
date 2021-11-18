@@ -35,3 +35,11 @@ vcf文件: 203: /data1/home/yafei/Project3/HaploType/Fulab/Vcf/
 Fst_population
 203:/data2/yafei/003_project3/Project3/FST_group/VmapData/FST_selection/Fst_pop
 
+#VMap3数据集
+filter1: reliable library
+filter2: hetThresh = 0.05; nonmissingThresh = 0.8; macThresh = 2; biallele
+java -Xmx300g -jar /data2/yafei/004_Vmap3/Fastcall2/03_Jar/PrivatePlantGenetics.jar
+204:/data2/yafei/004_Vmap3/Fastcall2/02_Output/vcf_AB1/Filter2/ 
+
+#VMap3基本统计
+204:/data2/yafei/004_Vmap3/Fastcall2/02_Output/vcf_AB1/Filter2/5k.tree/structure

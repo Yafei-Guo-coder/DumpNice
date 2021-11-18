@@ -150,8 +150,28 @@ print(p)
 openstraightmap
 dfe
 
-
-
 #定义一个空的data.frame
 all <- data.frame(CHROM="", BIN_START="", BIN_END="", MEAN_FST="", Gene_start="", Gene_end="",Gene_id="",Pop="", site="", lineage="", stringsAsFactors=FALSE)
 
+
+p = ggplot(data, aes(x = taxaNum,y = mean))+
+  geom_point()+ 
+  geom_errorbar(aes(ymin=(mean-sd),ymax=(mean+sd)),width=2,size=2)+
+  scale_fill_manual(values = c("red","blue"))+  
+  labs(x = "Taxa Number",y = "Snp proportion") +
+  facet_wrap(Type1~Type2,scales="free")+
+  theme_bw() +
+  theme(
+    legend.position="none",
+    #panel.border = element_blank(),
+    axis.line.y = element_line(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.x=element_text(size=10),
+    axis.text.y=element_text(size=10),
+    axis.title.y=element_text(size = 10),
+    axis.title.x=element_text(size = 10),
+  )+
+  theme(legend.text = element_text(size=10),legend.title=element_blank(),axis.text.x = element_text(size = 10), axis.title.x = element_text(size = 10),axis.text.y = element_text(size = 10),axis.title.y = element_text(size = 10))
+
+  #geom_text(aes(label = dat$Num),position=position_dodge(width = 0.5),size = 5,vjust = -0.25)+ ##########

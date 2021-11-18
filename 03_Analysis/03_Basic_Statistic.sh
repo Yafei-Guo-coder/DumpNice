@@ -16,7 +16,6 @@ bgzip -c ${i} > ${i}.gz
 tabix -p vcf ${i}.gz
 done
 
-
 #merge_maf.sh
 #合并样本
 for chr in {1,2,7,8,13,14,19,20,25,26,31,32,37,38}
@@ -70,7 +69,6 @@ vcftools --vcf /data2/yafei/Project3/V+W_E2/E2_all/chr${chr}.all.vcf --keep /dat
 java -jar /data1/home/yafei/C36_checkQuality.jar --file /data2/yafei/Project3/V+W_E2/E2_maf/Landrace/chr${chr}.mafLandrace.vcf.gz --out /data2/yafei/Project3/V+W_E2/E2_maf/Landrace/chr${chr}_siteQCfile.txt --out2 /data2/yafei/Project3/V+W_E2/E2_maf/Landrace/chr${chr}_taxaQCfile.txt > nohupLand 2>& 1 
 done
 #nohup sh merge_maf.sh &
-
 
 #合并lineage文件
 vcf-concat chr1.all.vcf chr2.all.vcf chr7.all.vcf chr8.all.vcf chr13.all.vcf chr14.all.vcf chr19.all.vcf chr20.all.vcf chr25.all.vcf chr26.all.vcf chr31.all.vcf chr32.all.vcf chr37.all.vcf chr38.all.vcf > lineage/Alineage.vcf 

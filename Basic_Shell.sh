@@ -38,7 +38,9 @@ bcftools merge chr0${chr}.vcf.gz chr0${chr}.vcf.gz chr0${chr}.vcf.gz chr${chr}.v
 bcftools filter 1000Genomes.vcf.gz --regions 9:4700000-4800000 > 4700000-4800000.vcf
 
 #vcftools
-vcftools --gzvcf file.vcf.gz --positions specific_position.txt --recode --out specific_position.vcf
+vcftools --gzvcf file.vcf.gz --positions specific_position.txt --recode --recode-INFO-all --out specific_position.vcf
+
+
 #getVcf.sh
 cat $1 |while read gene chr from to taxa
 do
@@ -145,6 +147,12 @@ awk 'NR==FNR{a[$2]=$2;b[$2]==$0}NR!=FNR{if($1+1 in a) print $0}' pos.txt test.ou
 awk 'NR==FNR{a[$2]=$2;b[$2]==$0}NR!=FNR{if($1+1 in a) print "ok";else print $0}' pos.txt test.out
 samtools mpileup -A -B -q 30 -Q 20 -f test_1M.fa.gz sample2.rmdup.bam -r 1:489865-489890
 
+make install DESTDIR=/data1/home/yafei/008_Software/gsl-2.7
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/data1/home/yafei/008_Software/gsl-2.7/usr/local
 
-/mnt/usb/155D_fastq_part2/fastq1/BW_01190_DDPL00390-W_HG32HALXX_L7_1.clean.fq.gz
-/mnt/usb/155D_fastq_part2/fastq1/BW_01190_DDPL00390-W_HG32HALXX_L7_2.clean.fq.gz
+#PCA
+plink --vcf ABlineage.maf0.05.5k.vcf --pca header tabs -out ABlineage.maf0.05.5k --double-id --autosome-num 42
+#MDS
+plink --vcf ABlineage.maf0.05.60k.vcf.gz --mds-plot 10 eigendecomp --cluster --double-id --autosome-num 42 --out ABlineage.maf0.05.60k
+
+

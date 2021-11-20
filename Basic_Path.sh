@@ -39,7 +39,17 @@ Fst_population
 filter1: reliable library
 filter2: hetThresh = 0.05; nonmissingThresh = 0.8; macThresh = 2; biallele
 java -Xmx300g -jar /data2/yafei/004_Vmap3/Fastcall2/03_Jar/PrivatePlantGenetics.jar
-204:/data2/yafei/004_Vmap3/Fastcall2/02_Output/vcf_AB1/Filter2/ 
+204:/data4/home/yafei/vcf_AB1/VCF/chr001_VMap3.vcf.gz
+204:/data4/home/yafei/vcf_AB1/Filter2/chr001_VMap3.vcf.gz
+#53先导file
+204:/data4/home/yafei/vcf_AB1/vcf/VCF/chr001_VMap3.vcf.gz
+
+
+#gff文件
+204:/data2/yafei/GeneLulab1_1_LC.gff3
+204:/data2/yafei/gene_v1.1_Lulab.gff3
 
 #VMap3基本统计
 204:/data2/yafei/004_Vmap3/Fastcall2/02_Output/vcf_AB1/Filter2/5k.tree/structure
+
+

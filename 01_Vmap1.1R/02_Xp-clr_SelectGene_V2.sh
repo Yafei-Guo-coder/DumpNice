@@ -129,3 +129,16 @@ for i in `ls *gff.gene`
 do
 awk -F"=" '{print $2}' $i |sort | uniq > Go/${i::-8}txt
 done
+
+#新加了wheatOmic的小麦中的已知基因
+#工作路径：/data2/xuebo/Projects/Speciation/xpclr/Selection_V3/smooth/lineage_V2/Gene_Anno
+#更新了../all_cloned_gene.txt的已知基因
+#../GeneLulab1_1_LC.gff3:low confidence的基因注释文件
+#../gene_v1.1_Lulab.gff3:lhigh confidence的基因注释文件
+
+
+
+
+
+
+

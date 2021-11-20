@@ -155,4 +155,4 @@ plink --vcf ABlineage.maf0.05.5k.vcf --pca header tabs -out ABlineage.maf0.05.5k
 #MDS
 plink --vcf ABlineage.maf0.05.60k.vcf.gz --mds-plot 10 eigendecomp --cluster --double-id --autosome-num 42 --out ABlineage.maf0.05.60k
 
-
+awk '{for(i=1; i<= NF; i++)sum+=$i;print sum;}sum=0' test //每行相加

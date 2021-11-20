@@ -52,4 +52,7 @@ java -Xmx300g -jar /data2/yafei/004_Vmap3/Fastcall2/03_Jar/PrivatePlantGenetics.
 #VMap3基本统计
 204:/data2/yafei/004_Vmap3/Fastcall2/02_Output/vcf_AB1/Filter2/5k.tree/structure
 
+#DEF-est
+204:/data1/home/yafei/008_Software/dfe-alpha-release-2.16/Test/input/A.1fold_scaled.txt
+
 

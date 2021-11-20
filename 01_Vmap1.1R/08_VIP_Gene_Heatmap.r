@@ -2,7 +2,7 @@ library(pheatmap)
 library(RColorBrewer)
 display.brewer.all()
 ##Top5 VIP gene & Top1 NLR gene
-data2 <- read.table("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/HeatMap/V4/heatmap_format2.txt",
+data2 <- read.table("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/HeatMap/V5/heatmap_format2.txt",
                     header=T,
                     row.names= 1, stringsAsFactors=F,sep="\t")
 data2 <- read.table("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Xpclr/V3/Top1nlr/heatmap_format2_changeName.txt",
@@ -92,7 +92,6 @@ for(i in c(1:length(data))){
   print(p1)
 }
 dev.off()
-
 
 #P值----
 xlab <-factor(xlab,levels=c("Top5%","Top1%","Top0.5%","Top0.1%"))

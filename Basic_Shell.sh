@@ -156,3 +156,16 @@ plink --vcf ABlineage.maf0.05.5k.vcf --pca header tabs -out ABlineage.maf0.05.5k
 plink --vcf ABlineage.maf0.05.60k.vcf.gz --mds-plot 10 eigendecomp --cluster --double-id --autosome-num 42 --out ABlineage.maf0.05.60k
 
 awk '{for(i=1; i<= NF; i++)sum+=$i;print sum;}sum=0' test //每行相加
+
+#计算DFE
+/data1/home/yafei/008_Software/dfe-alpha-release-2.16
+
+/data1/home/yafei/008_Software/dfe-alpha-release-2.16/Test/input/A.1fold_scaled_1outgroup_no0.sfs.txt
+
+est_alpha_omega -c est_alpha_omega_config_file.txt 
+
+
+
+
+
+

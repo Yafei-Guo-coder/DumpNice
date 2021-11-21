@@ -148,7 +148,7 @@ awk 'NR==FNR{a[$2]=$2;b[$2]==$0}NR!=FNR{if($1+1 in a) print "ok";else print $0}'
 samtools mpileup -A -B -q 30 -Q 20 -f test_1M.fa.gz sample2.rmdup.bam -r 1:489865-489890
 
 make install DESTDIR=/data1/home/yafei/008_Software/gsl-2.7
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/data1/home/yafei/008_Software/gsl-2.7/usr/local
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/data1/home/yafei/008_Software/gsl-2.7/usr/local/lib
 
 #PCA
 plink --vcf ABlineage.maf0.05.5k.vcf --pca header tabs -out ABlineage.maf0.05.5k --double-id --autosome-num 42

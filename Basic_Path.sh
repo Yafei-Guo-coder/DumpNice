@@ -44,7 +44,6 @@ java -Xmx300g -jar /data2/yafei/004_Vmap3/Fastcall2/03_Jar/PrivatePlantGenetics.
 #53先导file
 204:/data4/home/yafei/vcf_AB1/vcf/VCF/chr001_VMap3.vcf.gz
 
-
 #gff文件
 204:/data2/yafei/GeneLulab1_1_LC.gff3
 204:/data2/yafei/gene_v1.1_Lulab.gff3
@@ -54,5 +53,3 @@ java -Xmx300g -jar /data2/yafei/004_Vmap3/Fastcall2/03_Jar/PrivatePlantGenetics.
 
 #DEF-est
 204:/data1/home/yafei/008_Software/dfe-alpha-release-2.16/Test/input/A.1fold_scaled.txt
-
-

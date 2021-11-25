@@ -164,8 +164,17 @@ awk '{for(i=1; i<= NF; i++)sum+=$i;print sum;}sum=0' test //每行相加
 
 est_alpha_omega -c est_alpha_omega_config_file.txt 
 
+#计算SFS
+vcftools --gzvcf test.vcf.gz --freq --stdout |tail -n +2| awk '{A=0;C=0;G=0;T=0;if(substr($5,1,1)"G"){G=substr($5,3,length($5))*100}else if(substr($5,1,1)"A"){A=substr($5,3,length($5))100}else if(substr($5,1,1)=="C"){C=substr($5,3,length($5))100}else if(substr($5,1,1)"T"){T=substr($5,3,length($5))*100} print"chr"$1"\t"$2-1"\t"$2"\t"substr($5,1,1)"\t"substr($6,1,1)"\t"int(A)","int(C)","int(G)","int(T)}'|awk '{split($6,a,",");A=a[1];C=a[2];G=a[3];T=a[4];sum=a[1]+a[2]+a[3]+a[4];if($5"A"){A=100-sum}else if($5"C"){C=100-sum}else if($5"G"){G=100-sum}else if($5=="T"){T=100-sum}print $1"\t"$2"\t"$3"\t"$4"\t"$5"\t"int(A)","int(C)","int(G)","int(T)}' | head
+cat test.txt | sed 's/,/\t/g' | awk '{for(i=6; i<= NF; i++)sum+=$i;printf "%s\t%s\t%s\t%.0f,%.0f,%.0f,%.0f\n",$2,$3,$4,$6/sum*100,$7/sum*100,$8/sum*100,$9/sum*100;}sum=0' | head
 
+for i in {001,002,003,004,007,008,009,010,013,014,015,016,019,020,021,022,025,026,027,028,031,032,033,034,037,038,039,040}
+do
+bcftools view chr${i}_VMap3.vcf.gz -Oz -o chr${i}_VMap3.vcf2.gz
+tabix chr${i}_VMap3.vcf2.gz
+done
 
-
-
-
+for i in {001,002,003,004,007,008,009,010,013,014,015,016,019,020,021,022,025,026,027,028,031,032,033,034,037,038,039,040}
+do
+zcat chr${i}.vcf.gz | awk '$1 ~ /^#/ {print $0;next} {print $0 | "sort -k1,1 -k2,2n"}' | bgzip -c > chr${i}.vcf2.gz
+done

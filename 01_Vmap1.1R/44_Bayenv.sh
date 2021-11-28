@@ -1,4 +1,4 @@
-#!/bin/bash
+java -Xmx200g -Xms512m -jar /data1/home/yafei/008_Software/PGDSpider_2.1.1.5/PGDSpider2-cli.jar -inputfile chr36.maf0.01.recode.vcf -inputformat VCF -outputfile chr36.maf0.01.env -outputformat BAYENV -spid VCF_BAYENV.spid#!/bin/bash
 #just a small bash script to calculate BFs for all SNPs from SNPFILE
 #please copy this script into the same directory as bayenv and execute it there
 #please see the Bayenv2 manual for details about usage
@@ -33,8 +33,9 @@ m <- apply(data,1,mean)
 s <- apply(data,1,sd)
 sub <- (data-m)/s
 write.table(sub,"format2.txt", sep="\t", quote=F,row.names=F)
+#去掉第一行就是bayenv的输入文件
 #shell
-datamash transpose < format2.txt > format3.txt
+#datamash transpose < format2.txt > format3.txt
 
 #准备基因型文件
 vcftools --vcf chr36.E6_Landrace_locate.vcf --maf 0.01 --recode --recode-INFO-all --out chr36.maf0.01
@@ -43,10 +44,10 @@ java -Xmx200g -Xms512m -jar /data1/home/yafei/008_Software/PGDSpider_2.1.1.5/PGD
 #运行bayenv
 #matrix estimation
 #使用筛选过LD的VCF文件：50 10 0.2
-bayenv2 -i hgdp_no_X_37_freqs -s samplesize.txt -p 52 -k 1000 -r 83556 -o out_matrix
-bayenv2 -i rs316 -m hgdp_matrix_1 -e PCs.env -p 52 -k 1000 -n 4 -t -r 42 -o out_correlation
-calc_bf.sh hgdp_no_X_37_freqs PCs.env hgdp_matrix_1 52 1000 4
+java -Xmx200g -Xms512m -jar /data1/home/yafei/008_Software/PGDSpider_2.1.1.5/PGDSpider2-cli.jar -inputfile LD/chr36.in.vcf -inputformat VCF -outputfile chr36.LD.env -outputformat BAYENV -spid VCF_BAYENV.spid
+bayenv2 -i chr36.LD.env -s samplesize.txt -p 5 -k 100000 -r 83556 -o chr36.matrix,l
 
-MATRIXFILE 单个协方差矩阵，矩阵中的条目由制表符分隔。 这可以通过从程序的输出中复制和粘贴最后打印的矩阵来获得。 协方差矩阵示例如下： hgdp 矩阵 1. 如果您担心协方差矩阵绘制的变化，那么您可以考虑在此处使用迭代中的平均协方差矩阵作为输入
-
-
+#环境变量相关性估计
+#./calc_bf.sh SNPSFILE ENVIRONFILE MATRIXFILE NUMPOPS NUMITER NUMENVIRON
+./calc_bf.sh chr36.maf0.01.env format2.txt chr36.matrix 5 100000 22
+#bayenv2 -i rs316 -m hgdp_matrix_1 -e PCs.env -p 52 -k 1000 -n 4 -t -r 42 -o out_correlation

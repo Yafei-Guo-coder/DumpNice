@@ -42,6 +42,7 @@ java -Xmx200g -Xms512m -jar /data1/home/yafei/008_Software/PGDSpider_2.1.1.5/PGD
 
 #运行bayenv
 #matrix estimation
+#使用筛选过LD的VCF文件：50 10 0.2
 bayenv2 -i hgdp_no_X_37_freqs -s samplesize.txt -p 52 -k 1000 -r 83556 -o out_matrix
 bayenv2 -i rs316 -m hgdp_matrix_1 -e PCs.env -p 52 -k 1000 -n 4 -t -r 42 -o out_correlation
 calc_bf.sh hgdp_no_X_37_freqs PCs.env hgdp_matrix_1 52 1000 4

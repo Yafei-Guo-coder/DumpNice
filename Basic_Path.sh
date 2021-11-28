@@ -59,3 +59,6 @@ java -Xmx300g -jar /data2/yafei/004_Vmap3/Fastcall2/03_Jar/PrivatePlantGenetics.
 
 #DEF-est
 204:/data1/home/yafei/008_Software/dfe-alpha-release-2.16/Test/input/A.1fold_scaled.txt
+#bayenv
+204:yafei:/data1/home/yafei/003_Project3/Structure/E6_Landrace_locate_225/bayenv
+

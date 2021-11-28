@@ -178,3 +178,4 @@ for i in {001,002,003,004,007,008,009,010,013,014,015,016,019,020,021,022,025,02
 do
 zcat chr${i}.vcf.gz | awk '$1 ~ /^#/ {print $0;next} {print $0 | "sort -k1,1 -k2,2n"}' | bgzip -c > chr${i}.vcf2.gz
 done
+

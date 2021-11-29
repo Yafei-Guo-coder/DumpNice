@@ -4,14 +4,12 @@ java -Xmx200g -Xms512m -jar /data1/home/yafei/008_Software/PGDSpider_2.1.1.5/PGD
 #please see the Bayenv2 manual for details about usage
 #make this script executable (chmod +x calc_bf.sh)
 #Usage: ./calc_bf.sh <Name of your SNPSFILE> <Name of your ENVFILE> <Name of your MATFILE> <Nuber of populations> <Number of MCMC iterations> <Number of environmental factors>
-
 SNPFILE=$1
 ENVFILE=$2
 MATFILE=$3
 POPNUM=$4
 ITNUM=$5
 ENVNUM=$6
-
 
 split -a 10 -l 2 $SNPFILE snp_batch
 
@@ -80,12 +78,12 @@ plot(1:30, wss, type="b", xlab="Number of Clusters",
      
 #kmeans聚类，标准化后
 data2<- data2[,c(1:22)]
-km <- kmeans(df,13,iter.max = 5000)
+km <- kmeans(df,11,iter.max = 10000)
 km <- kmeans(data2, 11,iter.max = 5000) #用于画地图
 fviz_cluster(km, data = df,
   #palette = c("#2E9FDF", "#00AFBB", "#E7B800", "#FC4E07"),
   ellipse.type = "euclid",
-  star.plot = F, 
+  star.plot = T, 
   repel = TRUE,
   ggtheme = theme_minimal()
 )
@@ -113,26 +111,33 @@ lat_mean <- tapply(data2[,21],data2$type,mean,na.rm = TRUE)
 lon_mean <- tapply(data2[,22],data2$type,mean,na.rm = TRUE)
 data2$cluster1 <- NA
 data2$cluster2 <- NA
-for(i in 1:224) {
-  for(j in 1:14){
+for(i in 1:219) {
+  for(j in 1:8){
     if(data2[i,23] == j ){
       data2[i,24] <- as.numeric(lat_mean[j])
       data2[i,25] <- as.numeric(lon_mean[j])
     } 
   }
 }
-write.table(data2,"30_cluster.txt",sep="\t",row.names = F,quote=F)
+write.table(data2,"13_cluster.txt",sep="\t",row.names = T,quote=F)
 
 -----------------------------地图上展示聚类结果--------
 #new <- data.frame(cluster1=km$centers[,21], cluster2=km$centers[,22],size = km$size)
+data <- read.table("13_cluster.txt",header=T,stringsAsFactors = F)
 library(maps)
+library(ggplot2)
 mp<-NULL
 mapworld<-borders("world",colour = "gray70",fill="gray70") 
-mp<-ggplot()+mapworld+ylim(-90,90)
-mp_40<-mp+geom_point(aes(x=data2$Logititude, y=data2$Latitude,color = as.factor(data2$type)))+
+mp<-ggplot()+mapworld+ylim(-50,60)
+mp_13<-mp+geom_point(aes(x=data2$Logititude, y=data2$Latitude,color = as.factor(data2$type)))+
   scale_size(range=c(1,1))+ 
   theme_classic()
-mp_40
+  
+data <- read.table("type.txt",header=T,stringsAsFactors = F)
+mp_13<- mp+geom_point(aes(x=data$cluster2, y=data$cluster1,size=data$Type))+
+  #scale_size(range=c(1,1))+ 
+  theme_classic()
+mp_13
 
 
 

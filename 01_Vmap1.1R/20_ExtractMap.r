@@ -1,4 +1,8 @@
 library(raster)
+library(rgdal)
+library(rasterVis)
+library(RColorBrewer)
+library(ggplot2)
 setwd("/Volumes/HP x750w/wc2.1_30s_bio")
 temp1 <- raster("wc2.1_30s_bio_1.tif")
 temp2 <- raster("wc2.1_30s_bio_2.tif")
@@ -77,3 +81,22 @@ rownames(temp.data) <- taxa[,1]
 all <- temp.data[,-c(1,2)]
 setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/")
 write.table(all, "select_bio2.txt", sep="\t", row.names = T,quote=F)
+
+
+colr <- colorRampPalette(brewer.pal(11, 'RdYlBu'))
+oregon <- readOGR('.', 'Oregon_10N')
+levelplot(temp5, 
+          margin=FALSE,# suppress marginal graphics
+          ylim=c(-50,60),
+          colorkey=list(
+            space='bottom',                   # plot legend at bottom
+            labels=list(at=-5:5, font=4)      # legend ticks and labels 
+          ),    
+          par.settings=list(
+            axis.line=list(col='transparent') # suppress axes and legend outline
+          ),
+          scales=list(draw=FALSE),            # suppress axis labels
+          col.regions=colr,                   # colour ramp
+          at=seq(-5, 50)) 
+  #layer(sp.polygons(oregon, lwd=3))           # add oregon SPDF with latticeExtra::layer
+

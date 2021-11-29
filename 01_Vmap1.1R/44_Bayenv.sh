@@ -52,6 +52,8 @@ bayenv2 -i chr36.LD.env -s samplesize.txt -p 5 -k 100000 -r 83556 -o chr36.matri
 ./calc_bf.sh chr36.maf0.01.env format2.txt chr36.matrix 5 100000 22
 #bayenv2 -i rs316 -m hgdp_matrix_1 -e PCs.env -p 52 -k 1000 -n 4 -t -r 42 -o out_correlation
 
+#根据环境变量对样本进行聚类
+#使用05_Sample_Cluster.r: working directory: /Users/guoyafei/Documents/01_Migration/02_Environment/04_bayenv
 
 
 

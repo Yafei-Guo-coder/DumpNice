@@ -72,13 +72,13 @@ data2<- data2[,c(1:22)]
 mydata <- data2
 mydata <- df
 wss <- (nrow(mydata)-1)*sum(apply(mydata,2,var))
-for (i in 2:30) wss[i] <- sum(kmeans(mydata,centers=i)$withinss)
-plot(1:30, wss, type="b", xlab="Number of Clusters",
+for (i in 2:20) wss[i] <- sum(kmeans(mydata,centers=i)$withinss)
+plot(1:20, wss, type="b", xlab="Number of Clusters",
      ylab="Within groups sum of squares")
      
 #kmeans聚类，标准化后
 data2<- data2[,c(1:22)]
-km <- kmeans(df,11,iter.max = 10000)
+km <- kmeans(df,13,iter.max = 10000)
 km <- kmeans(data2, 11,iter.max = 5000) #用于画地图
 fviz_cluster(km, data = df,
   #palette = c("#2E9FDF", "#00AFBB", "#E7B800", "#FC4E07"),
@@ -128,7 +128,7 @@ library(maps)
 library(ggplot2)
 mp<-NULL
 mapworld<-borders("world",colour = "gray70",fill="gray70") 
-mp<-ggplot()+mapworld+ylim(-50,60)
+mp<-ggplot()+mapworld+ylim(-50,80)
 mp_13<-mp+geom_point(aes(x=data2$Logititude, y=data2$Latitude,color = as.factor(data2$type)))+
   scale_size(range=c(1,1))+ 
   theme_classic()

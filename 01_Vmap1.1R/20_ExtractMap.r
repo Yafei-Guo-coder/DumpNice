@@ -4,6 +4,7 @@ library(rasterVis)
 library(RColorBrewer)
 library(ggplot2)
 setwd("/Volumes/HP x750w/wc2.1_30s_bio")
+setwd("/Volumes/HP x750w/wc2.1_2.5m_tmax_2010-2018")
 temp1 <- raster("wc2.1_30s_bio_1.tif")
 temp2 <- raster("wc2.1_30s_bio_2.tif")
 temp3 <- raster("wc2.1_30s_bio_3.tif")
@@ -83,9 +84,18 @@ setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01
 write.table(all, "select_bio2.txt", sep="\t", row.names = T,quote=F)
 
 
+
+
+temp6_2018 <- raster("wc2.1_2.5m_tmax_2018-06.tif")
+temp6_2017 <- raster("wc2.1_2.5m_tmax_2017-06.tif")
+temp6_2016 <- raster("wc2.1_2.5m_tmax_2016-06.tif")
+temp6_2015 <- raster("wc2.1_2.5m_tmax_2015-06.tif")
+temp6_2014 <- raster("wc2.1_2.5m_tmax_2014-06.tif")
+temp6_2013 <- raster("wc2.1_2.5m_tmax_2013-06.tif")
+
 colr <- colorRampPalette(brewer.pal(11, 'RdYlBu'))
 oregon <- readOGR('.', 'Oregon_10N')
-levelplot(temp5, 
+levelplot(temp6_2015, 
           margin=FALSE,# suppress marginal graphics
           ylim=c(-50,60),
           colorkey=list(
@@ -97,6 +107,6 @@ levelplot(temp5,
           ),
           scales=list(draw=FALSE),            # suppress axis labels
           col.regions=colr,                   # colour ramp
-          at=seq(-5, 50)) 
+          at=seq(-10, 50)) 
   #layer(sp.polygons(oregon, lwd=3))           # add oregon SPDF with latticeExtra::layer
 

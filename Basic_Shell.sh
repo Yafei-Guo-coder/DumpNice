@@ -179,3 +179,24 @@ do
 zcat chr${i}.vcf.gz | awk '$1 ~ /^#/ {print $0;next} {print $0 | "sort -k1,1 -k2,2n"}' | bgzip -c > chr${i}.vcf2.gz
 done
 
+利用bedtools统计VCF文件中各染色体不同区域中的变异数量
+#1.获得基因组的各染色体的长度信息
+samtools faidx genome.fa
+#生成gemome.fa.fai文件第一列为染色体，第二列为对应染色体长度
+#2.根据染色体的长度产出区域文件
+bedtools makewindows -g genome.fa.fai -w 100000 >region.bed
+#3.输入vcf文件统计不同区域里面变异个数
+bedtools coverage -a region.bed -b q4.vcf -counts >result.txt
+
+#sed里面引用shell变量
+a="one"
+b="two"
+# 第一种：
+eval sed -i ’s/$a/$b/’ filename
+# 第二种（推荐）：
+sed -i "s/$a/$b/" filename
+# 第三种：
+sed -i ’s/’$a’/’$b’/’ filename 
+# 第四种：
+sed -i s/$a/$b/ filename
+

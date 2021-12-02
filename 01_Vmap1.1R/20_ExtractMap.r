@@ -83,9 +83,6 @@ all <- temp.data[,-c(1,2)]
 setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/")
 write.table(all, "select_bio2.txt", sep="\t", row.names = T,quote=F)
 
-
-
-
 temp6_2018 <- raster("wc2.1_2.5m_tmax_2018-06.tif")
 temp6_2017 <- raster("wc2.1_2.5m_tmax_2017-06.tif")
 temp6_2016 <- raster("wc2.1_2.5m_tmax_2016-06.tif")

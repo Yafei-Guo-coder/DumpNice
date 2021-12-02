@@ -23,7 +23,7 @@ rm -f snp_batch*
 #Working directory:
 #204:yafei:/data1/home/yafei/003_Project3/Structure/E6_Landrace_locate_225/bayenv
 #准备环境变量文件
-awk 'NR==FNR{a[$1]=$2;b[$1]=$1}NR!=FNR{if($1 in b) print $0,a[$1]}' pop.txt 225env.txt | sort -k24,24 > merge_env.txt
+awk 'NR==FNR{a[$1]=$2;b[$1]=$1}NR!=FNR{if($1 in b) print $0"\t"a[$1]}' pop.txt 225env.txt | sort -k24,24 > merge_env.txt
 datamash groupby 24 mean 2 mean 3 mean 4 mean 5 mean 6 mean 7 mean 8 mean 9 mean 10 mean 11 mean 12 mean 13 mean 14 mean 15 mean 16 mean 17 mean 18 mean 19 mean 20 mean 21 mean 22 mean 23 < merge_env.txt | datamash transpose > format1.txt
 #R
 data <- read.table("format1.txt",header=T,stringsAsFactors=F)
@@ -31,7 +31,9 @@ m <- apply(data,1,mean)
 s <- apply(data,1,sd)
 sub <- (data-m)/s
 write.table(sub,"format2.txt", sep="\t", quote=F,row.names=F)
-#去掉第一行就是bayenv的输入文件
+#去掉第一行就是bayenv的输入文件。
+#调整pop的顺序。
+#awk '{print $1"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12"\t"$13"\t"$2"\t"$3"\t"$4"\t"$5}' format2.txt  > format3.txt
 #shell
 #datamash transpose < format2.txt > format3.txt
 
@@ -50,6 +52,10 @@ bayenv2 -i chr36.LD.env -s samplesize.txt -p 5 -k 100000 -r 83556 -o chr36.matri
 ./calc_bf.sh chr36.maf0.01.env format2.txt chr36.matrix 5 100000 22
 #bayenv2 -i rs316 -m hgdp_matrix_1 -e PCs.env -p 52 -k 1000 -n 4 -t -r 42 -o out_correlation
 
+
+./calc_bf.sh chr1.1-20000001.envgenofile 13pop.env matrix/A.matrix 13 10000 22
+bayenv2 -i test.txt -m matrix/A.matrix -e 13pop.env -p 13 -k 10000 -n 22 -t -r 42 -o out_correlation
+./calc_bf.sh Aenvgenofile/chr8.80000001-100000001.envgenofile ENVBAY/13pop.env matrix/A.matrix 13 10000 22
 #根据环境变量对样本进行聚类
 #使用05_Sample_Cluster.r: working directory: /Users/guoyafei/Documents/01_Migration/02_Environment/04_bayenv
 library(cluster)

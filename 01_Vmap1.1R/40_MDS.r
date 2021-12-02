@@ -84,3 +84,65 @@ points(-glob$points[index1,2],-glob$points[index1,1], col = "#80B1D3", cex = 1, 
 index1 = which(meta$Common_name=="Club_wheat")
 points(-glob$points[index1,2],-glob$points[index1,1], col = "#80B1D3", cex = 1, pch =2)
 
+library(gdata)
+library(ggplot2)
+library(RColorBrewer)
+library(ggrepel)
+display.brewer.all()
+scale_fill_brewer(palette = "RdYiBu")
+setwd("/Users/guoyafei/Documents/02_VmapIII/04_Statistics/05_MDS")
+anno <- read.xls("/Users/guoyafei/Documents/02_VmapIII/01_表格/V.2/Lulab_germplasm_Info.xlsx",sheet=1,na.strings=c("NA","#DIV/0!"))
+data <- read.table("ABlineage.maf0.01.mds", header=T, stringsAsFactors = F)
+data[1356:1408,1] <- c("ABD_1144","ABD_1145","ABD_1146","ABD_1147","ABD_1148","ABD_1149","ABD_1150","ABD_1151","ABD_1152","ABD_1153","ABD_1154","ABD_1155","ABD_1156","ABD_1157","ABD_1158","ABD_1159","ABD_1160","ABD_1161","ABD_1162","ABD_1163","ABD_1164","ABD_1165","ABD_1166","ABD_1167","ABD_1168","ABD_1169","ABD_1170","ABD_1171","ABD_1172","ABD_1173","ABD_1174","ABD_1175","ABD_1176","ABD_1177","ABD_1178","ABD_1179","ABD_1180","ABD_1181","ABD_1182","ABD_1183","ABD_1184","ABD_1185","ABD_1186","ABD_1187","ABD_1188","ABD_1189","ABD_1190","ABD_1191","ABD_1192","ABD_1193","ABD_1194","ABD_1195","ABD_1196")
+test <- merge(data,anno,by.x="FID",by.y="Taxa.vmap3.")
+
+color = scale_color_brewer(brewer.pal(6, "Set2")[c(1,2,3,4,6)])
+p <- ggplot(test, aes(C1, C2, color=as.factor(PCA_color) )) +
+  geom_point(size=3,shape=as.factor(test$PCA_shape)) +
+  scale_color_manual(values = c("#FC8D62","#8DA0CB","#E78AC3","#FFD92F")) +
+  theme_classic()+
+  theme(panel.grid = element_blank(), panel.background = element_rect(color = 'black', fill = 'transparent'), plot.title = element_text(hjust = 0.5), legend.key = element_rect(fill = 'transparent')) + 
+  theme(panel.border = element_blank()) +
+  guides(fill=guide_legend(title=NULL))
+
+#四倍体
+tetra <- test[which(test$Common_name == "Landrace" | test$Common_name == "Tibet_Landrace" |test$Common_name =="Club_wheat"  | test$Common_name == "Indian_dwarf_wheat" | test$Common_name == "Yunan_wheat" | test$Common_name == "Xinjiang_wheat" | test$Common_name == "Vavilovii"),]
+tetra <- test[which(test$PCA_color ==2 &test$PCA_color ==1 & test$PCA_color ==3),]
+tetra <- test[which(test$PCA_color ==1 & test$add_continent != "NA" ),]
+tetra <- test[which(test$add_continent != "NA" & test$Common_name == "Landrace" |test$Common_name == "Tibet_Landrace" | test$Common_name =="Macha"  | test$Common_name == "Spelt" | test$Common_name == "Persian_wheat" | test$Common_name == "Xinjiang_wheat" | test$Common_name == "Polish_wheat" | test$Common_name == "Domesticated_emmer"| test$Common_name == "Rivet_wheat"),]
+
+tetra <- test[which(test$add_continent != "NA" & test$Common_name == "OtherHexaploid" | test$Common_name == "Landrace"),]
+tetra <- test[which(test$Common_name != "Cultivar" &test$Common_name != "Cultivar" & test$Common_name != "OtherHexaploid" & test$Common_name != "Synthetichexaploid"),]
+tetra <- test[which(test$Common_name == "Landrace" | test$Common_name == "Tibet_Landrace" |test$Common_name =="Club_wheat"  | test$Common_name == "Indian_dwarf_wheat" | test$Common_name == "Yunan_wheat" | test$Common_name == "Xinjiang_wheat" | test$Common_name == "Vavilovii"  | test$Common_name == "Strangulata"),]
+tetra <- test[which(test$Common_name == "Landrace" | test$Common_name == "Tibet_Landrace" |test$Common_name =="Club_wheat"  | test$Common_name == "Indian_dwarf_wheat" | test$Common_name == "Yunan_wheat" | test$Common_name == "Xinjiang_wheat" | test$Common_name == "Vavilovii" ),]
+tetra <- test[which(test$Common_name == "Cultivar"),]
+tetra <- test[which(test$Common_name == "Cultivar" | test$Common_name == "Landrace"| test$Common_name == "Strangulata" ),]
+
+ggplot(tetra, aes(C1, C2, color=as.factor(tetra$add_continent),shape=as.factor(tetra$Common_name))) +
+  geom_point(size=3) +
+  #scale_color_manual(values = c("#FC8D62","#8DA0CB","#E78AC3","#FFD92F")) +
+  scale_color_manual(values = c(brewer.pal(12, "Set3")[c(1:12)]),)+
+  scale_shape_manual(values = c(0,1,2,3,4,5,6,7,8,9,10,11))+
+  theme_classic() +
+  geom_label_repel(aes(label =tetra$FID), size = 3,  show.legend = FALSE)
+
+
+ggplot(tetra, aes(C1, C2, color=as.factor(tetra$PCA_color),shape=as.factor(tetra$Common_name))) +
+  geom_point(size=3) +
+  #scale_color_manual(values = c("#FC8D62","#8DA0CB","#E78AC3","#FFD92F")) +
+  scale_color_manual(values = brewer.pal(12, "Set3")[c(1:12)])+
+  scale_shape_manual(values = c(0,1,2,3,4,5,6,7,8,9,10,11))+
+  theme_classic() +
+  geom_label_repel(aes(label =tetra$FID), size = 3,  show.legend = FALSE)
+
+strang <- read.table("strangulata.txt",header=F,stringsAsFactors = F)
+library(maps)
+library(ggplot2)
+mp<-NULL
+mapworld<-borders("world",colour = "gray70",fill="gray70") 
+mp<-ggplot()+mapworld+ylim(-50,80)
+mp_13<-mp+geom_point(aes(x=strang$V4, y=strang$V3,color = as.factor(strang$V6)))+
+  scale_size(range=c(1,1))+ 
+  theme_classic()
+
+

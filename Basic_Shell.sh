@@ -200,3 +200,11 @@ sed -i ’s/’$a’/’$b’/’ filename
 # 第四种：
 sed -i s/$a/$b/ filename
 
+bcftools concat chr001.vcf.gz chr002.vcf.gz chr003.vcf.gz chr004.vcf.gz chr007.vcf.gz chr008.vcf.gz chr009.vcf.gz chr010.vcf.gz chr013.vcf.gz chr014.vcf.gz chr015.vcf.gz chr016.vcf.gz chr019.vcf.gz chr020.vcf.gz chr021.vcf.gz chr022.vcf.gz chr025.vcf.gz chr026.vcf.gz chr027.vcf.gz chr028.vcf.gz chr031.vcf.gz chr032.vcf.gz chr033.vcf.gz chr034.vcf.gz chr037.vcf.gz chr038.vcf.gz chr039.vcf.gz chr040.vcf.gz -o ABlineage.vcf.gz -O z &
+bcftools concat chr005.vcf.gz chr006.vcf.gz chr011.vcf.gz chr012.vcf.gz chr017.vcf.gz chr018.vcf.gz chr023.vcf.gz chr024.vcf.gz chr029.vcf.gz chr030.vcf.gz chr035.vcf.gz chr036.vcf.gz chr041.vcf.gz chr042.vcf.gz -o Dlineage.vcf.gz -O z &
+
+
+
+
+
+

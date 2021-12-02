@@ -8,6 +8,7 @@
 --------------------------Call SNP------------------
 #ABlineage:
   先call了1,355个（1,143AABBDD & 212AABB），再call了先导了53个，用bcftools合并。共1,408个样本。
+  bcftools merge chr001_VMap3.vcf.gz chr001-53.vcf.gz -o /data4/home/yafei/vcf_AB1/Out_AB/chr001_VMap3.vcf.gz -O z 
 #Dlineage:
   一起call了1,416个样本（1,196AABBDD & 220个DD）。
 
@@ -48,9 +49,22 @@ Total	875152294	382760099	357139671	17857002
 
 ------------------------测试数据------------------------
 随机选取全基因组 5% 的snp，共 17.86M 做测试。
+产生maf 0.01文件：204:/data4/home/yafei/vcf_AB1/Merge/15M/Maf0.01 & /data4/home/yafei/vcf_AB1/Merge/15M/Maf0.01/Lineage
+vcftools --gzvcf chr${chr}.E6all.vcf.gz --maf 0.01 --recode --recode-INFO-all --out 5k.$gene.$chr.$from-$to
+产生maf 0.05文件：204:/data4/home/yafei/vcf_AB1/Merge/15M/Maf0.05 & /data4/home/yafei/vcf_AB1/Merge/15M/Maf0.05/Lineage
+vcftools --gzvcf chr${chr}.E6all.vcf.gz --maf 0.05 --chr $chr --from-bp $from --to-bp $to  --recode --recode-INFO-all --out 5k.$gene.$chr.$from-$to
 
+bcftools concat chr001.vcf.gz chr002.vcf.gz chr003.vcf.gz chr004.vcf.gz chr007.vcf.gz chr008.vcf.gz chr009.vcf.gz chr010.vcf.gz chr013.vcf.gz chr014.vcf.gz chr015.vcf.gz chr016.vcf.gz chr019.vcf.gz chr020.vcf.gz chr021.vcf.gz chr022.vcf.gz chr025.vcf.gz chr026.vcf.gz chr027.vcf.gz chr028.vcf.gz chr031.vcf.gz chr032.vcf.gz chr033.vcf.gz chr034.vcf.gz chr037.vcf.gz chr038.vcf.gz chr039.vcf.gz chr040.vcf.gz -o ABlineage.vcf.gz -O z &
+bcftools concat chr005.vcf.gz chr006.vcf.gz chr011.vcf.gz chr012.vcf.gz chr017.vcf.gz chr018.vcf.gz chr023.vcf.gz chr024.vcf.gz chr029.vcf.gz chr030.vcf.gz chr035.vcf.gz chr036.vcf.gz chr041.vcf.gz chr042.vcf.gz -o Dlineage.vcf.gz -O z &
 
-
+1.算SNP的密度:/data4/home/yafei/vcf_AB1/Merge/15M/SnpDensity
+2.构树:
+3.MDS:/data4/home/yafei/vcf_AB1/Merge/15M/MDS
+#MDS
+plink --vcf /data4/home/yafei/vcf_AB1/Merge/15M/Maf0.01/Lineage/ABlineage.vcf.gz --mds-plot 10 eigendecomp --cluster --double-id --autosome-num 42 --out ABlineage.maf0.01
+plink --vcf /data4/home/yafei/vcf_AB1/Merge/15M/Maf0.01/Lineage/Dlineage.vcf.gz --mds-plot 10 eigendecomp --cluster --double-id --autosome-num 42 --out Dlineage.maf0.01
+plink --vcf /data4/home/yafei/vcf_AB1/Merge/15M/Maf0.05/Lineage/ABlineage.vcf.gz --mds-plot 10 eigendecomp --cluster --double-id --autosome-num 42 --out ABlineage.maf0.05
+plink --vcf /data4/home/yafei/vcf_AB1/Merge/15M/Maf0.05/Lineage/Dlineage.vcf.gz --mds-plot 10 eigendecomp --cluster --double-id --autosome-num 42 --out Dlineage.maf0.05
 
 
 

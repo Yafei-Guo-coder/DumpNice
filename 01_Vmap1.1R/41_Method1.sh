@@ -84,7 +84,6 @@ do
 grep -P "^$i" GeneLulabNoUn1_1.gff3 >> A.gff3
 done
 
-
 for i in {1,2,3,4,7,8,9,10,13,14,15,16,19,20,21,22,25,26,27,28,31,32,33,34,37,38,39,40}
 do
 grep -P "^$i" GeneLulabNoUn1_1.gff3 >> AB.gff3
@@ -93,7 +92,8 @@ done
 for i in {1..42}
 do
 WGS --model gff3 --chr $i --type gff2exon --file GeneLulabNoUn1_1.gff3 --out chr$i.exon &
-  done
+done
+
 (base) [xuebo@lulab1 gff]$ cat getGenic.sh 
 for i in {1..42}
 do

@@ -108,7 +108,7 @@ p <- ggplot(test, aes(C1, C2, color=as.factor(PCA_color) )) +
 #四倍体
 tetra <- test[which(test$Common_name == "Landrace" | test$Common_name == "Tibet_Landrace" |test$Common_name =="Club_wheat"  | test$Common_name == "Indian_dwarf_wheat" | test$Common_name == "Yunan_wheat" | test$Common_name == "Xinjiang_wheat" | test$Common_name == "Vavilovii"),]
 tetra <- test[which(test$PCA_color ==2 &test$PCA_color ==1 & test$PCA_color ==3),]
-tetra <- test[which(test$PCA_color ==1 & test$add_continent != "NA" ),]
+tetra <- test[which(test$PCA_color ==2 & test$add_continent != "NA" ),]
 tetra <- test[which(test$add_continent != "NA" & test$Common_name == "Landrace" |test$Common_name == "Tibet_Landrace" | test$Common_name =="Macha"  | test$Common_name == "Spelt" | test$Common_name == "Persian_wheat" | test$Common_name == "Xinjiang_wheat" | test$Common_name == "Polish_wheat" | test$Common_name == "Domesticated_emmer"| test$Common_name == "Rivet_wheat"),]
 
 tetra <- test[which(test$add_continent != "NA" & test$Common_name == "OtherHexaploid" | test$Common_name == "Landrace"),]

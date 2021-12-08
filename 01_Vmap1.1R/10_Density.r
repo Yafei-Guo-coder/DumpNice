@@ -1,16 +1,16 @@
-install.packages('RIdeogram')
+#install.packages('RIdeogram')
 require(RIdeogram)
 
-setwd("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/01_BasicStatistic/13_Plots/01_Density")
+setwd("/Users/guoyafei/Documents/01_Migration/01_BasicStatistic/13_Plots/01_Density")
 #gene_density <- read.table("ArinaLrFor_LTR_1.txt", header=T,stringsAsFactors = F)
 gene_density2 <- read.table("gene_density.txt", header=T, stringsAsFactors = F)
+gene_density <- read.table("VMap3_SnpDensity.txt", header=T, stringsAsFactors = F)
 wheat_karyotype <- read.table("wheat_karyotype.txt", header=T, stringsAsFactors = F)
-ideogram(karyotype = wheat_karyotype, overlaid = gene_density2)
+ideogram(karyotype = wheat_karyotype, overlaid = gene_density)
 convertSVG("chromosome.svg", device = "png")
 
 library(CMplot)
 setwd("/Users/guoyafei/Documents/01_个人项目/02_VmapIII/03_Fastcall2/测试数据")
-
 mydata<-read.table("/Users/guoyafei/Documents/01_个人项目/02_VmapIII/03_Fastcall2/测试数据/fastcall2_001_pos.txt",header=TRUE,sep="\t")
 head(mydata)
 # snp         chr       pos

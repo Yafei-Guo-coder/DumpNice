@@ -145,6 +145,90 @@ mp_13<- mp+geom_point(aes(x=data$cluster2, y=data$cluster1,size=data$Type))+
   theme_classic()
 mp_13
 
+#-------------------------------结果处理---------------------------------
+Workinig directory:
+  SNPsfile：203@xuebo /data1/home/xuebo/Projects/Speciation/BAYENV/genofile/Dlineage2
+  结果文件：203@xuebo /data1/home/xuebo/Projects/Speciation/BAYENV/bayenv2_out_lineageD2
+  204@yafei /data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY
+120327.bayenv.top5.bed是top5的snp位点。
+18203.merge50k.bayenv.top5.bed是合并距离小于50k的snp，并且把单个的snp去掉。
+然后在xuebo@204:/data2/xuebo/Projects/Speciation/xpclr/Selection_V3/smooth/lineage_V2/Top5%
+step1:提取XPCLR和bayenv重叠的XPCLR区域
+for i in `ls *_D.top5.bed`
+do
+bedtools intersect -a $i -b 18203.merge50k.bayenv.top5.bed  -wa > bayenv_over/$i
+done
+step2:定位已注释基因:gff
+for i in `ls *bed`
+do
+bedtools intersect -a ../../gene_v1.1_Lulab.gff3 -b $i -wa | awk '{print $1"\t"$4"\t"$5"\t"$9}' | awk -F";" '{print $1}' | sort | uniq > ${i::-3}gff.gene
+done
+
+#定位已克隆基因:cloned gene 以及定位抗病基因:nlr gene
+for i in `ls *gff.gene`
+do
+awk -F"ID=" '{print $2}' $i > ${i::-8}gene2
+done
+for i in `ls *.gene2`
+do
+grep -w -f $i ../../all_cloned_gene.txt > ${i::-5}cloned.gene
+#grep -w -f $i ../nlr_gene.txt > nlr/${i::-5}cloned.gene
+done
+rm *gene2
+
+ls *cloned.gene |xargs -n1 > cloned_gene.txt
+for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done | awk '{print $1}' | awk -F"_smooth" '{print $1}'|uniq > file_prefix.txt
+#change file format to plot heatmap(A,B,D lineage seperate)
+#A lineage
+ls *A.top5.cloned.gene |xargs -n1 > A_cloned_gene.txt
+sed 's/$/_smooth_A.top5.cloned.gene/' file_prefix.txt > A_file.txt
+for i in `cat A_cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $2}' | sort | uniq > A_gene.txt
+
+#B lineage
+ls *B.top5.cloned.gene |xargs -n1 > B_cloned_gene.txt
+sed 's/$/_smooth_B.top5.cloned.gene/' file_prefix.txt> B_file.txt
+for i in `cat B_cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $2}' | sort | uniq > B_gene.txt
+
+#D lineage 
+ls *D.top5.cloned.gene |xargs -n1 > D_cloned_gene.txt
+sed 's/$/_smooth_D.top5.cloned.gene/' file_prefix.txt > D_file.txt
+for i in `cat D_cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $2}' | sort | uniq > D_gene.txt
+
+#R
+v <- "D"
+for ( i in c(1)){
+  filename <- paste(v[i],"_file.txt",sep="")
+  genename <- paste(v[i],"_gene.txt",sep="")
+  file <- read.table(filename,header=F,stringsAsFactors=F)
+  gene <- read.table(genename,header=F,stringsAsFactors=F)
+  files <- file[,1]
+  genes <- gene[,1]
+  x=vector()
+  for (j in files){
+    a<-paste(j,genes,sep=" ")
+    x <- c(x,a)
+  }
+  out <- paste(v[i],"_file_gene_mode.txt",sep="")
+  write.table(x,out,quote=F,row.names=F,col.names=F,sep="\t")
+}
+
+#shell
+#A lineage
+for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep A.top5.cloned.gene > A_postive_file_gene_mode.txt
+awk 'NR==FNR{a[$0]=$0}NR!=FNR{if($0 in a) {print a[$0]"\t1"} else print $0"\t"0}' A_postive_file_gene_mode.txt A_file_gene_mode.txt | awk -F"_smooth_" '{print $1"\t"$2}'|sed 's/ /\t/' > A_heatmap_format1.txt
+#B lineage
+for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep B.top5.cloned.gene > B_postive_file_gene_mode.txt
+awk 'NR==FNR{a[$0]=$0}NR!=FNR{if($0 in a) {print a[$0]"\t1"} else print $0"\t"0}' B_postive_file_gene_mode.txt B_file_gene_mode.txt | awk -F"_smooth_" '{print $1"\t"$2}'|sed 's/ /\t/' > B_heatmap_format1.txt
+#D lineage
+for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep D.top5.cloned.gene > D_postive_file_gene_mode.txt
+awk 'NR==FNR{a[$0]=$0}NR!=FNR{if($0 in a) {print a[$0]"\t1"} else print $0"\t"0}' D_postive_file_gene_mode.txt D_file_gene_mode.txt | awk -F"_smooth_" '{print $1"\t"$2}'|sed 's/ /\t/' > D_heatmap_format1.txt
+
+step3:提取Sr45和Sr33的基因区上下游50k snp，重新做bayenv。
+
+
+
+
+
 
 
 

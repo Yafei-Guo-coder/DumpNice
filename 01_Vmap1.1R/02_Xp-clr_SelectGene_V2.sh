@@ -95,6 +95,7 @@ for ( i in c(1:3)){
   out <- paste(v[i],"_file_gene_mode.txt",sep="")
   write.table(x,out,quote=F,row.names=F,col.names=F,sep="\t")
 }
+
 #shell
 #A lineage
 for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep A.top5.cloned.gene > A_postive_file_gene_mode.txt

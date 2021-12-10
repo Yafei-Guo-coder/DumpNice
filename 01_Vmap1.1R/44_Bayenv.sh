@@ -224,12 +224,18 @@ for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{pr
 awk 'NR==FNR{a[$0]=$0}NR!=FNR{if($0 in a) {print a[$0]"\t1"} else print $0"\t"0}' D_postive_file_gene_mode.txt D_file_gene_mode.txt | awk -F"_smooth_" '{print $1"\t"$2}'|sed 's/ /\t/' > D_heatmap_format1.txt
 
 step3:提取Sr45和Sr33的基因区上下游50k snp，重新做bayenv。
+5	19341296	19346065	Sr45	TraesCS1D02G040400
+5	11451423	11459353	Sr33	TraesCS1D02G029100
+实际提取位置，基因区及其上下游50k：
+5	19291296	19396065
+5	11401423	11509353
 
+1.先从225个样本的vcf文件中提取出这些位点的snp
+#yafei@204:/data1/home/yafei/003_Project3/Structure/E6_Landrace_locate_225/Lineage
+bcftools filter Dlineage.E6_Landrace_locate.vcf.gz --regions 5:19291296-19396065 > Sr45.vcf &
+bcftools filter Dlineage.E6_Landrace_locate.vcf.gz --regions 5:11401423-11509353 > Sr33.vcf &
+bcftools concat Sr45.vcf Sr33.vcf -o Sr.vcf.gz -O z &
+2.格式转换
 
-
-
-
-
-
-
+3.跑bayenv
 

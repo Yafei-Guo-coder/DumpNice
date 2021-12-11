@@ -127,7 +127,7 @@ for(i in 1:219) {
 }
 write.table(data2,"13_cluster.txt",sep="\t",row.names = T,quote=F)
 
------------------------------地图上展示聚类结果--------
+----------------------------------------地图上展示聚类结果---------------------------------
 #new <- data.frame(cluster1=km$centers[,21], cluster2=km$centers[,22],size = km$size)
 data <- read.table("13_cluster.txt",header=T,stringsAsFactors = F)
 library(maps)
@@ -144,26 +144,57 @@ mp_13<- mp+geom_point(aes(x=data$cluster2, y=data$cluster1,size=data$Type))+
   #scale_size(range=c(1,1))+ 
   theme_classic()
 mp_13
+#-----------------------------------------结果处理-----------------------------------------
+结果文件路径:
+  筛选了LD的vcf文件：/data2/xuebo/Projects/Speciation/E6/Landrace_locate_225/Landrace_225_noAM_220_maf001/lineage(Blineage_Landrace_225_noAM_220_maf001_LD.vcf)
+  SNPsfileD：203@xuebo /data1/home/xuebo/Projects/Speciation/BAYENV/genofile/Dlineage2
+  SNPsfileB：203@xuebo /data1/home/xuebo/Projects/Speciation/BAYENV/genofile/Blineage
+  SNPsfileA：204@xuebo /data2/xuebo/Projects/Speciation/BAYENV/genofile/Alineage2
+  D结果文件：203@xuebo /data1/home/xuebo/Projects/Speciation/BAYENV/bayenv2_out_lineageD2
+  B结果文件：203@xuebo /data1/home/xuebo/Projects/Speciation/BAYENV/bayenv2_out_lineageB
+  A结果文件：204@xuebo /data2/xuebo/Projects/Speciation/BAYENV/bayenv2_out_lineageA
+结果处理:
+  把结果合并在A_out.bf，B_out.bf，D_out.bf文件中。
+  提取vcf文件的位点(A:444085; B:498827; D:482174)，给bf文件进行位点注释(A:235606; B:276343; D:321195)。
+total: 235606	276343	321195
+Top001: 2356	2763	3211
+Top005: 11780	13817	16059 
+005Snp: 251773 303553 352583
+for i in {"A","B","D"}
+do
+awk 'NR==FNR{a[$1]=$1;b[$1]=$0;c[$1]=$2"-"$3}NR!=FNR{print b[$1]"\t"c[$1]"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14"\t"$15"\t"$16"\t"$17"\t"$18"\t"$19"\t"$20"\t"$21"\t"$22"\t"$23}' /data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY/${i}/${i}.pos2.txt /data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY/${i}/${i}_out.bf > /data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY/${i}/${i}_out.bf2
+bash Aget005.sh
+#cat *top5.txt | awk '{print $2"\t"$3-1"\t"$3}' | sort -k1,1n -k2,2n | uniq  >102048.bayenv.top5.bed
+#bedtools merge -d 50000 -i 29887.bayenv.top5.bed |awk '{if($3-$2 != 1) print $0}' > 3491.merge50k.bayenv.top5.bed
+204@yafei /data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY
+29887.bayenv.top5.bed是Alineage的top5的snp位点。
+3491.merge50k.bayenv.top5.bed是合并Alineage的距离小于50k的snp，并且把单个的snp去掉。
+102048.bayenv.top5.bed是Blineage的top5的snp位点。
+13906.merge50k.bayenv.top5.bed是合并Blineage的距离小于50k的snp，并且把单个的snp去掉。
+120327.bayenv.top5.bed是Dlineage的top5的snp位点。
+18203.merge50k.bayenv.top5.bed是合并Dlineage的距离小于50k的snp，并且把单个的snp去掉。
+比对基因:
+204@xuebo /data2/xuebo/Projects/Speciation/xpclr/Selection_V3/smooth/lineage_V2/Top5%
 
-#-------------------------------结果处理---------------------------------
-Workinig directory:
-  SNPsfile：203@xuebo /data1/home/xuebo/Projects/Speciation/BAYENV/genofile/Dlineage2
-  结果文件：203@xuebo /data1/home/xuebo/Projects/Speciation/BAYENV/bayenv2_out_lineageD2
-  204@yafei /data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY
-120327.bayenv.top5.bed是top5的snp位点。
-18203.merge50k.bayenv.top5.bed是合并距离小于50k的snp，并且把单个的snp去掉。
-然后在xuebo@204:/data2/xuebo/Projects/Speciation/xpclr/Selection_V3/smooth/lineage_V2/Top5%
-step1:提取XPCLR和bayenv重叠的XPCLR区域
+----------------------------step1:提取XPCLR和bayenv重叠的XPCLR区域-------------------------
+for i in `ls *_A.top5.bed`
+do
+bedtools intersect -a $i -b 3491.merge50k.bayenv.top5.bed  -wa > bayenv_over/$i
+done
+for i in `ls *_B.top5.bed`
+do
+bedtools intersect -a $i -b 13906.merge50k.bayenv.top5.bed  -wa > bayenv_over/$i
+done
 for i in `ls *_D.top5.bed`
 do
 bedtools intersect -a $i -b 18203.merge50k.bayenv.top5.bed  -wa > bayenv_over/$i
 done
-step2:定位已注释基因:gff
+
+-----------------------------------step2:定位已注释基因:gff--------------------------------
 for i in `ls *bed`
 do
 bedtools intersect -a ../../gene_v1.1_Lulab.gff3 -b $i -wa | awk '{print $1"\t"$4"\t"$5"\t"$9}' | awk -F";" '{print $1}' | sort | uniq > ${i::-3}gff.gene
 done
-
 #定位已克隆基因:cloned gene 以及定位抗病基因:nlr gene
 for i in `ls *gff.gene`
 do
@@ -175,7 +206,6 @@ grep -w -f $i ../../all_cloned_gene.txt > ${i::-5}cloned.gene
 #grep -w -f $i ../nlr_gene.txt > nlr/${i::-5}cloned.gene
 done
 rm *gene2
-
 ls *cloned.gene |xargs -n1 > cloned_gene.txt
 for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done | awk '{print $1}' | awk -F"_smooth" '{print $1}'|uniq > file_prefix.txt
 #change file format to plot heatmap(A,B,D lineage seperate)
@@ -183,20 +213,17 @@ for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done | awk '{p
 ls *A.top5.cloned.gene |xargs -n1 > A_cloned_gene.txt
 sed 's/$/_smooth_A.top5.cloned.gene/' file_prefix.txt > A_file.txt
 for i in `cat A_cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $2}' | sort | uniq > A_gene.txt
-
 #B lineage
 ls *B.top5.cloned.gene |xargs -n1 > B_cloned_gene.txt
 sed 's/$/_smooth_B.top5.cloned.gene/' file_prefix.txt> B_file.txt
 for i in `cat B_cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $2}' | sort | uniq > B_gene.txt
-
 #D lineage 
 ls *D.top5.cloned.gene |xargs -n1 > D_cloned_gene.txt
 sed 's/$/_smooth_D.top5.cloned.gene/' file_prefix.txt > D_file.txt
 for i in `cat D_cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $2}' | sort | uniq > D_gene.txt
-
 #R
-v <- "D"
-for ( i in c(1)){
+v <- c("A","B","D")
+for ( i in c(1:3)){
   filename <- paste(v[i],"_file.txt",sep="")
   genename <- paste(v[i],"_gene.txt",sep="")
   file <- read.table(filename,header=F,stringsAsFactors=F)
@@ -211,7 +238,6 @@ for ( i in c(1)){
   out <- paste(v[i],"_file_gene_mode.txt",sep="")
   write.table(x,out,quote=F,row.names=F,col.names=F,sep="\t")
 }
-
 #shell
 #A lineage
 for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep A.top5.cloned.gene > A_postive_file_gene_mode.txt
@@ -223,7 +249,7 @@ awk 'NR==FNR{a[$0]=$0}NR!=FNR{if($0 in a) {print a[$0]"\t1"} else print $0"\t"0}
 for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep D.top5.cloned.gene > D_postive_file_gene_mode.txt
 awk 'NR==FNR{a[$0]=$0}NR!=FNR{if($0 in a) {print a[$0]"\t1"} else print $0"\t"0}' D_postive_file_gene_mode.txt D_file_gene_mode.txt | awk -F"_smooth_" '{print $1"\t"$2}'|sed 's/ /\t/' > D_heatmap_format1.txt
 
-step3:提取Sr45和Sr33的基因区上下游50k snp，重新做bayenv。
+----------------------step3:提取所有克隆基因区上下游50k snp，重新做bayenv------------------
 5	19341296	19346065	Sr45	TraesCS1D02G040400
 5	11451423	11459353	Sr33	TraesCS1D02G029100
 实际提取位置，基因区及其上下游50k：

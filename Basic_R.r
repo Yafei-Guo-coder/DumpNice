@@ -112,7 +112,6 @@ p = ggplot(data, aes(x = taxaNum,y = mean))+
     axis.title.x=element_text(size = 10),
   )+
   theme(legend.text = element_text(size=10),legend.title=element_blank(),axis.text.x = element_text(size = 10), axis.title.x = element_text(size = 10),axis.text.y = element_text(size = 10),axis.title.y = element_text(size = 10))
-
   #geom_text(aes(label = dat$Num),position=position_dodge(width = 0.5),size = 5,vjust = -0.25)+ ##########
 
 #聚类方法：

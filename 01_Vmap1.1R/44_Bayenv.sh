@@ -52,7 +52,6 @@ bayenv2 -i chr36.LD.env -s samplesize.txt -p 5 -k 100000 -r 83556 -o chr36.matri
 ./calc_bf.sh chr36.maf0.01.env format2.txt chr36.matrix 5 100000 22
 #bayenv2 -i rs316 -m hgdp_matrix_1 -e PCs.env -p 52 -k 1000 -n 4 -t -r 42 -o out_correlation
 
-
 ./calc_bf.sh chr1.1-20000001.envgenofile 13pop.env matrix/A.matrix 13 10000 22
 bayenv2 -i test.txt -m matrix/A.matrix -e 13pop.env -p 13 -k 10000 -n 22 -t -r 42 -o out_correlation
 ./calc_bf.sh Aenvgenofile/chr8.80000001-100000001.envgenofile ENVBAY/13pop.env matrix/A.matrix 13 10000 22
@@ -154,40 +153,47 @@ mp_13
   B结果文件：203@xuebo /data1/home/xuebo/Projects/Speciation/BAYENV/bayenv2_out_lineageB
   A结果文件：204@xuebo /data2/xuebo/Projects/Speciation/BAYENV/bayenv2_out_lineageA
 结果处理:
+  处理路径：204@yafei /data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY
   把结果合并在A_out.bf，B_out.bf，D_out.bf文件中。
   提取vcf文件的位点(A:444085; B:498827; D:482174)，给bf文件进行位点注释(A:235606; B:276343; D:321195)。
 total: 235606	276343	321195
 Top001: 2356	2763	3211
 Top005: 11780	13817	16059 
 005Snp: 251773 303553 352583
+uniqSnp: 30304 102996 120327
+
 for i in {"A","B","D"}
 do
-awk 'NR==FNR{a[$1]=$1;b[$1]=$0;c[$1]=$2"-"$3}NR!=FNR{print b[$1]"\t"c[$1]"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14"\t"$15"\t"$16"\t"$17"\t"$18"\t"$19"\t"$20"\t"$21"\t"$22"\t"$23}' /data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY/${i}/${i}.pos2.txt /data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY/${i}/${i}_out.bf > /data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY/${i}/${i}_out.bf2
-bash Aget005.sh
-#cat *top5.txt | awk '{print $2"\t"$3-1"\t"$3}' | sort -k1,1n -k2,2n | uniq  >102048.bayenv.top5.bed
-#bedtools merge -d 50000 -i 29887.bayenv.top5.bed |awk '{if($3-$2 != 1) print $0}' > 3491.merge50k.bayenv.top5.bed
+cd /data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY/${i}
+awk 'NR==FNR{a[$1]=$1;b[$1]=$0;c[$1]=$2"-"$3}NR!=FNR{print b[$1]"\t"c[$1]"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14"\t"$15"\t"$16"\t"$17"\t"$18"\t"$19"\t"$20"\t"$21"\t"$22"\t"$23}' ${i}.pos2.txt ${i}_out.bf > ${i}_out.bf2
+bash ${i}get005.sh
+cat *top5.txt | awk '{print $2"\t"$3-1"\t"$3}' | sort -k1,1n -k2,2n | uniq  > ${i}.bayenv.top5.bed
+bedtools merge -d 50000 -i ${i}.bayenv.top5.bed |awk '{if($3-$2 != 1) print $0}' > ${i}.merge50k.bayenv.top5.bed
+done
+
 204@yafei /data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY
-29887.bayenv.top5.bed是Alineage的top5的snp位点。
-3491.merge50k.bayenv.top5.bed是合并Alineage的距离小于50k的snp，并且把单个的snp去掉。
-102048.bayenv.top5.bed是Blineage的top5的snp位点。
-13906.merge50k.bayenv.top5.bed是合并Blineage的距离小于50k的snp，并且把单个的snp去掉。
+30304.bayenv.top5.bed是Alineage的top5的snp位点。
+3628.merge50k.bayenv.top5.bed是合并Alineage的距离小于50k的snp，并且把单个的snp去掉。
+102996.bayenv.top5.bed是Blineage的top5的snp位点。
+14470.merge50k.bayenv.top5.bed是合并Blineage的距离小于50k的snp，并且把单个的snp去掉。
 120327.bayenv.top5.bed是Dlineage的top5的snp位点。
-18203.merge50k.bayenv.top5.bed是合并Dlineage的距离小于50k的snp，并且把单个的snp去掉。
+14359.merge50k.bayenv.top5.bed是合并Dlineage的距离小于50k的snp，并且把单个的snp去掉。
+
 比对基因:
 204@xuebo /data2/xuebo/Projects/Speciation/xpclr/Selection_V3/smooth/lineage_V2/Top5%
 
 ----------------------------step1:提取XPCLR和bayenv重叠的XPCLR区域-------------------------
-for i in `ls *_A.top5.bed`
+for i in `ls *_A.shuf.top5.bed`
 do
-bedtools intersect -a $i -b 3491.merge50k.bayenv.top5.bed  -wa > bayenv_over/$i
+bedtools intersect -a $i -b A.merge10k.bayenv.top5.bed -wa |sort | uniq > bayenv_over/$i
 done
-for i in `ls *_B.top5.bed`
+for i in `ls *_B.shuf.top5.bed`
 do
-bedtools intersect -a $i -b 13906.merge50k.bayenv.top5.bed  -wa > bayenv_over/$i
+bedtools intersect -a $i -b B.merge10k.bayenv.top5.bed -wa |sort | uniq> bayenv_over/$i
 done
-for i in `ls *_D.top5.bed`
+for i in `ls *_D.shuf.top5.bed`
 do
-bedtools intersect -a $i -b 18203.merge50k.bayenv.top5.bed  -wa > bayenv_over/$i
+bedtools intersect -a $i -b D.merge10k.bayenv.top5.bed -wa |sort | uniq> bayenv_over/$i
 done
 
 -----------------------------------step2:定位已注释基因:gff--------------------------------
@@ -249,19 +255,207 @@ awk 'NR==FNR{a[$0]=$0}NR!=FNR{if($0 in a) {print a[$0]"\t1"} else print $0"\t"0}
 for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep D.top5.cloned.gene > D_postive_file_gene_mode.txt
 awk 'NR==FNR{a[$0]=$0}NR!=FNR{if($0 in a) {print a[$0]"\t1"} else print $0"\t"0}' D_postive_file_gene_mode.txt D_file_gene_mode.txt | awk -F"_smooth_" '{print $1"\t"$2}'|sed 's/ /\t/' > D_heatmap_format1.txt
 
-----------------------step3:提取所有克隆基因区上下游50k snp，重新做bayenv------------------
-5	19341296	19346065	Sr45	TraesCS1D02G040400
-5	11451423	11459353	Sr33	TraesCS1D02G029100
-实际提取位置，基因区及其上下游50k：
-5	19291296	19396065
-5	11401423	11509353
+library(reshape)
+name <- read.table("file_prefix.txt",header=F,stringsAsFactors=F)
+colnames(name) <- "file"
+v <- c("A","B","D")
+num <- c(1,0.6,0.2)
+for ( i in c(1:3)){
+  filename <- paste(v[i],"_heatmap_format1.txt",sep="")
+  file <- read.table(filename,header=F,stringsAsFactors=F)
+  sub <- file[,c(1,3,4)]
+  colnames(sub) <- c("file","gene","type")
+  sub[which(sub$type==1),3] <- num[i]
+  sub[which(sub$type==0),3] <- num[i]-0.2
+  mt <- melt(sub,id=c("file","gene"))
+  st <- cast(mt,file~variable+gene)
+  name<-merge(name,st,by="file") 
+}
+write.table(name,"heatmap_format2.txt",quote=F,row.names=F,col.names=T,sep="\t")
 
-1.先从225个样本的vcf文件中提取出这些位点的snp
+-----------------step3:提取所有克隆基因区上下游50k snp，重新做bayenv----------------
+Working directory: 
+  yafei@204: /data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY/Gene50k
+awk '{print $1"\t"$2-50000"\t"$3+50000}' clone.gene.txt > gene.50k.txt
+219个样本的VCF文件：/data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY/VCF/chr1.lineage_Landrace_225_noAM_220_maf001_LD.vcf
+
+1.区分A,B,D亚基因组
+awk '{output="chr"$1".txt"; print $0 > output}' gene.50k.txt 
+for i in {1..42}
+do
+bcftools view -R pos/chr${i}.txt /data2/yafei/003_Project3/Vmap1.1/E6/Landrace_locate_225/chr${i}.E6_Landrace_locate.vcf.gz -o Chr/chr{i}.gene.50k.vcf &
+done
+2.从225个样本的vcf文件中提取出这些位点的snp
 #yafei@204:/data1/home/yafei/003_Project3/Structure/E6_Landrace_locate_225/Lineage
-bcftools filter Dlineage.E6_Landrace_locate.vcf.gz --regions 5:19291296-19396065 > Sr45.vcf &
-bcftools filter Dlineage.E6_Landrace_locate.vcf.gz --regions 5:11401423-11509353 > Sr33.vcf &
-bcftools concat Sr45.vcf Sr33.vcf -o Sr.vcf.gz -O z &
-2.格式转换
+bcftools view -R A.gene.50k.txt /data1/home/yafei/003_Project3/Structure/E6_Landrace_locate_225/Lineage/ABlineage.E6_Landrace_locate.vcf.gz -o A.gene.50k.vcf.gz -O z 
+bcftools view -R B.gene.50k.txt /data1/home/yafei/003_Project3/Structure/E6_Landrace_locate_225/Lineage/ABlineage.E6_Landrace_locate.vcf.gz -o B.gene.50k.vcf.gz -O z 
+bcftools view -R D.gene.50k.txt /data1/home/yafei/003_Project3/Structure/E6_Landrace_locate_225/Lineage/Dlineage.E6_Landrace_locate.vcf.gz -o D.gene.50k.vcf.gz -O z 
+3.格式转换
+#!/bin/bash
+for chr in {1..42}
+do
+	java -jar -Xmx500g -Xms100g /data1/home/yafei/008_Software/PGDSpider_2.1.1.5/PGDSpider2-cli.jar -inputfile Chr/chr${chr}.gene.50k.vcf -inputformat VCF -outputfile envgenofile/chr${chr}.envgenofile -outputformat BAYENV -spid spid/VCF_BAYENV_chr${chr}.spid
+done
+4.跑bayenv
+./calc_bf.sh lineage/Alineage.envgenofile 13pop.env matrix/A.matrix 13 100000 22 Alineage_out
+./calc_bf.sh lineage/Blineage.envgenofile 13pop.env matrix/B.matrix 13 100000 22 Blineage_out
+./calc_bf.sh lineage/Dlineage.envgenofile 13pop.env matrix/D.matrix 13 100000 22 Dlineage_out
+5.结果解析
+awk '{print NR"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14"\t"$15"\t"$16"\t"$17"\t"$18"\t"$19"\t"$20"\t"$21"\t"$22"\t"$23}' Alineage_out.bf > Alineage_out.bf2
+awk '{print NR"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14"\t"$15"\t"$16"\t"$17"\t"$18"\t"$19"\t"$20"\t"$21"\t"$22"\t"$23}' Blineage_out.bf > Blineage_out.bf2
+awk '{print NR"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14"\t"$15"\t"$16"\t"$17"\t"$18"\t"$19"\t"$20"\t"$21"\t"$22"\t"$23}' Dlineage_out.bf > Dlineage_out.bf2
+zcat ../Alineage.gene.50k.vcf.gz | awk '{print $1"\t"$2}' |grep -v "#" | awk '{print NR"\t"$1"\t"$2}' > A.pos2.txt
+zcat ../Blineage.gene.50k.vcf.gz | awk '{print $1"\t"$2}' |grep -v "#" | awk '{print NR"\t"$1"\t"$2}' > B.pos2.txt
+zcat ../Dlineage.gene.50k.vcf.gz | awk '{print $1"\t"$2}' |grep -v "#" | awk '{print NR"\t"$1"\t"$2}' > D.pos2.txt
+for i in {"A","B","D"}
+do
+awk 'NR==FNR{a[$1]=$1;b[$1]=$0;c[$1]=$2"-"$3}NR!=FNR{print b[$1]"\t"c[$1]"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14"\t"$15"\t"$16"\t"$17"\t"$18"\t"$19"\t"$20"\t"$21"\t"$22"\t"$23}' ${i}.pos2.txt ${i}lineage_out.bf2 > ${i}lineage_out.bf2
+cat /data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY/${i}/${i}_out.bf2 ${i}lineage_out.bf2 > ${i}_out.bf2
+bash ${i}get005.sh
+cat ${i}bio*top5.txt | awk '{print $2"\t"$3-1"\t"$3}' | sort -k1,1n -k2,2n | uniq  > ${i}.bayenv.top5.bed
+bedtools merge -d 50000 -i ${i}.bayenv.top5.bed |awk '{if($3-$2 != 1) print $0}' > ${i}.merge50k.bayenv.top5.bed
+done
 
-3.跑bayenv
+--------------------------------------------------------重新统计---------------------------------------------------------------
+204:/data2/xuebo/Projects/Speciation/BAYENV/bayenv2_out_lineageA
+204:/data2/xuebo/Projects/Speciation/BAYENV/genofile/Alineage2
+这个里面是A lineage的结果和原始的计算文件
+203:/data1/home/xuebo/Projects/Speciation/BAYENV/bayenv2_out_lineageB
+203:/data1/home/xuebo/Projects/Speciation/BAYENV/genofile/Blineage
+这个里面是B lineage的结果和原始的计算文件
+203:/data1/home/xuebo/Projects/Speciation/BAYENV/bayenv2_out_lineageD2
+203:/data1/home/xuebo/Projects/Speciation/BAYENV/genofile/Dlineage2
+这个里面是D lineage的结果和原始的计算文件
+
+203:/data1/home/xuebo/Projects/Speciation/BAYENV/bayenv2_out_lineageA_New
+203:/data1/home/xuebo/Projects/Speciation/BAYENV/genofile/AlineageNew
+这是重新做的Alineage的情况
+204:/data2/xuebo/Projects/Speciation/BAYENV/bayenv2_out_lineageB_New
+204:/data2/xuebo/Projects/Speciation/BAYENV/genofile/BlineageNew
+这是重新做的Blineage的情况
+204:/data2/xuebo/Projects/Speciation/BAYENV/bayenv2_out_lineageD_New
+204:/data2/xuebo/Projects/Speciation/BAYENV/genofile/DlineageNew
+这是重新做的Dlineage的情况
+
+204:/data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY/Gene50k
+
+----------------------------------------------------------结果文件--------------------------------------------------------------
+yafei@204:/data1/home/yafei/003_Project3/Structure/bayenv/Result
+总共分析的位点数：(三批数据)
+A:444085; B:498827; D:482174
+A:208479; B:222484; D:161206
+A:1197; B:975; D:1090
+总共得到的位点数：A:329977(16498) B:355505(17775) D:401549(20077)
+A:235606; B:276343; D:321195;
+A:93174; B:78187; D:79264;
+A:1197; B:975; D:1090;
+结果合并解析
+awk '{print NR"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14"\t"$15"\t"$16"\t"$17"\t"$18"\t"$19"\t"$20"\t"$21"\t"$22"\t"$23}' A3_out.bf > A3_out.bf2
+awk '{print NR"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14"\t"$15"\t"$16"\t"$17"\t"$18"\t"$19"\t"$20"\t"$21"\t"$22"\t"$23}' B3_out.bf > B3_out.bf2
+awk '{print NR"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14"\t"$15"\t"$16"\t"$17"\t"$18"\t"$19"\t"$20"\t"$21"\t"$22"\t"$23}' D3_out.bf > D3_out.bf2
+zcat ../Alineage.gene.50k.vcf.gz | awk '{print $1"\t"$2}' |grep -v "#" | awk '{print NR"\t"$1"\t"$2}' > A.pos2.txt
+zcat ../Blineage.gene.50k.vcf.gz | awk '{print $1"\t"$2}' |grep -v "#" | awk '{print NR"\t"$1"\t"$2}' > B.pos2.txt
+zcat ../Dlineage.gene.50k.vcf.gz | awk '{print $1"\t"$2}' |grep -v "#" | awk '{print NR"\t"$1"\t"$2}' > D.pos2.txt
+
+for i in {"A","B","D"}
+do
+for j in {1..3}
+do
+awk 'NR==FNR{a[$1]=$1;b[$1]=$0;c[$1]=$2"-"$3}NR!=FNR{print b[$1]"\t"c[$1]"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14"\t"$15"\t"$16"\t"$17"\t"$18"\t"$19"\t"$20"\t"$21"\t"$22"\t"$23}' POS/${i}${j}.pos.txt ${i}${j}_out.bf > ${i}${j}_out.bf2
+done
+done
+
+cat A1_out.bf2 A2_out.bf2 A3_out.bf2 > A_all.bf (329977)
+cat B1_out.bf2 B2_out.bf2 B3_out.bf2 > B_all.bf (355505)
+cat D1_out.bf2 D2_out.bf2 D3_out.bf2 > D_all.bf (401549)
+
+5%: A: 16498 B: 17775 D: 20077
+
+total: A: 354783 B: 385077 D: 435991
+uniq: A: 38572 B: 99203 D: 97149
+
+cat *top5.txt | awk '{print $2"\t"$3-1"\t"$3}' | sort -k1,1n -k2,2n | uniq  > ${i}.bayenv.top5.bed
+bedtools merge -d 50000 -i ${i}.bayenv.top5.bed |awk '{if($3-$2 != 1) print $0}' > ${i}.merge50k.bayenv.top5.bed
+
+--------------------计算富集程度-----------
+
+sed '1d' EU_South_smooth_D.txt|shuf -n 4476 >shuf005/EU_South_smooth_D.top5.bed
+sed '1d' North2_South_smooth_D.txt|shuf -n 5078 >shuf005/North2_South_smooth_D.top5.bed
+sed '1d' Strang_WA_smooth_D.txt|shuf -n 5404 >shuf005/Strang_WA_smooth_D.top5.bed
+sed '1d' Tibet_South_smooth_D.txt|shuf -n 6658 >shuf005/Tibet_South_smooth_D.top5.bed
+sed '1d' WA_EU_smooth_D.txt|shuf -n 6204 >shuf005/WA_EU_smooth_D.top5.bed
+sed '1d' WA_South_smooth_D.txt|shuf -n 4296 >shuf005/WA_South_smooth_D.top5.bed
+
+sed '1d' EU_South_smooth_A.txt|shuf -n 5779 >shuf005/EU_South_smooth_A.top5.bed
+sed '1d' North2_South_smooth_A.txt|shuf -n 6122 >shuf005/North2_South_smooth_A.top5.bed
+sed '1d' Tibet_South_smooth_A.txt|shuf -n 6289 >shuf005/Tibet_South_smooth_A.top5.bed
+sed '1d' WA_EU_smooth_A.txt|shuf -n 5795 >shuf005/WA_EU_smooth_A.top5.bed
+sed '1d' WA_South_smooth_A.txt|shuf -n 5886 >shuf005/WA_South_smooth_A.top5.bed
+
+sed '1d' EU_South_smooth_B.txt|shuf -n 7706 >shuf005/EU_South_smooth_B.top5.bed
+sed '1d' North2_South_smooth_B.txt|shuf -n 7089 >shuf005/North2_South_smooth_B.top5.bed
+sed '1d' Tibet_South_smooth_B.txt|shuf -n 6107 >shuf005/Tibet_South_smooth_B.top5.bed
+sed '1d' WA_EU_smooth_B.txt|shuf -n 7447 >shuf005/WA_EU_smooth_B.top5.bed
+sed '1d' WA_South_smooth_B.txt|shuf -n 6980 >shuf005/WA_South_smooth_B.top5.bed
+
+for i in `ls *_A.top5.bed`
+do
+bedtools intersect -a $i -b Alog.merge50k.bayenv.shuf.1.5.bed -wa |sort | uniq > bayenv_over4/region_shuf_$i
+done
+for i in `ls *_B.top5.bed`
+do
+bedtools intersect -a $i -b Blog.merge50k.bayenv.shuf.1.5.bed -wa |sort | uniq> bayenv_over4/region_shuf_$i
+done
+for i in `ls *_D.top5.bed`
+do
+bedtools intersect -a $i -b Dlog.merge50k.bayenv.shuf.1.5.bed -wa |sort | uniq> bayenv_over4/region_shuf_$i
+done
+
+shuf -n 38572 A_all.bf | awk '{print $2"\t"$3-1"\t"$3}' | sort -k1,1n -k2,2n > A.bayenv.shuf2.top5.bed
+bedtools merge -d 50000 -i A.bayenv.shuf2.top5.bed |awk '{if($3-$2 != 1) print $0}' > A.merge50k.bayenv.shuf2.top5.bed
+
+shuf -n 99203 B_all.bf | awk '{print $2"\t"$3-1"\t"$3}' | sort -k1,1n -k2,2n > B.bayenv.shuf2.top5.bed
+bedtools merge -d 50000 -i B.bayenv.shuf2.top5.bed |awk '{if($3-$2 != 1) print $0}' > B.merge50k.bayenv.shuf2.top5.bed
+
+shuf -n 97149 D_all.bf | awk '{print $2"\t"$3-1"\t"$3}' | sort -k1,1n -k2,2n > D.bayenv.shuf2.top5.bed
+bedtools merge -d 50000 -i D.bayenv.shuf2.top5.bed |awk '{if($3-$2 != 1) print $0}' > D.merge50k.bayenv.shuf2.top5.bed
+
+--------------------提取log-----
+bash get005.sh 
+cat Alog_bio*txt | awk '{print $2"\t"$3-1"\t"$3}' | sort -k1,1n -k2,2n | uniq  > Alog.bayenv.1.5.bed
+cat Blog_bio*txt | awk '{print $2"\t"$3-1"\t"$3}' | sort -k1,1n -k2,2n | uniq  > Blog.bayenv.1.5.bed
+cat Dlog_bio*txt | awk '{print $2"\t"$3-1"\t"$3}' | sort -k1,1n -k2,2n | uniq  > Dlog.bayenv.1.5.bed
+
+bedtools merge -d 50000 -i Alog.bayenv.1.5.bed |awk '{if($3-$2 != 1) print $0}' > Alog.merge50k.bayenv.1.5.bed
+bedtools merge -d 50000 -i Blog.bayenv.1.5.bed |awk '{if($3-$2 != 1) print $0}' > Blog.merge50k.bayenv.1.5.bed
+bedtools merge -d 50000 -i Dlog.bayenv.1.5.bed |awk '{if($3-$2 != 1) print $0}' > Dlog.merge50k.bayenv.1.5.bed
+
+scp *1.5.bed xuebo@159.226.116.204:/data2/xuebo/Projects/Speciation/xpclr/Selection_V3/smooth/lineage_V2/Top5%
+
+wc -l *1.5.bed
+ 
+shuf -n 62529 A_all.bf | awk '{print $2"\t"$3-1"\t"$3}' | sort -k1,1n -k2,2n > Alog.bayenv.shuf.1.5.bed
+shuf -n 16005 B_all.bf | awk '{print $2"\t"$3-1"\t"$3}' | sort -k1,1n -k2,2n  > Blog.bayenv.shuf.1.5.bed
+shuf -n 19991 D_all.bf | awk '{print $2"\t"$3-1"\t"$3}'| sort -k1,1n -k2,2n  > Dlog.bayenv.shuf.1.5.bed
+bedtools merge -d 50000 -i Alog.bayenv.shuf.1.5.bed |awk '{if($3-$2 != 1) print $0}' > Alog.merge50k.bayenv.shuf.1.5.bed
+bedtools merge -d 50000 -i Blog.bayenv.shuf.1.5.bed |awk '{if($3-$2 != 1) print $0}' > Blog.merge50k.bayenv.shuf.1.5.bed
+bedtools merge -d 50000 -i Dlog.bayenv.shuf.1.5.bed |awk '{if($3-$2 != 1) print $0}' > Dlog.merge50k.bayenv.shuf.1.5.bed
+
+scp *1.5.bed xuebo@159.226.116.204:/data2/xuebo/Projects/Speciation/xpclr/Selection_V3/smooth/lineage_V2/Top5%
+
+
+for i in `ls *smooth_A.top5.bed`
+do
+bedtools intersect -a  $i -b A.bayenv.top5.bed  -wa |sort | uniq > bayenv_over2/xp_$i
+done
+for i in `ls *smooth_B.top5.bed`
+do
+bedtools intersect -a $i -b B.bayenv.top5.bed  -wa |sort | uniq > bayenv_over2/xp_$i
+done
+for i in `ls *smooth_D.top5.bed`
+do
+bedtools intersect -a $i -b D.bayenv.top5.bed  -wa |sort | uniq > bayenv_over2/xp_$i
+done
+
+
 

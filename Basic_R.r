@@ -6,6 +6,7 @@ for ( i in v) {
   }
   print(i)
 }
+
 #连接两个字符串：paste
 paste (a, sep = " ", collapse = NULL)
 paste0(a, collapse = NULL)
@@ -91,8 +92,6 @@ dfe
 
 #定义一个空的data.frame
 all <- data.frame(CHROM="", BIN_START="", BIN_END="", MEAN_FST="", Gene_start="", Gene_end="",Gene_id="",Pop="", site="", lineage="", stringsAsFactors=FALSE)
-
-
 p = ggplot(data, aes(x = taxaNum,y = mean))+
   geom_point()+ 
   geom_errorbar(aes(ymin=(mean-sd),ymax=(mean+sd)),width=2,size=2)+
@@ -118,8 +117,14 @@ p = ggplot(data, aes(x = taxaNum,y = mean))+
 ward最小方差法
 
 #读Excel文件
-
 library(gdata)
 read.xls("/home/slave/test.xls",sheet=1,na.strings=c("NA","#DIV/0!"))
 
+result <- substring("Extract", 5, 7)
+print(result)
+
+#画直方图
+ggplot(dataD, aes(x = V2)) +
+  geom_histogram(binwidth = 1, fill = "lightblue", colour = "black")+
+  theme_classic()
 

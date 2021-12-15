@@ -201,3 +201,6 @@ std <- function(x) sd(x,na.rm=T)/sqrt(length(x))
 for(i in 1:length(data)){
   all[i] <-  std(data[[i]][,4])
 }
+
+
+vcftools --vcf Massoko_Dryad_VCF_final_subset_noIndels_maf05_thinned1K.vcf --keep littoral.txt --window-pi 100000 --out littoral_pi

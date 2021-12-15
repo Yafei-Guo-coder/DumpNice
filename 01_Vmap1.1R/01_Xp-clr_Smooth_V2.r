@@ -15,6 +15,7 @@
 #XPCLRresult_neg_WA_North1
 #XPCLRresult_neg_WA_North2
 
+neg_WA_1_2_10kchr6.xpclr.txt
 #其中三个是negative contral.
 
 #!/usr/bin/Rscript.R

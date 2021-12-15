@@ -8,11 +8,10 @@
 #neg_North1_North2*
 #neg_WA_North1*
 #neg_WA_North2*
-
 #GenWin(smooth)的结果是这样的"WindowStart" "WindowStop" "SNPcount" "MeanY" "Wstat"，没有染色体，要加上染色体的信息
 #smooth结果添加染色体号并进行排序，并且合并成A，B，D lineage.
-
 Name=(EU_South North2_South Strang_WA Tibet_South WA_EU WA_South neg_North1_North2 neg_WA_North1 neg_WA_North2)
+Name=neg_WA_North1
 for num in {0..8}
 do
   for i in {1,2,7,8,13,14,19,20,25,26,31,32,37,38}
@@ -212,10 +211,3 @@ for ( i in c(1:3)){
   name<-merge(name,st,by="file") 
 }
 write.table(name,"heatmap_format2.txt",quote=F,row.names=F,col.names=T,sep="\t")
-
-
-
-
-
-
-

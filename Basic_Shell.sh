@@ -36,10 +36,13 @@ bedtools intersect -a /data1/home/yafei/009_GWAS/gene/gene_v1.1_Lulab.gff3 -b te
 #bcftools
 bcftools merge chr0${chr}.vcf.gz chr0${chr}.vcf.gz chr0${chr}.vcf.gz chr${chr}.vcf.gz -o chr${chr}.all.vcf
 bcftools filter 1000Genomes.vcf.gz --regions 9:4700000-4800000 > 4700000-4800000.vcf
+bcftools view -R chr_pos.list  test.vcf.gz >new.pos.vcf
+#直接给区间也行
+#1  1　　 1000
+#1　2000　4500
 
 #vcftools
 vcftools --gzvcf file.vcf.gz --positions specific_position.txt --recode --recode-INFO-all --out specific_position.vcf
-
 
 #getVcf.sh
 cat $1 |while read gene chr from to taxa
@@ -207,3 +210,37 @@ sed -i s/$a/$b/ filename
 bcftools concat chr001.vcf.gz chr002.vcf.gz chr003.vcf.gz chr004.vcf.gz chr007.vcf.gz chr008.vcf.gz chr009.vcf.gz chr010.vcf.gz chr013.vcf.gz chr014.vcf.gz chr015.vcf.gz chr016.vcf.gz chr019.vcf.gz chr020.vcf.gz chr021.vcf.gz chr022.vcf.gz chr025.vcf.gz chr026.vcf.gz chr027.vcf.gz chr028.vcf.gz chr031.vcf.gz chr032.vcf.gz chr033.vcf.gz chr034.vcf.gz chr037.vcf.gz chr038.vcf.gz chr039.vcf.gz chr040.vcf.gz -o ABlineage.vcf.gz -O z &
 bcftools concat chr005.vcf.gz chr006.vcf.gz chr011.vcf.gz chr012.vcf.gz chr017.vcf.gz chr018.vcf.gz chr023.vcf.gz chr024.vcf.gz chr029.vcf.gz chr030.vcf.gz chr035.vcf.gz chr036.vcf.gz chr041.vcf.gz chr042.vcf.gz -o Dlineage.vcf.gz -O z &
 bedtools merge -i A.bed
+
+awk '{for (i = 1; i <= NF; ++i) {split($i, array, ":"); print $1"\t"array[1]}}'
+awk 'split($9, array, ";") {print $1"\t"array[1]}'
+awk '{output="chr"$1."noheader.vcf"; print $0 > $output}' sorted_noMiss_gene_noHeader.vcf
+
+plink2 --vcf test.vcf.gz --allow-extra-chr --alt1-allele 'force' test.vcf.gz 4 3 '#' --export vcf --out new
+
+bcftools concat chr001.vcf.gz chr002.vcf.gz chr007.vcf.gz chr008.vcf.gz chr013.vcf.gz chr014.vcf.gz chr019.vcf.gz chr020.vcf.gz chr025.vcf.gz chr026.vcf.gz chr031.vcf.gz chr032.vcf.gz chr037.vcf.gz chr038.vcf.gz -o Alineage.vcf.gz -O z &
+bcftools concat chr003.vcf.gz chr004.vcf.gz chr009.vcf.gz chr010.vcf.gz chr015.vcf.gz chr016.vcf.gz chr021.vcf.gz chr022.vcf.gz chr027.vcf.gz chr028.vcf.gz chr033.vcf.gz chr034.vcf.gz chr039.vcf.gz chr040.vcf.gz -o Blineage.vcf.gz -O z &
+bcftools concat chr005.vcf.gz chr006.vcf.gz chr011.vcf.gz chr012.vcf.gz chr017.vcf.gz chr018.vcf.gz chr023.vcf.gz chr024.vcf.gz chr029.vcf.gz chr030.vcf.gz chr035.vcf.gz chr036.vcf.gz chr041.vcf.gz chr042.vcf.gz -o Dlineage.vcf.gz -O z &
+
+A:1,2,7,8,13,14,19,20,25,26,31,32,37,38
+B:3,4,9,10,15,16,21,22,27,28,33,34,39,40
+D:5,6,11,12,17,18,23,24,29,30,35,36,41,42
+
+cat iwgsc_refseqv1.0_mapping_data.txt |awk '{print $2"\t"$3"\t"$3+1"\t"$4}'|tail -n +2|bedtools intersect -a stdin -b <(tail -n +2 iwgsc_refseqv1.0_recombination_rate.txt) -wo |awk '{print $1"\t"$2"\t"$9"\t"$4}'|sort -k1,1 -k2,2n |datamash -g 1,2 mean 3 unique 4|awk '{ printf "%s\t%s\t%.6f\t%.6f\n", $1,$2,$3,$4 }'
+
+datamash -g 1,2 mean 3 unique 4 
+
+plink2 --vcf test.vcf.gz --allow-extra-chr --alt1-allele 'force' test.vcf.gz 4 3 '#' --export vcf --out new --autosome-num 42
+
+zcat ../Dlineage_withBarleyTu.vcf.gz | awk '{if($0~/^#/) print $0; else if($312~/^0\/0/ && $313~/^0\/0/) print $0}' | bgzip -c > D_Ref.Anc.vcf.gz
+
+zcat AB_Alt.Anc.vcf.gz |awk '{if($0!~/^#/) print $1"\t"$2}' > set1.pos
+zcat AB_Ref.Anc.vcf.gz |awk '{if($0!~/^#/) print $1"\t"$2}' > set2.pos
+zcat D_Ref.Anc.vcf.gz |awk '{if($0!~/^#/) print $1"\t"$2}' > set3.pos
+zcat D_Alt.Anc.vcf.gz |awk '{if($0!~/^#/) print $1"\t"$2}' > set4.pos
+
+vcftools --vcf input.vcf --chr n --recode --recode-INFO-all --stdout | gzip -c > output.vcf.gz
+
+
+
+
+

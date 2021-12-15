@@ -5,7 +5,7 @@
 vcftools --gzvcf ABlineage.E6_Landrace_locate.vcf.gz --max-missing 1 --maf 0.05 --recode --stdout | bgzip -c > AB_noMiss_0.05.vcf.gz
 vcftools --gzvcf Dlineage.E6_Landrace_locate.vcf.gz --max-missing 1 --maf 0.05 --recode --stdout | bgzip -c > D_noMiss_0.05.vcf.gz
 vcf-concat AB_noMiss_0.05.vcf.gz D_noMiss_0.05.vcf.gz | bgzip -c > noSort_noMiss_0.05.vcf.gz 
-zcat noSort_noMiss_0.05.vcf.gz |  vcf-sort |bgzip -c > Sorted_noMiss_0.05.vcf.gz
+zcat noSort_noMiss_0.05.vcf.gz | vcf-sort |bgzip -c > Sorted_noMiss_0.05.vcf.gz
 
 #2. 提取基因区的VCF文件
 zcat D_noMiss_0.05.vcf.gz | head -n 40 > header.txt
@@ -14,6 +14,24 @@ cat header.txt Select_gene_noHeader.vcf > gene_3000.vcf
 sed '/^##/d' gene_3000.vcf | awk '{$1=null;$2=null;$3=null;$4=null;$5=null;$6=null;$7=null;$8=null;$9=null;print $0'} | sed 's/^[ \t]*//g' > all_noMiss_0.05_3000.txt
 sed 's@0/0@0@g' all_noMiss_0.05_3000.txt | sed 's@0/1@1@g' |sed 's@1/1@2@g' |sed 's@1/0@1@g' > All_noMiss_0.05_3000.txt
 
+#分亚基因组提取基因区的VCF文件，并随机抽取3000个SNP
+bedtools intersect -b gene_v1.1_Lulab.gff3 -a sorted_noMiss_0.05.vcf.gz -wa > sorted_noMiss_gene_noHeader.vcf 
+awk '{output="chr"$1".noheader.vcf"; print $0 > $output}' sorted_noMiss_gene_noHeader.vcf
+cat chr1.noheader.vcf chr2.noheader.vcf chr7.noheader.vcf chr8.noheader.vcf chr13.noheader.vcf chr14.noheader.vcf chr19.noheader.vcf chr20.noheader.vcf chr25.noheader.vcf chr26.noheader.vcf chr31.noheader.vcf chr32.noheader.vcf chr37.noheader.vcf chr38.noheader.vcf | shuf -n 3000 | sort -k1,1n -k2,2n > Select_gene_noHeader_A.vcf
+cat chr3.noheader.vcf chr4.noheader.vcf chr9.noheader.vcf chr10.noheader.vcf chr15.noheader.vcf chr16.noheader.vcf chr21.noheader.vcf chr22.noheader.vcf chr27.noheader.vcf chr28.noheader.vcf chr33.noheader.vcf chr34.noheader.vcf chr39.noheader.vcf chr40.noheader.vcf | shuf -n 3000 | sort -k1,1n -k2,2n > Select_gene_noHeader_B.vcf
+cat chr5.noheader.vcf chr6.noheader.vcf chr11.noheader.vcf chr12.noheader.vcf chr17.noheader.vcf chr18.noheader.vcf chr23.noheader.vcf chr24.noheader.vcf chr29.noheader.vcf chr30.noheader.vcf chr35.noheader.vcf chr36.noheader.vcf chr41.noheader.vcf chr42.noheader.vcf | shuf -n 3000 | sort -k1,1n -k2,2n > Select_gene_noHeader_D.vcf
+cat header.txt Select_gene_noHeader_A.vcf > gene_3000_A.vcf
+cat header.txt Select_gene_noHeader_B.vcf > gene_3000_B.vcf
+cat header.txt Select_gene_noHeader_D.vcf > gene_3000_D.vcf
+sed '/^##/d' gene_3000_A.vcf | awk '{$1=null;$2=null;$3=null;$4=null;$5=null;$6=null;$7=null;$8=null;$9=null;print $0'} | sed 's/^[ \t]*//g' > all_noMiss_0.05_3000_A.txt
+sed 's@0/0@0@g' all_noMiss_0.05_3000_A.txt | sed 's@0/1@1@g' |sed 's@1/1@2@g' |sed 's@1/0@1@g' > All_noMiss_0.05_3000_A.txt
+sed '/^##/d' gene_3000_B.vcf | awk '{$1=null;$2=null;$3=null;$4=null;$5=null;$6=null;$7=null;$8=null;$9=null;print $0'} | sed 's/^[ \t]*//g' > all_noMiss_0.05_3000_B.txt
+sed 's@0/0@0@g' all_noMiss_0.05_3000_B.txt | sed 's@0/1@1@g' |sed 's@1/1@2@g' |sed 's@1/0@1@g' > All_noMiss_0.05_3000_B.txt
+sed '/^##/d' gene_3000_D.vcf | awk '{$1=null;$2=null;$3=null;$4=null;$5=null;$6=null;$7=null;$8=null;$9=null;print $0'} | sed 's/^[ \t]*//g' > all_noMiss_0.05_3000_D.txt
+sed 's@0/0@0@g' all_noMiss_0.05_3000_D.txt | sed 's@0/1@1@g' |sed 's@1/1@2@g' |sed 's@1/0@1@g' > All_noMiss_0.05_3000_D.txt
+awk '{for (i = 1; i <= NF; ++i) {split($i, array, ":"); print array[1]}}' All_noMiss_0.05_3000_A.txt | xargs -n225 > All_noMiss_0.05_3000_A2.txt
+awk '{for (i = 1; i <= NF; ++i) {split($i, array, ":"); print array[1]}}' All_noMiss_0.05_3000_B.txt | xargs -n225 > All_noMiss_0.05_3000_B2.txt
+awk '{for (i = 1; i <= NF; ++i) {split($i, array, ":"); print array[1]}}' All_noMiss_0.05_3000_D.txt | xargs -n225 > All_noMiss_0.05_3000_D2.txt
 #3. 样本分区：EU, WA, SCA, EA_North, EA_SouthWest
 #4. RDA analysis----
 #input files:
@@ -26,7 +44,15 @@ library(ggplot2)
 setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/01_RDA_plot")
 #input environment variants file and genetic variants file and RDA analysis----
 #phylum1 <- read.delim('All_noMiss_0.05_2000.txt',  sep = '\t', stringsAsFactors = FALSE, check.names = FALSE)
+#ABD lineage
 phylum <- read.delim('All_noMiss_0.05_3000.txt',  sep = ' ', stringsAsFactors = FALSE, check.names = FALSE)
+#A lineage
+phylum <- read.delim('All_noMiss_0.05_3000_A2.txt',  sep = ' ', stringsAsFactors = FALSE, check.names = FALSE)
+#B lineage
+phylum <- read.delim('All_noMiss_0.05_3000_B2.txt',  sep = ' ', stringsAsFactors = FALSE, check.names = FALSE)
+#D lineage
+phylum <- read.delim('All_noMiss_0.05_3000_D2.txt',  sep = ' ', stringsAsFactors = FALSE, check.names = FALSE)
+  
 row.names(phylum) <- c(1:3000)
 phylum <- data.frame(t(phylum))
 colnames(phylum) <- c(1:3000)
@@ -66,7 +92,7 @@ allprec2 <- vector()
 allele2 <- vector()
 #100次重复，计算SE
 x <- 1
-while (x < 50){
+while (x < 100){
   #选择TAXA_new-----
   taxa_north <- taxa_EA_N[sort(sample(c(1:length(taxa_EA_N)),size=20))]
   taxa_south <- taxa_EA_S[sort(sample(c(1:length(taxa_EA_S)),size=20))]
@@ -183,6 +209,7 @@ rownames(allele2) <- c("WA","EU","SCA","EA_N","EA_S")
 AdjRsq <- cbind(apply(alltemp2,1,mean),apply(allprec2,1,mean),apply(allele2,1,mean),apply(alltemp2,1,sd),apply(allprec2,1,sd),apply(allele2,1,sd))
 colnames(AdjRsq)<- c("temp_mean","prec_mean","ele_mean","temp_sd","prec_sd","ele_sd")
 #write.table(AdjRsq, "RDA_AdjRsq_new.txt", row.names = T,sep="\t",col.names = T,quote=F)
+
 #修改RDA_AdjRsq_new.txt的格式，接下来画图
 
 color2 <- brewer.pal(n = 3, name = "Accent")

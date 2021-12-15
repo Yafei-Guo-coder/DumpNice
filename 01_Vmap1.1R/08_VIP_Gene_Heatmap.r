@@ -2,7 +2,7 @@ library(pheatmap)
 library(RColorBrewer)
 display.brewer.all()
 ##Top5 VIP gene & Top1 NLR gene
-data2 <- read.table("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/HeatMap/V5/heatmap_format2.txt",
+data2 <- read.table("/Users/guoyafei/Documents/01_Migration/02_Environment/04_bayenv/heatmap_format2.txt",
                     header=T,
                     row.names= 1, stringsAsFactors=F,sep="\t")
 data2 <- read.table("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Xpclr/V3/Top1nlr/heatmap_format2_changeName.txt",
@@ -16,7 +16,7 @@ for ( i in c(1:dim(data)[2])){
 colnames(data)<-x
 #region <- c("Strang_WA", "WA_EU", "WA_CA", "WA_NW_A", "WA_NE_A", "WA_SA", "WA_SW_A", "WA_Tibet", "WA_SE_A", "CA_SA", "SA_SW_A", "SA_Tibet", "NW_A_NE_A", "SW_A_NE_A", "SE_A_NE_A")
 #region <- c("neg_North1_North2", "neg_WA_North1", "neg_WA_North2", "WA_EU", "Strang_WA","WA_South","Tibet_South", "North2_South")
-region <- c("neg_WA_North2", "Strang_WA","WA_EU","WA_South","Tibet_South", "North2_South","EU_South")
+region <- c( "Strang_WA","WA_EU","WA_South","Tibet_South", "North2_South","EU_South")
 data <- data[region,]
 colsA = c("#F7FCFD","#8C96C6","#F7FCF5","#74C476","#FFFFCC","#FD8D3C")
 pheatmap(data,cluster_rows = F,cluster_cols = T,border_color=NA,color = colsA,fontsize=8)
@@ -92,7 +92,6 @@ for(i in c(1:length(data))){
   print(p1)
 }
 dev.off()
-
 #P值----
 xlab <-factor(xlab,levels=c("Top5%","Top1%","Top0.5%","Top0.1%"))
 P <- c(106.1767,69.862,65.09623,9.649433)

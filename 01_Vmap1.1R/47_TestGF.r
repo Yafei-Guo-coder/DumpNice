@@ -10,7 +10,7 @@ library(gplots)
 library(raster)
 library(gdistance)
 library(raster)
-gfData <- read.csv("/Users/guoyafei/Documents/01_Migration/02_Environment/05_Predict/Ref3000_GF_input.txt",row.names = "pop") 
+gfData <- read.csv("/data1/home/yafei/003_Project3/Structure/gradientForest/Climate-Change-Genomics-main/datasets/input/gradient_forest_input.csv",sep="\t",row.names=1) 
 dim(gfData) #这个文件一共使用了13个群体，X指的是经度，Y指的是纬度，bio_1-bio19指的是环境因子，之后是555-19-2=534个SNP
 #也就是说，这个文件一共使用了500个SNP，在小麦里面的话，可以每个亚基因挑200或者300个SNP进行计算
 #可以对SNP进行分类，但是在这里是不需要的，因为这边没有需要分类的必要
@@ -29,14 +29,14 @@ if(FALSE){ # FALSE if there is no need to run the analyses
                                  response.vars=colnames(candidate), ntree=500,
                                  maxLevel=maxLevel, trace=T, corr.threshold=0.50)
   #将GF模型合并成一个列表并保存它
-  gf_runs <- (gf_reference=gf_reference)
-  if(!dir.exists("/Users/guoyafei/Documents/01_Migration/02_Environment/05_Predict/output")){
-    dir.create("/Users/guoyafei/Documents/01_Migration/02_Environment/05_Predict/output")
+  gf_runs <- (gf_reference=gf_candidate)
+  if(!dir.exists("/data1/home/yafei/003_Project3/Structure/gradientForest/Climate-Change-Genomics-main/datasets/output")){
+    dir.create("/data1/home/yafei/003_Project3/Structure/gradientForest/Climate-Change-Genomics-main/datasets/output")
   }
-  save(gf_runs,file = "/Users/guoyafei/Documents/01_Migration/02_Environment/05_Predict/output/gf_runs.R")
+  save(gf_runs,file = "/data1/home/yafei/003_Project3/Structure/gradientForest/Climate-Change-Genomics-main/datasets/output/gf_runs.R")
 }
 #####要是之前run过，可以在这一步直接load
-load("/Users/guoyafei/Documents/01_Migration/02_Environment/05_Predict/output/gf_runs.R")
+load("/data1/home/yafei/003_Project3/Structure/gradientForest/Climate-Change-Genomics-main/datasets/output/gf_runs.R")
 gf_candidate <- gf_runs$gf_candidate
 
 ##################################计算genetic offset

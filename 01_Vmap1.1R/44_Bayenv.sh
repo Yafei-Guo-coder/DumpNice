@@ -444,17 +444,17 @@ bedtools merge -d 50000 -i Dlog.bayenv.shuf.1.5.bed |awk '{if($3-$2 != 1) print 
 scp *1.5.bed xuebo@159.226.116.204:/data2/xuebo/Projects/Speciation/xpclr/Selection_V3/smooth/lineage_V2/Top5%
 
 
-for i in `ls *smooth_A.top5.bed`
+for i in `ls *smooth_A.top1.bed`
 do
-bedtools intersect -a  $i -b A.bayenv.top5.bed  -wa |sort | uniq > bayenv_over2/xp_$i
+bedtools intersect  -a Alog.bayenv.1.5.bed -b  $i -wa |sort | uniq > bayenv_over/$i
 done
-for i in `ls *smooth_B.top5.bed`
+for i in `ls *smooth_B.top1.bed`
 do
-bedtools intersect -a $i -b B.bayenv.top5.bed  -wa |sort | uniq > bayenv_over2/xp_$i
+bedtools intersect  -a Blog.bayenv.1.5.bed -b  $i -wa |sort | uniq > bayenv_over/$i
 done
-for i in `ls *smooth_D.top5.bed`
+for i in `ls *smooth_D.top1.bed`
 do
-bedtools intersect -a $i -b D.bayenv.top5.bed  -wa |sort | uniq > bayenv_over2/xp_$i
+bedtools intersect -a Dlog.bayenv.1.5.bed -b $i -wa |sort | uniq > bayenv_over/$i
 done
 
 

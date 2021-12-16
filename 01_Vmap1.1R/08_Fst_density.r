@@ -42,7 +42,7 @@ fileNames <- dir(path)
 filePath <- sapply(fileNames, function(x){ 
   paste(path,x,sep='/')})
 gene_266 <- lapply(filePath, function(x){
-  read.table(x, header=T,stringsAsFactors = F,sep="\t")})
+  read.table(x, header=T, stringsAsFactors = F,sep="\t")})
 #提取已克隆的基因的位置----
 names <- read.table("nameMap.txt",header=F,stringsAsFactors = F)
 path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density/fst_266out/Type1"
@@ -78,6 +78,7 @@ for(i in c(2)){
     #geom_label_repel(data = gene[[i]],aes(MEAN_FST, Y), label=rownames(gene[[i]]),segment.colour = NA,colour="white", segment.colour="black") +
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"), legend.position = "none",legend.text = element_text(size = 10),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y =element_blank() )
 }
+
 for(i in c(15)){
   thresh <- as.numeric(quantile(data[[i]]$MEAN_FST, 0.95))
   point <- gene[[i]][which(gene[[i]]$MEAN_FST > thresh), ]

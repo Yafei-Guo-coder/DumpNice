@@ -83,3 +83,24 @@ done
 #按照MEAN_FST进行排序。
 #转移到本地: /Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density
 #通过08_Fst_density.r进行统计画图
+
+
+额外添加一组比较
+/data2/yafei/003_project3/Project3/FST_group/VmapData/FST_selection/New_pop
+
+bedtools intersect -b WA_North1_A.fst.bed -a 266gene.bed -wo | awk '{print $5"\t"$6"\t"$7"\t"$10"\t"$2"\t"$3"\t"$4}' | sed '1i CHROM\tBIN_START\tBIN_END\tMEAN_FST\tGene_start\tGene_end\tGene_id'> WA_North1_A.266gene.txt
+bedtools intersect -b WA_North1_B.fst.bed -a 266gene.bed -wo | awk '{print $5"\t"$6"\t"$7"\t"$10"\t"$2"\t"$3"\t"$4}' | sed '1i CHROM\tBIN_START\tBIN_END\tMEAN_FST\tGene_start\tGene_end\tGene_id'> WA_North1_B.266gene.txt
+bedtools intersect -b WA_North1_D.fst.bed -a 266gene.bed -wo | awk '{print $5"\t"$6"\t"$7"\t"$10"\t"$2"\t"$3"\t"$4}' | sed '1i CHROM\tBIN_START\tBIN_END\tMEAN_FST\tGene_start\tGene_end\tGene_id'> WA_North1_D.266gene.txt
+
+#Annotation Type1
+for i in `cat ../name_prefix.txt`
+do
+awk 'NR==FNR{a[$1]=$1;b[$1]=$2;c[$1]=$3}NR!=FNR{if($7 in a) print $0"\t"b[$7]"\t"c[$7]}' AllGeneAnnoMap.txt $i.266gene.txt |sort -k4,4n | sed '1i CHROM\tBIN_START\tBIN_END\tMEAN_FST\tGene_start\tGene_end\tGene_id\tName\tAnno'> $i.266gene.type1.txt
+done
+
+
+
+
+
+
+

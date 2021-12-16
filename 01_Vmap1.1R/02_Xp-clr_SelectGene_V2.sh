@@ -36,14 +36,13 @@ done
 #File_name	Line_num	Top1%_num	Top5%_num
 for i in `ls *txt`; do  wc -l $i; done | awk '{print $2"\t"$1"\t"$1*0.01"\t"$1*0.05}' | awk -F"[.|\t]" '{print $1"\t"$3"\t"$4"\t"$6}' | awk '{print "tail -n "$3,$1".txt > Top1%/"$1".top1.bed"}'
 #阈值3-4
-for i in `ls *txt`; do  wc -l $i; done | awk '{print $2"\t"$1"\t"$1*0.01"\t"$1*0.05}' | awk -F"[.|\t]" '{print $1"\t"$3"\t"$4"\t"$6}' | awk '{print "tail -n "$4,$1".txt > Top5%/"$1".top5.bed"}'
 #阈值1-2
 
-
+#xuebo@204:/data2/xuebo/Projects/Speciation/xpclr/Selection_V3/smooth/lineage_V2/Top5%/Gene
 #定位已注释基因:gff
 for i in `ls *bed`
 do
-bedtools intersect -a ../gene_v1.1_Lulab.gff3 -b $i -wa | awk '{print $1"\t"$4"\t"$5"\t"$9}' | awk -F";" '{print $1}' | sort | uniq > ${i::-3}gff.gene
+bedtools intersect -a ../../gene_v1.1_Lulab.gff3 -b $i -wa | awk '{print $1"\t"$4"\t"$5"\t"$9}' | awk -F";" '{print $1}' | sort | uniq > ${i::-3}gff.gene
 done
 
 #定位已克隆基因:cloned gene 以及定位抗病基因:nlr gene
@@ -53,7 +52,7 @@ awk -F"ID=" '{print $2}' $i > ${i::-8}gene2
 done
 for i in `ls *.gene2`
 do
-grep -w -f $i ../all_cloned_gene.txt > ${i::-5}cloned.gene
+grep -w -f $i ../../all_cloned_gene.txt > ${i::-5}cloned.gene
 #grep -w -f $i ../nlr_gene.txt > nlr/${i::-5}cloned.gene
 done
 rm *gene2

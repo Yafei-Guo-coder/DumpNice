@@ -247,12 +247,10 @@ for(i in c(2,8)){
   d <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST > 0 & gene_266[[i]]$Anno == "Processing_quality"),4])
   e <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST > 0 & gene_266[[i]]$Anno == "Rhythm"),4])
   point <- gene_266[[i]][which(gene_266[[i]]$Y != 0),]
-  
   data[[i]]$Anno <- "Z"
   f <- median(data[[i]][which(data[[i]]$MEAN_FST >0),6])
   all <- rbind(data[[i]][,c(1,2,3,6,7)],gene_266[[i]][,c(1,2,3,4,8)])
   all <- all[which(all$MEAN_FST >0),]
-  
   p[[i]] <- ggplot(all, aes(MEAN_FST, fill= Anno, color=Anno)) +
     geom_density(alpha = 0.2) +
     theme_classic() +
@@ -272,12 +270,10 @@ for(i in c(14,18)){
   #d <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Processing_quality"),4])
   e <- median(gene_266[[i]][which(gene_266[[i]]$MEAN_FST >0 & gene_266[[i]]$Anno == "Rhythm"),4])
   point <- gene_266[[i]][which(gene_266[[i]]$Y != 0),]
-  
   data[[i]]$Anno <- "Z"
   f <- median(data[[i]][which(data[[i]]$MEAN_FST >0),6])
   all <- rbind(data[[i]][,c(1,2,3,6,7)],gene_266[[i]][,c(1,2,3,4,8)])
   all <- all[which(all$MEAN_FST >0 & all$Anno != "Abiotic_stimulus" & all$Anno != "Processing_quality"),]
-  
   p[[i]] <- ggplot(all, aes(MEAN_FST, fill= Anno, color=Anno)) +
     geom_density(alpha = 0.2) +
     theme_classic() +
@@ -406,3 +402,63 @@ abline(v=19.69, col = "red", lty = 3,cex=2,lwd = 2)
 data1 <- read.table("p_all_5.windowed.weir.fst",header=T,stringsAsFactors = F)
 plot(data1$BIN_END/1000000, data1$MEAN_FST, ylim = c(0,0.5),axes = T,col = "skyblue",type="l",cex = 2,lwd = 3,ann = F)
 abline(v=196.896739, col = "red", lty = 3,cex=2,lwd = 2)
+
+
+#---------------------------------New---------------------------
+library(ggplot2)
+library(dplyr)
+library(ggridges)
+library(RColorBrewer)
+library(ggrepel)
+require(gridExtra)
+col1 = c(brewer.pal(9,'Pastel1'),brewer.pal(10,'Set3'))
+col1 <- c(rep("#FB8072", times=7),rep("#80B1D3", times=6),rep("#FDB462", times=6))
+#读取FST文件
+setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/New_Fst_density/")
+path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/New_Fst_density/fst"
+fileNames <- dir(path)
+filePath <- sapply(fileNames, function(x){
+  paste(path,x,sep='/')})
+data <- lapply(filePath, function(x){
+  read.table(x, header=T,stringsAsFactors = F,sep="\t")})
+#提取已克隆的基因的位置----
+names <- read.table("nameMap2.txt",header=F,stringsAsFactors = F)
+path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/New_Fst_density/type1"
+fileNames <- dir(path)
+filePath <- sapply(fileNames, function(x){ 
+  paste(path,x,sep='/')})
+gene <- lapply(filePath, function(x){
+  read.table(x, header=T, stringsAsFactors = F, sep="\t")})
+p <- list()
+for(i in c(1:3)){
+    thresh <- as.numeric(quantile(data[[i]]$MEAN_FST, 0.95))
+    point <- gene[[i]][which(gene[[i]]$MEAN_FST > thresh), ]
+    point$Color <- NA
+    point[which(point$Anno=="Abiotic_stimulus"),10] <- "#377EB8"
+    point[which(point$Anno=="Disease_resistance"),10] <- "#984EA3"
+    point[which(point$Anno=="Rhythm"),10] <- "#FF7F00"
+    point[which(point$Anno=="Yield"),10] <- "#A65628"
+    point[which(point$Anno=="Processing_quality"),10] <- "#F781BF"
+    #point[which(point$Anno=="DNA-binding"),10] <- "#00B0F6"
+    #"#377EB8" "#984EA3" "#FF7F00" "#A65628" "#F781BF"
+    #粉:Abiotic_stimulus；樱桃红:Disease_resistance；青绿色:Rhythm；橙黄色:Yield；青色:DNA-binding/Processing_quality.
+    rownames(point) <- point$Name
+    lab <- rownames(point)
+    f <- median(data[[i]][which(data[[i]]$MEAN_FST >0),6])
+    p[[i]] <- ggplot(data[[i]], aes(MEAN_FST)) +
+      stat_density(alpha = 0.4) +
+      theme_classic() +
+      theme(axis.title.x = element_blank(), axis.title.y = element_blank()) +
+      xlab("Fst") +
+      ylab("Proportion") +
+      ggtitle(names[i,2]) +
+      xlim(0,0.8) +
+      geom_vline(xintercept = f, size= 0.9, linetype = "dotted") + 
+      #geom_point(data = point, aes(MEAN_FST, 0)) +
+      geom_label_repel(data = point, aes(MEAN_FST, 0,fill=Anno), label=lab, nudge_x = 0, nudge_y = 9,fontface="bold", color="white",  max.overlaps = 100, segment.colour = point$Color) +
+      scale_fill_manual(values=c("Abiotic_stimulus"="#377EB8", "Disease_resistance"="#984EA3", "Rhythm"="#FF7F00","Yield"="#A65628", "Processing_quality"="#F781BF")) +
+      theme(plot.title = element_text(color="red", size=20, face="bold.italic"), legend.position = "none", legend.text = element_text(size = 10), legend.title=element_blank(), axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15), axis.text.y = element_text(size = 15), axis.title.y =element_blank())
+}
+pdf("New.pdf",height = 3.33,width = 12)
+grid.arrange(p[[1]],p[[2]],p[[3]],nrow=1)
+dev.off()

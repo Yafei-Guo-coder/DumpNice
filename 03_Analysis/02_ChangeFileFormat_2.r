@@ -12,7 +12,6 @@ cat chr2_WW_1.site /data1/home/yafei/SNP/WW/chr2_ref.site | sort |uniq -c|grep '
 awk '{print $4}' chr2.tab > test.tab
 cat test.tab /data1/home/yafei/SNP/WW/chr2_ref.site |awk '{print $1}' | sort |uniq -c|awk '{if ($1==2) print $0}' |wc  #642
 
-
 #-----------------------------------------------------转换WW.tab文件为vcf文件.jar(Tab2vcf.jar)---------------------------------------------------------------------------------------------------
 #输入文件
 #/data1/home/yafei/SNP/WWWW_site/chr${chr}_WW.site: 该染色体WW检测到的SNP位点以及该位点的Reference Allele。格式(snpPosition Ref_allele)，没有表头。
@@ -28,7 +27,6 @@ cat test.tab /data1/home/yafei/SNP/WW/chr2_ref.site |awk '{print $1}' | sort |un
 #awk '{print $4"\t"$6}' chr36.tab |head
 #MAF分布
 
-
 #-----------------------------------------------------以WW的位点为库，对Vmap1进行HapScanner.sh---------------------------------------------------------------------------------------------------
 #生成HapScanner的pos以及posAllele文件
 #203服务器：/data1/home/yafei/SNP/WW/outWWvcf/
@@ -43,7 +41,6 @@ done
 
 #---------------------------------------------WW: 合并vcf文件成Alineage.vcf/Blineage.vcf/Dlineage.vcf并做基本统计.sh---------------------------------------------------------------------------------------------------
 #合并lineage文件
-
 nohup vcf-concat chr1.vcf chr2.vcf chr7.vcf chr8.vcf chr13.vcf chr14.vcf chr19.vcf chr20.vcf chr25.vcf chr26.vcf chr31.vcf chr32.vcf chr37.vcf chr38.vcf > Alineage.vcf &
   nohup vcf-concat chr3.vcf chr4.vcf chr9.vcf chr10.vcf chr15.vcf chr16.vcf chr21.vcf chr22.vcf chr27.vcf chr28.vcf chr33.vcf chr34.vcf chr39.vcf chr40.vcf > Blineage.vcf &
   nohup vcf-concat chr5.vcf chr6.vcf chr11.vcf chr12.vcf chr17.vcf chr18.vcf chr23.vcf chr24.vcf chr29.vcf chr30.vcf chr35.vcf chr36.vcf chr41.vcf chr42.vcf > Dlineage.vcf &
@@ -53,7 +50,7 @@ nohup vcf-concat chr1.vcf chr2.vcf chr7.vcf chr8.vcf chr13.vcf chr14.vcf chr19.v
   bgzip -c Dlineage.vcf > Dlineage.vcf.gz &
   
   #统计
-  java -jar /data1/home/yafei/C36_checkQuality.jar --file /data1/home/yafei/SNP/WW/outWWvcf/Alineage.vcf.gz --out Alineage_siteQCfile.txt --out2 Alineage_taxaQCfile.txt > nohupA 2>& 1 
+java -jar /data1/home/yafei/C36_checkQuality.jar --file /data1/home/yafei/SNP/WW/outWWvcf/Alineage.vcf.gz --out Alineage_siteQCfile.txt --out2 Alineage_taxaQCfile.txt > nohupA 2>& 1 
 java -jar /data1/home/yafei/C36_checkQuality.jar --file /data1/home/yafei/SNP/WW/outWWvcf/Blineage.vcf.gz --out Blineage_siteQCfile.txt --out2 Blineage_taxaQCfile.txt > nohupB 2>& 1 
 java -jar /data1/home/yafei/C36_checkQuality.jar --file /data1/home/yafei/SNP/WW/outWWvcf/Dlineage.vcf.gz --out Dlineage_siteQCfile.txt --out2 Dlineage_taxaQCfile.txt > nohupD 2>& 1 
 
@@ -96,6 +93,7 @@ dev.off()
 pdf("AllSite_MissRate.pdf",width=20,height=8)
 ggplot(data, aes(x=MissingRate))+ geom_histogram() + facet_grid(. ~ Chr) +theme(panel.background = element_blank(),axis.title.x = element_text(size = 25),axis.title.y = element_text(size = 25),axis.text.x = element_text(size = 5),axis.text.y = element_text(size = 20),strip.text.x = element_text(size=15),panel.border = element_blank())
 dev.off()
+
 #sh: 检查40k位点缺失的原因
 #原因是：之前合并三个文件，WW里的位点如果在其他两个里面存在（1.1）并且变异含有Ref Allele（1.2）则保留，或者WW里的位点在其他两个里面不存在（2），则保留，不考虑是否含有Ref Allele。
 #所以通过是否含有ref allele的条件的过滤，过滤掉了40K的位点。

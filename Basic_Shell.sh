@@ -120,6 +120,8 @@ conda activate R4
 conda install -c bioconda bioconductor-clusterprofiler
 conda update R
 conda install r-base=4.0.3
+conda remove -n py36
+conda deactivate 
 
 #计算bam文件的depth
 #bams.txt格式为 /data3/wgs/bam/ABD/ABD_0165.bam，一行一个bam文件
@@ -240,7 +242,14 @@ zcat D_Alt.Anc.vcf.gz |awk '{if($0!~/^#/) print $1"\t"$2}' > set4.pos
 
 vcftools --vcf input.vcf --chr n --recode --recode-INFO-all --stdout | gzip -c > output.vcf.gz
 
+bcftools view -S sample.txt chr001.vcf.gz -Ov > 1000Genomes.vcf
 
 
+vcftools --gzvcf A1.vcf.gz --012 --recode --out snp_matrix
+
+#不允许位点有缺失
+vcftools --gzvcf Alineage_bayenv_pop5.vcf.gz --max-missing 1.0 --out A_noMissing
+
+bcftools view -S sample_file.txt -q 0.001:minor /data4/home/yafei/vcf_AB1/Merge/Filter2/chr${i}.vcf.gz -Oz -o chr${i}.vcf.gz
 
 

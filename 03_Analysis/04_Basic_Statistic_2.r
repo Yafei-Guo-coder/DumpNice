@@ -46,7 +46,7 @@ nohup cat chr1_siteQCfile.txt chr2_siteQCfile.txt chr7_siteQCfile.txt chr8_siteQ
   nohup cat chr10_siteQCfile.txt  chr16_siteQCfile.txt  chr22_siteQCfile.txt  chr28_siteQCfile.txt  chr34_siteQCfile.txt  chr3_siteQCfile.txt   chr4_siteQCfile.txt chr15_siteQCfile.txt  chr21_siteQCfile.txt  chr27_siteQCfile.txt  chr33_siteQCfile.txt  chr39_siteQCfile.txt  chr40_siteQCfile.txt  chr9_siteQCfile.txt > SS_siteQCfile.txt &
   
   #site_miss & site_maf
-  AA <- read.table("/data1/home/yafei/Project3/Maf/mafAA/100k_siteQCfile.txt",header=F,stringsAsFactors=F)
+AA <- read.table("/data1/home/yafei/Project3/Maf/mafAA/100k_siteQCfile.txt",header=F,stringsAsFactors=F)
 AA_maf <- AA[,c(1,5)]
 AA_miss <- AA[,c(1,4)]
 AA_maf$V1 <- "AA"

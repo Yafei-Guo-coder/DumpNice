@@ -25,6 +25,7 @@ varName <- paste("chr",1:42,".convers",sep="")
 for(i in 1:42){
   write.table(sub_orderd[which(sub_orderd$chromosome == i),], varName[i],row.names=F,quote=F,sep="\t")
 }
+
 #写42个(.tab)文件
 varName <- paste("chr",1:42,".tab",sep="")
 for(i in 1:42){

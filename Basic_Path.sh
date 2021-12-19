@@ -14,6 +14,8 @@
 #EU_group.txt      North2_30_group.txt  South_group.txt          Tibet.txt
 #North1_group.txt  North2_group.txt     South_group_noTibet.txt  WA_group.txt
 
+#LFMM
+204@yafei /data1/home/yafei/003_Project3/Structure/LFMM/V2
 #XP-clr + smooth
 204:xuebo:/data2/xuebo/Projects/Speciation/xpclr/Selection_V2/smooth/smooth_result/Top5%
 203:xuebo:/data1/home/xuebo/Projects/Speciation/xpclr/Selection_V2

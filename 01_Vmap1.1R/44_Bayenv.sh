@@ -10,21 +10,19 @@ MATFILE=$3
 POPNUM=$4
 ITNUM=$5
 ENVNUM=$6
-
 split -a 10 -l 2 $SNPFILE snp_batch
-
 for f in $(ls snp_batch*)
 do
 ./bayenv2 -i $f -e $ENVFILE -m $MATFILE -k $ITNUM -r $RANDOM -p $POPNUM -n $ENVNUM -t
 done
-
 rm -f snp_batch*
-
 #Working directory:
-#204:yafei:/data1/home/yafei/003_Project3/Structure/E6_Landrace_locate_225/bayenv
+#204:yafei:/data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY
 #准备环境变量文件
+
 awk 'NR==FNR{a[$1]=$2;b[$1]=$1}NR!=FNR{if($1 in b) print $0"\t"a[$1]}' pop.txt 225env.txt | sort -k24,24 > merge_env.txt
 datamash groupby 24 mean 2 mean 3 mean 4 mean 5 mean 6 mean 7 mean 8 mean 9 mean 10 mean 11 mean 12 mean 13 mean 14 mean 15 mean 16 mean 17 mean 18 mean 19 mean 20 mean 21 mean 22 mean 23 < merge_env.txt | datamash transpose > format1.txt
+
 #R
 data <- read.table("format1.txt",header=T,stringsAsFactors=F)
 m <- apply(data,1,mean)

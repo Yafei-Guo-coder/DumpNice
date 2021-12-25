@@ -51,5 +51,5 @@ xuebo@204:/data2/xuebo/Projects/Speciation/Variant_Age/rec
 
 setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/06_Allele_Age")
 
-
-
+for i in `ls *rec.marker.txt`; do sed '2d' $i | sed '$d' > ${i::-11}.txt; done
+for i in `ls *RUN1.sites2.txt`; do grep "J" $i | sed '1i MarkerID\tClock\tN_Concordant\tN_Discordant\tPostMode' > chr${i::-11}.txt; done

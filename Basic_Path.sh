@@ -59,3 +59,13 @@ java -Xmx300g -jar /data2/yafei/004_Vmap3/Fastcall2/03_Jar/PrivatePlantGenetics.
 204:yafei:/data1/home/yafei/003_Project3/Structure/E6_Landrace_locate_225/bayenv
 #BAYENV
 204@yafei:/data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY
+#VMap3的group分类
+204@yafei:/data4/home/yafei/vcf_AB1/Merge/Group
+
+
+
+
+
+
+
+

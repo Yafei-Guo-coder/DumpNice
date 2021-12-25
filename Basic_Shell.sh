@@ -54,9 +54,7 @@ do
         vcftools --gzvcf /data2/yafei/003_Project3/Vmap1.1/E6/VCF/chr${chr}.E6all.vcf.gz --keep ${taxa}_ancestor.txt --maf 0.0001 --chr $chr --from-bp $from --to-bp $to  --recode --recode-INFO-all --out 5k.$gene.$chr.$from-$to
     #fi
 done
-
 vcf-concat AB_noMiss_0.05.vcf.gz D_noMiss_0.05.vcf.gz | bgzip -c > noSort_noMiss_0.05.vcf.gz 
-
 
 #bedtools
 #提取vcf的特定区域
@@ -234,22 +232,57 @@ datamash -g 1,2 mean 3 unique 4
 plink2 --vcf test.vcf.gz --allow-extra-chr --alt1-allele 'force' test.vcf.gz 4 3 '#' --export vcf --out new --autosome-num 42
 
 zcat ../Dlineage_withBarleyTu.vcf.gz | awk '{if($0~/^#/) print $0; else if($312~/^0\/0/ && $313~/^0\/0/) print $0}' | bgzip -c > D_Ref.Anc.vcf.gz
-
 zcat AB_Alt.Anc.vcf.gz |awk '{if($0!~/^#/) print $1"\t"$2}' > set1.pos
 zcat AB_Ref.Anc.vcf.gz |awk '{if($0!~/^#/) print $1"\t"$2}' > set2.pos
 zcat D_Ref.Anc.vcf.gz |awk '{if($0!~/^#/) print $1"\t"$2}' > set3.pos
 zcat D_Alt.Anc.vcf.gz |awk '{if($0!~/^#/) print $1"\t"$2}' > set4.pos
-
 vcftools --vcf input.vcf --chr n --recode --recode-INFO-all --stdout | gzip -c > output.vcf.gz
-
 bcftools view -S sample.txt chr001.vcf.gz -Ov > 1000Genomes.vcf
-
-
 vcftools --gzvcf A1.vcf.gz --012 --recode --out snp_matrix
-
 #不允许位点有缺失
 vcftools --gzvcf Alineage_bayenv_pop5.vcf.gz --max-missing 1.0 --out A_noMissing
 
 bcftools view -S sample_file.txt -q 0.001:minor /data4/home/yafei/vcf_AB1/Merge/Filter2/chr${i}.vcf.gz -Oz -o chr${i}.vcf.gz
+vcf-compare first.vcf.gz second.vcf.gz
+for i in {001..042}
+do
+bcftools reheader -h ../VMap3_RawVCF/chr${i}.header <(zcat chr${i}.vcf.gz) | bgzip -c > reheader/chr${i}.re.vcf.gz &
+done
+for i in {001,002,003,004,007,008,009,010,013,014,015,016,019,020,021,022,025,026,027,028,031,032,033,034,037,038,039,040}
+do
+bcftools view chr${i}_VMap3.vcf.gz -Oz -o chr${i}_VMap3.vcf2.gz &
+done
 
+bcftools concat chr001.vcf.gz chr002.vcf.gz chr003.vcf.gz chr004.vcf.gz chr007.vcf.gz chr008.vcf.gz chr009.vcf.gz chr010.vcf.gz chr013.vcf.gz chr014.vcf.gz chr015.vcf.gz chr016.vcf.gz chr019.vcf.gz chr020.vcf.gz chr021.vcf.gz chr022.vcf.gz chr025.vcf.gz chr026.vcf.gz chr027.vcf.gz chr028.vcf.gz chr031.vcf.gz chr032.vcf.gz chr033.vcf.gz chr034.vcf.gz chr037.vcf.gz chr038.vcf.gz chr039.vcf.gz chr040.vcf.gz -o Lineage/ABlineage.vcf.gz -O z &
+bcftools concat chr005.vcf.gz chr006.vcf.gz chr011.vcf.gz chr012.vcf.gz chr017.vcf.gz chr018.vcf.gz chr023.vcf.gz chr024.vcf.gz chr029.vcf.gz chr030.vcf.gz chr035.vcf.gz chr036.vcf.gz chr041.vcf.gz chr042.vcf.gz -o  Lineage/Dlineage.vcf.gz -O z &
 
+plink --vcf vcf_file --allow-no-sex  --r2 --ld-window 99999 --ld-window-kb 10 --ld-window-r2 0.2 --out out_file
+
+thread_num=30
+tempfifo="my_temp_fifo"
+mkfifo ${tempfifo}
+exec 6<>${tempfifo}
+rm -f ${tempfifo}
+for ((i=1;i<=${thread_num};i++))
+do
+{
+echo
+}
+done >&6
+
+for i in `ls *gz`
+do
+cat /data4/home/yafei/vcf_AB1/Merge/Group/21pair_group.txt |while read pop1 pop2
+do
+{
+read -u6
+{
+vcftools --gzvcf ${i} --weir-fst-pop /data4/home/yafei/vcf_AB1/Merge/Group/${pop1} --weir-fst-pop /data4/home/yafei/vcf_AB1/Merge/Group/${pop2} --fst-window-size 1000000 --out ${i::-7}.${pop1}_${pop2}
+vcftools --gzvcf ${i} --weir-fst-pop /data4/home/yafei/vcf_AB1/Merge/Group/${pop1} --weir-fst-pop /data4/home/yafei/vcf_AB1/Merge/Group/${pop2} --fst-window-size 1000000 --out ${i::-7}.${pop1}_${pop2}
+echo "" >&6
+} &
+}
+done
+done
+wait
+exec 6>&-

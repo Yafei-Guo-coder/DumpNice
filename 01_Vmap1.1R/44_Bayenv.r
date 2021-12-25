@@ -194,83 +194,6 @@ do
 bedtools intersect -a $i -b D.merge10k.bayenv.top5.bed -wa |sort | uniq> bayenv_over/$i
 done
 
------------------------------------step2:定位已注释基因:gff--------------------------------
-for i in `ls *bed`
-do
-bedtools intersect -a ../../gene_v1.1_Lulab.gff3 -b $i -wa | awk '{print $1"\t"$4"\t"$5"\t"$9}' | awk -F";" '{print $1}' | sort | uniq > ${i::-3}gff.gene
-done
-#定位已克隆基因:cloned gene 以及定位抗病基因:nlr gene
-for i in `ls *gff.gene`
-do
-awk -F"ID=" '{print $2}' $i > ${i::-8}gene2
-done
-for i in `ls *.gene2`
-do
-grep -w -f $i ../../all_cloned_gene.txt > ${i::-5}cloned.gene
-#grep -w -f $i ../nlr_gene.txt > nlr/${i::-5}cloned.gene
-done
-rm *gene2
-ls *cloned.gene |xargs -n1 > cloned_gene.txt
-for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done | awk '{print $1}' | awk -F"_smooth" '{print $1}'|uniq > file_prefix.txt
-#change file format to plot heatmap(A,B,D lineage seperate)
-#A lineage
-ls *A.top5.cloned.gene |xargs -n1 > A_cloned_gene.txt
-sed 's/$/_smooth_A.top5.cloned.gene/' file_prefix.txt > A_file.txt
-for i in `cat A_cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $2}' | sort | uniq > A_gene.txt
-#B lineage
-ls *B.top5.cloned.gene |xargs -n1 > B_cloned_gene.txt
-sed 's/$/_smooth_B.top5.cloned.gene/' file_prefix.txt> B_file.txt
-for i in `cat B_cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $2}' | sort | uniq > B_gene.txt
-#D lineage 
-ls *D.top5.cloned.gene |xargs -n1 > D_cloned_gene.txt
-sed 's/$/_smooth_D.top5.cloned.gene/' file_prefix.txt > D_file.txt
-for i in `cat D_cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $2}' | sort | uniq > D_gene.txt
-#R
-v <- c("A","B","D")
-for ( i in c(1:3)){
-  filename <- paste(v[i],"_file.txt",sep="")
-  genename <- paste(v[i],"_gene.txt",sep="")
-  file <- read.table(filename,header=F,stringsAsFactors=F)
-  gene <- read.table(genename,header=F,stringsAsFactors=F)
-  files <- file[,1]
-  genes <- gene[,1]
-  x=vector()
-  for (j in files){
-    a<-paste(j,genes,sep=" ")
-    x <- c(x,a)
-  }
-  out <- paste(v[i],"_file_gene_mode.txt",sep="")
-  write.table(x,out,quote=F,row.names=F,col.names=F,sep="\t")
-}
-#shell
-#A lineage
-for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep A.top5.cloned.gene > A_postive_file_gene_mode.txt
-awk 'NR==FNR{a[$0]=$0}NR!=FNR{if($0 in a) {print a[$0]"\t1"} else print $0"\t"0}' A_postive_file_gene_mode.txt A_file_gene_mode.txt | awk -F"_smooth_" '{print $1"\t"$2}'|sed 's/ /\t/' > A_heatmap_format1.txt
-#B lineage
-for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep B.top5.cloned.gene > B_postive_file_gene_mode.txt
-awk 'NR==FNR{a[$0]=$0}NR!=FNR{if($0 in a) {print a[$0]"\t1"} else print $0"\t"0}' B_postive_file_gene_mode.txt B_file_gene_mode.txt | awk -F"_smooth_" '{print $1"\t"$2}'|sed 's/ /\t/' > B_heatmap_format1.txt
-#D lineage
-for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep D.top5.cloned.gene > D_postive_file_gene_mode.txt
-awk 'NR==FNR{a[$0]=$0}NR!=FNR{if($0 in a) {print a[$0]"\t1"} else print $0"\t"0}' D_postive_file_gene_mode.txt D_file_gene_mode.txt | awk -F"_smooth_" '{print $1"\t"$2}'|sed 's/ /\t/' > D_heatmap_format1.txt
-
-library(reshape)
-name <- read.table("file_prefix.txt",header=F,stringsAsFactors=F)
-colnames(name) <- "file"
-v <- c("A","B","D")
-num <- c(1,0.6,0.2)
-for ( i in c(1:3)){
-  filename <- paste(v[i],"_heatmap_format1.txt",sep="")
-  file <- read.table(filename,header=F,stringsAsFactors=F)
-  sub <- file[,c(1,3,4)]
-  colnames(sub) <- c("file","gene","type")
-  sub[which(sub$type==1),3] <- num[i]
-  sub[which(sub$type==0),3] <- num[i]-0.2
-  mt <- melt(sub,id=c("file","gene"))
-  st <- cast(mt,file~variable+gene)
-  name<-merge(name,st,by="file") 
-}
-write.table(name,"heatmap_format2.txt",quote=F,row.names=F,col.names=T,sep="\t")
-
 -----------------step3:提取所有克隆基因区上下游50k snp，重新做bayenv----------------
 Working directory: 
   yafei@204: /data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY/Gene50k
@@ -453,6 +376,223 @@ done
 for i in `ls *smooth_D.top1.bed`
 do
 bedtools intersect -a Dlog.bayenv.1.5.bed -b $i -wa |sort | uniq > bayenv_over/$i
+done
+
+-----------------------------------------20211221 新的结果--------------------------------------------
+原始文件：xuebo
+203:/data1/home/xuebo/Projects/Speciation/BAYENV/BAYENV_V2/bayenv2_out_lineageB
+203:/data1/home/xuebo/Projects/Speciation/BAYENV/BAYENV_V2/bayenv2_out_lineageD
+203:/data1/home/xuebo/Projects/Speciation/BAYENV/BAYENV_V2/genofile/B
+203:/data1/home/xuebo/Projects/Speciation/BAYENV/BAYENV_V2/genofile/D
+204:/data2/xuebo/Projects/Speciation/BAYENV/BAYENV_V2/bayenv2_out_lineageA
+204:/data2/xuebo/Projects/Speciation/BAYENV/BAYENV_V2/genofile/A
+204：/data2/xuebo/Projects/Speciation/E6/Landrace_locate_225/Landrace_225_noAM_220_maf001/lineage/Alineage_Landrace_225_noAM_220_maf001_LD.vcf
+204：/data2/xuebo/Projects/Speciation/E6/Landrace_locate_225/Landrace_225_noAM_220_maf001/lineage/Blineage_Landrace_225_noAM_220_maf001_LD.vcf
+204：/data2/xuebo/Projects/Speciation/E6/Landrace_locate_225/Landrace_225_noAM_220_maf001/lineage/Dlineage_Landrace_225_noAM_220_maf001_LD.vcf
+
+180893 A_out.bf uniq -> 180882
+204653 B_out.bf uniq -> 202982
+197614 D_out.bf uniq -> 197523
+
+444085 A_maf001_LD.vcf
+498827 B_maf001_LD.vcf
+482174 D_maf001_LD.vcf
+
+awk '{print $1"\t"$2-1"\t"$2"\t"NR}' A_maf001_LD.txt > A_maf001_LD.bed
+awk '{print $1"\t"$2-1"\t"$2"\t"NR}' B_maf001_LD.txt > B_maf001_LD.bed
+awk '{print $1"\t"$2-1"\t"$2"\t"NR}' D_maf001_LD.txt > D_maf001_LD.bed
+
+awk 'NR==FNR{a[$4]=$1;b[$4]=$2;c[$4]=$3;d[$4]=$4}NR!=FNR{if($1 in d) print a[$1],b[$1],c[$1],$0}' A.pos.bed A_out.bf > A_all.bf
+awk 'NR==FNR{a[$4]=$1;b[$4]=$2;c[$4]=$3;d[$4]=$4}NR!=FNR{if($1 in d) print a[$1],b[$1],c[$1],$0}' B.pos.bed B_out.bf > B_all.bf
+awk 'NR==FNR{a[$4]=$1;b[$4]=$2;c[$4]=$3;d[$4]=$4}NR!=FNR{if($1 in d) print a[$1],b[$1],c[$1],$0}' D.pos.bed D_out.bf > D_all.bf
+
+AB 密度 1.905844e-06
+bash get005.sh
+cat Abio*.top5.txt | awk '{print $1"\t"$2"\t"$3}' | sort -k1,1n -k2,2n | uniq  > Alog.bayenv.005.bed
+cat Bbio*.top5.txt | awk '{print $1"\t"$2"\t"$3}' | sort -k1,1n -k2,2n | uniq  > Blog.bayenv.005.bed
+cat Dbio*.top5.txt | awk '{print $1"\t"$2"\t"$3}' | sort -k1,1n -k2,2n | uniq  > Dlog.bayenv.005.bed
+
+180893 A_all.bf 0.05 -> 9045 密度 -> 14199/4934891648 -> 1.832867e-06 2.877267e-06
+204653 B_all.bf 0.05 -> 10233 密度 -> 45868/5180314468 -> 1.975363e-06 8.854289e-06
+197614 D_all.bf 0.05 -> 9881 密度 -> 50085/3951074735 ->2.500839e-06 1.26763e-05
+
+135848 A_all.bf 0.05 -> 6792
+98705 B_all.bf 0.05 -> 4935
+
+11498 Alog.bayenv.005.bed 背景密度 -> 11498/4934891648 -> 2.32994e-06
+24221 Blog.bayenv.005.bed 背景密度 -> 24221/5180314468 -> 4.675585e-06
+
+-----------------------------------------20211224 新的结果--------------------------------------------
+204@xuebo:/data2/xuebo/Projects/Speciation/BAYENV/BAYENV_V3/bayenv2_out_lineageA
+204@xuebo:/data2/xuebo/Projects/Speciation/BAYENV/BAYENV_V3/bayenv2_out_lineageB
+204@xuebo:/data2/xuebo/Projects/Speciation/BAYENV/BAYENV_V3/genofile/Alineage_bayenv_pop5_500K.vcf
+204@xuebo:/data2/xuebo/Projects/Speciation/BAYENV/BAYENV_V3/genofile/Blineage_bayenv_pop5_500K.vcf
+204@xuebo:/data2/xuebo/Projects/Speciation/BAYENV/BAYENV_V3/genofile/Alineage.pop5.envgenofile
+204@xuebo:/data2/xuebo/Projects/Speciation/BAYENV/BAYENV_V3/genofile/Blineage.pop5.envgenofile
+
+---------------------------bayenv_xpclr_overlap 计算富集程度----------------------
+204@yafei:/data1/home/yafei/003_Project3/bayenv/V3_500k
+for i in `ls *smooth_A.top5.bed`
+do
+bedtools intersect -a Alog.bayenv.005.bed -b  $i -wa |sort | uniq > bayenv_xpclr2/$i
+done
+for i in `ls *smooth_B.top5.bed`
+do
+bedtools intersect -a Blog.bayenv.005.bed -b  $i -wa |sort | uniq > bayenv_xpclr2/$i
+done
+for i in `ls *smooth_D.top5.bed`
+do
+bedtools intersect -a Dlog.bayenv.005.bed -b $i -wa |sort | uniq > bayenv_xpclr/$i
+done
+
+#--------------------------------------定位基因-----------------------------------
+204@yafei:/data1/home/yafei/003_Project3/bayenv/V3_500k/gene
+for i in `ls *smooth_A.top5.bed`
+do
+bedtools intersect -a $i -b Alog.bayenv.005.bed -wa |sort | uniq > gene/$i
+done
+for i in `ls *smooth_B.top5.bed`
+do
+bedtools intersect -a $i -b Blog.bayenv.005.bed -wa |sort | uniq > gene/$i
+done
+for i in `ls *smooth_D.top5.bed`
+do
+bedtools intersect -a $i -b Dlog.bayenv.005.bed -wa |sort | uniq > gene/$i
+done
+
+定位已注释基因:gff
+for i in `ls *bed`
+do
+bedtools intersect -a gene_v1.1_Lulab.gff3 -b $i -wa | awk '{print $1"\t"$4"\t"$5"\t"$9}' | awk -F";" '{print $1}' | sort | uniq > ${i::-3}gff.gene
+done
+#定位已克隆基因:cloned gene 以及定位抗病基因:nlr gene
+for i in `ls *gff.gene`
+do
+awk -F"ID=" '{print $2}' $i > ${i::-8}gene2
+done
+for i in `ls *.gene2`
+do
+grep -w -f $i all_cloned_gene.txt > ${i::-5}cloned.gene
+#grep -w -f $i ../nlr_gene.txt > nlr/${i::-5}cloned.gene
+done
+rm *gene2
+ls *cloned.gene |xargs -n1 > cloned_gene.txt
+for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done | awk '{print $1}' | awk -F"_smooth" '{print $1}'|uniq > file_prefix.txt
+#change file format to plot heatmap(A,B,D lineage seperate)
+#A lineage
+ls *A.top5.cloned.gene |xargs -n1 > A_cloned_gene.txt
+sed 's/$/_smooth_A.top5.cloned.gene/' file_prefix.txt > A_file.txt
+for i in `cat A_cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $2}' | sort | uniq > A_gene.txt
+#B lineage
+ls *B.top5.cloned.gene |xargs -n1 > B_cloned_gene.txt
+sed 's/$/_smooth_B.top5.cloned.gene/' file_prefix.txt> B_file.txt
+for i in `cat B_cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $2}' | sort | uniq > B_gene.txt
+#D lineage 
+ls *D.top5.cloned.gene |xargs -n1 > D_cloned_gene.txt
+sed 's/$/_smooth_D.top5.cloned.gene/' file_prefix.txt > D_file.txt
+for i in `cat D_cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $2}' | sort | uniq > D_gene.txt
+#R
+v <- c("A","B")
+for ( i in c(1:2)){
+  filename <- paste(v[i],"_file.txt",sep="")
+  genename <- paste(v[i],"_gene.txt",sep="")
+  file <- read.table(filename,header=F,stringsAsFactors=F)
+  gene <- read.table(genename,header=F,stringsAsFactors=F)
+  files <- file[,1]
+  genes <- gene[,1]
+  x=vector()
+  for (j in files){
+    a<-paste(j,genes,sep=" ")
+    x <- c(x,a)
+  }
+  out <- paste(v[i],"_file_gene_mode.txt",sep="")
+  write.table(x,out,quote=F,row.names=F,col.names=F,sep="\t")
+}
+#shell
+#A lineage
+for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep A.top5.cloned.gene > A_postive_file_gene_mode.txt
+awk 'NR==FNR{a[$0]=$0}NR!=FNR{if($0 in a) {print a[$0]"\t1"} else print $0"\t"0}' A_postive_file_gene_mode.txt A_file_gene_mode.txt | awk -F"_smooth_" '{print $1"\t"$2}'|sed 's/ /\t/' > A_heatmap_format1.txt
+#B lineage
+for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep B.top5.cloned.gene > B_postive_file_gene_mode.txt
+awk 'NR==FNR{a[$0]=$0}NR!=FNR{if($0 in a) {print a[$0]"\t1"} else print $0"\t"0}' B_postive_file_gene_mode.txt B_file_gene_mode.txt | awk -F"_smooth_" '{print $1"\t"$2}'|sed 's/ /\t/' > B_heatmap_format1.txt
+#D lineage
+for i in `cat cloned_gene.txt`; do awk '{print "'$i'""\t"$0}' $i; done| awk '{print $1" "$2}' | grep D.top5.cloned.gene > D_postive_file_gene_mode.txt
+awk 'NR==FNR{a[$0]=$0}NR!=FNR{if($0 in a) {print a[$0]"\t1"} else print $0"\t"0}' D_postive_file_gene_mode.txt D_file_gene_mode.txt | awk -F"_smooth_" '{print $1"\t"$2}'|sed 's/ /\t/' > D_heatmap_format1.txt
+
+library(reshape)
+name <- read.table("file_prefix.txt",header=F,stringsAsFactors=F)
+colnames(name) <- "file"
+v <- c("A","B","D")
+num <- c(1,0.6,0.2)
+for ( i in c(1:3)){
+  filename <- paste(v[i],"_heatmap_format1.txt",sep="")
+  file <- read.table(filename,header=F,stringsAsFactors=F)
+  sub <- file[,c(1,3,4)]
+  colnames(sub) <- c("file","gene","type")
+  sub[which(sub$type==1),3] <- num[i]
+  sub[which(sub$type==0),3] <- num[i]-0.2
+  mt <- melt(sub,id=c("file","gene"))
+  st <- cast(mt,file~variable+gene)
+  name<-merge(name,st,by="file") 
+}
+write.table(name,"heatmap_format2.txt",quote=F,row.names=F,col.names=T,sep="\t")
+
+#-----------------------------------bayenv_overlap--------------------------------
+setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/04_bayenv")
+A <- read.table("/Users/guoyafei/Documents/01_Migration/02_Environment/04_bayenv/21.Alog.bayenv.005.uniq.txt",header=T,stringsAsFactors = F)
+B <- read.table("/Users/guoyafei/Documents/01_Migration/02_Environment/04_bayenv/21.Blog.bayenv.005.uniq.txt",header=T,stringsAsFactors = F)
+D <- read.table("/Users/guoyafei/Documents/01_Migration/02_Environment/04_bayenv/21.Dlog.bayenv.005.uniq.txt",header=T,stringsAsFactors = F)
+ggplot(D, aes(x = Value)) +
+  geom_histogram(binwidth = 1, fill = "lightblue", colour = "black")+
+  theme_classic()
+
+require(RIdeogram)
+density <- rbind(A,B,D)
+wheat_karyotype <- read.table("/Users/guoyafei/Documents/01_Migration/01_BasicStatistic/13_Plots/01_Density/wheat_karyotype.txt", header=T, stringsAsFactors = F)
+ideogram(karyotype = wheat_karyotype, overlaid = density)
+convertSVG("chromosome.svg", device = "pdf")
+
+-----------------step3:提取所有克隆基因区上下游500k snp，重新做bayenv----------------
+Working directory: 
+/data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY/V1/Gene50k
+
+
+yafei@204: /data1/home/yafei/003_Project3/bayenv/Gene_50k
+bedtools merge -i <(awk '{print $1"\t"$2-50000"\t"$3+50000}' clone.gene.txt) > gene.50k.bed
+
+1.区分A,B,D亚基因组
+awk '{output="chr"$1".txt"; print $0 > output}' gene.50k.bed2 
+
+2.从225个样本的vcf文件中提取出这些位点的snp
+#yafei@204:/data1/home/yafei/003_Project3/Structure/E6_Landrace_locate_225/Lineage
+bcftools view -R ../pos/A.pos.bed Alineage_145.vcf.gz -o A.gene.500k.vcf.gz -O z &
+bcftools view -R ../pos/B.pos.bed Blineage_145.vcf.gz -o B.gene.500k.vcf.gz -O z &
+bcftools view -R ../pos/D.pos.bed Dlineage_145.vcf.gz -o D.gene.500k.vcf.gz -O z &
+
+3.格式转换
+#!/bin/bash
+for chr in {"A","B","D"}
+do
+java -jar -Xmx500g -Xms100g /data1/home/yafei/008_Software/PGDSpider_2.1.1.5/PGDSpider2-cli.jar -inputfile Chr/chr${chr}.gene.50k.vcf -inputformat VCF -outputfile envgenofile/chr${chr}.envgenofile -outputformat BAYENV -spid spid/VCF_BAYENV_chr${chr}.spid
+done
+4.跑bayenv
+./calc_bf.sh lineage/Alineage.envgenofile 13pop.env matrix/A.matrix 13 100000 22 Alineage_out
+./calc_bf.sh lineage/Blineage.envgenofile 13pop.env matrix/B.matrix 13 100000 22 Blineage_out
+./calc_bf.sh lineage/Dlineage.envgenofile 13pop.env matrix/D.matrix 13 100000 22 Dlineage_out
+5.结果解析
+awk '{print NR"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14"\t"$15"\t"$16"\t"$17"\t"$18"\t"$19"\t"$20"\t"$21"\t"$22"\t"$23}' Alineage_out.bf > Alineage_out.bf2
+awk '{print NR"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14"\t"$15"\t"$16"\t"$17"\t"$18"\t"$19"\t"$20"\t"$21"\t"$22"\t"$23}' Blineage_out.bf > Blineage_out.bf2
+awk '{print NR"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14"\t"$15"\t"$16"\t"$17"\t"$18"\t"$19"\t"$20"\t"$21"\t"$22"\t"$23}' Dlineage_out.bf > Dlineage_out.bf2
+zcat ../Alineage.gene.50k.vcf.gz | awk '{print $1"\t"$2}' |grep -v "#" | awk '{print NR"\t"$1"\t"$2}' > A.pos2.txt
+zcat ../Blineage.gene.50k.vcf.gz | awk '{print $1"\t"$2}' |grep -v "#" | awk '{print NR"\t"$1"\t"$2}' > B.pos2.txt
+zcat ../Dlineage.gene.50k.vcf.gz | awk '{print $1"\t"$2}' |grep -v "#" | awk '{print NR"\t"$1"\t"$2}' > D.pos2.txt
+for i in {"A","B","D"}
+do
+awk 'NR==FNR{a[$1]=$1;b[$1]=$0;c[$1]=$2"-"$3}NR!=FNR{print b[$1]"\t"c[$1]"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14"\t"$15"\t"$16"\t"$17"\t"$18"\t"$19"\t"$20"\t"$21"\t"$22"\t"$23}' ${i}.pos2.txt ${i}lineage_out.bf2 > ${i}lineage_out.bf2
+cat /data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY/${i}/${i}_out.bf2 ${i}lineage_out.bf2 > ${i}_out.bf2
+bash ${i}get005.sh
+cat ${i}bio*top5.txt | awk '{print $2"\t"$3-1"\t"$3}' | sort -k1,1n -k2,2n | uniq  > ${i}.bayenv.top5.bed
+bedtools merge -d 50000 -i ${i}.bayenv.top5.bed |awk '{if($3-$2 != 1) print $0}' > ${i}.merge50k.bayenv.top5.bed
 done
 
 

@@ -6,7 +6,7 @@ plink --vcf test.imputed.vcf --maf 0.05 --geno 0.1 --recode vcf-iid --out test.f
 plink --vcf test.filter.vcf --indep-pairwise 50 10 0.2 --out test.filterLD --allow-extra-chr --double-id --autosome-num 42
 
 #提取筛选结果
-#plink --vcf test.filter.vcf --extract test.filterLD.prune.in --recode vcf-iid --out  test.filter.prune.in --double-id --autosome-num 42
+#plink --vcf test.filter.vcf --make-bed --extract test.filterLD.prune.in --out  test.filter.prune.in --double-id --autosome-num 42
 plink --vcf test.filter.vcf --extract test.filterLD.prune.in --recode vcf-iid --out  test.filter.prune.in --double-id --autosome-num 42
 
 #转换成structure/admixture格式

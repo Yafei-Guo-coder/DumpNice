@@ -66,24 +66,28 @@ plink --vcf /data4/home/yafei/vcf_AB1/Merge/15M/Maf0.01/Lineage/Dlineage.vcf.gz 
 plink --vcf /data4/home/yafei/vcf_AB1/Merge/15M/Maf0.05/Lineage/ABlineage.vcf.gz --mds-plot 10 eigendecomp --cluster --double-id --autosome-num 42 --out ABlineage.maf0.05
 plink --vcf /data4/home/yafei/vcf_AB1/Merge/15M/Maf0.05/Lineage/Dlineage.vcf.gz --mds-plot 10 eigendecomp --cluster --double-id --autosome-num 42 --out Dlineage.maf0.05
 
+4.计算IBS，tajima'D, pi, fst
+204@yafei:/data4/home/yafei/vcf_AB1/Merge/Group/9group.txt 
+204@yafei:/data4/home/yafei/vcf_AB1/Merge/Group/21pair_group.txt
+bcftools merge chr0${chr}.vcf.gz chr0${chr}.vcf.gz chr0${chr}.vcf.gz chr${chr}.vcf.gz -o chr${chr}.all.vcf
 
+for i in `ls *gz`
+do
+cat /data4/home/yafei/vcf_AB1/Merge/Group/9group.txt |while read pop
+do
+vcftools --gzvcf ${i} --keep /data4/home/yafei/vcf_AB1/Merge/Group/${pop} --window-pi 1000000 --out ${i::-7}.${pop}_pi &
+vcftools --gzvcf ${i} --keep /data4/home/yafei/vcf_AB1/Merge/Group/${pop} --TajimaD 1000000 --out ${i::-7}.${pop}_tajimaD &
+vcftools --gzvcf ${i} --keep /data4/home/yafei/vcf_AB1/Merge/Group/${pop} --window-pi 1000000 --out ${i::-7}.${pop}_pi &
+vcftools --gzvcf ${i} --keep /data4/home/yafei/vcf_AB1/Merge/Group/${pop} --TajimaD 1000000 --out ${i::-7}.${pop}_tajimaD &
+done
+done
 
+for i in `ls *gz`
+do
+cat /data4/home/yafei/vcf_AB1/Merge/Group/21pair_group.txt |while read pop1 pop2
+do
+vcftools --gzvcf ${i} --weir-fst-pop /data4/home/yafei/vcf_AB1/Merge/Group/${pop1} --weir-fst-pop /data4/home/yafei/vcf_AB1/Merge/Group/${pop2} --fst-window-size 1000000 --out ${i::-7}.${pop1}_${pop2}
+vcftools --gzvcf ${i} --weir-fst-pop /data4/home/yafei/vcf_AB1/Merge/Group/${pop1} --weir-fst-pop /data4/home/yafei/vcf_AB1/Merge/Group/${pop2} --fst-window-size 1000000 --out ${i::-7}.${pop1}_${pop2}
+done
+done
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  

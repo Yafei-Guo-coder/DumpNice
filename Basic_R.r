@@ -105,10 +105,10 @@ p = ggplot(data, aes(x = taxaNum,y = mean))+
     axis.line.y = element_line(),
     panel.grid.major.x = element_blank(),
     panel.grid.minor.x = element_blank(),
-    axis.text.x=element_text(size=10),
-    axis.text.y=element_text(size=10),
-    axis.title.y=element_text(size = 10),
-    axis.title.x=element_text(size = 10),
+    axis.text.x=element_text(size=20),
+    axis.text.y=element_text(size=20),
+    axis.title.y=element_text(size = 20),
+    axis.title.x=element_text(size = 20),
   )+
   theme(legend.text = element_text(size=10),legend.title=element_blank(),axis.text.x = element_text(size = 10), axis.title.x = element_text(size = 10),axis.text.y = element_text(size = 10),axis.title.y = element_text(size = 10))
   #geom_text(aes(label = dat$Num),position=position_dodge(width = 0.5),size = 5,vjust = -0.25)+ ##########
@@ -127,4 +127,16 @@ print(result)
 ggplot(dataD, aes(x = V2)) +
   geom_histogram(binwidth = 1, fill = "lightblue", colour = "black")+
   theme_classic()
-
+#箱线图
+ggplot(Bdata, aes(x = B))+
+    geom_boxplot(fill = '#f8766d', notch = TRUE)+theme_classic()+  theme(
+    legend.position="none",
+    #panel.border = element_blank(),
+    axis.line.y = element_line(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.x=element_text(size=15),
+    axis.text.y=element_text(size=15),
+    axis.title.y=element_text(size = 15),
+    axis.title.x=element_text(size = 15),
+) 

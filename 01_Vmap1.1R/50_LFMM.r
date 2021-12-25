@@ -79,7 +79,6 @@ dev.off()
 #204跑D，k=6(conda R4)。203跑B，k=5(conda r4)。66跑A，k=7(conda r4)。
 for i in `cat names`; do sed "s@env/@$i@" test.r |sed "1i setwd(\"/data1/home/yafei/003_Project3/LFMM/A_out/$i\")"> $i/$i.r; done
 
-
 library(LEA)
 obj.lfmm = lfmm("D.genotype.lfmm", "env/bio1.env", K = 6, rep = 5, project="new")
 #Record z-scores from the 5 runs in the zs matrix
@@ -109,7 +108,11 @@ plot(qvalue(adj.p.values))
 candidates.qv = which(qvalue(adj.p.values, fdr = .1)$signif)
 write.table(candidates.qv,"site2.txt",row.names=F, quote = F)
 
-
-
-
-
+for i in `cat names`; do sed "s/qq.pdf/$i.qq.pdf/" qq.sh | sed "s/qvalue.pdf/$i.qvalue.pdf/" | sed "s/pos.txt/$i.pos.txt/"> $i/qq.r; done
+for i in `cat names` ; do echo "cd /data2/yafei/003_Project3/LFMM/D_Out/"$i;echo "nohup Rscript qq.r &"; done > run.qq.sh
+nohup bash run.qq.sh > run.qq.log &
+  
+for i in `ls *smooth_D.top5.bed`
+do
+bedtools intersect -a ../D.select.pos.bed -b  $i -wa |sort | uniq > bayenv_xpclr/$i
+done

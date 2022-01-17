@@ -116,3 +116,40 @@ for i in `ls *smooth_D.top5.bed`
 do
 bedtools intersect -a ../D.select.pos.bed -b  $i -wa |sort | uniq > bayenv_xpclr/$i
 done
+
+library(LEA)
+project = load.lfmmProject("D.lfmmProject")
+zs = z.scores(project, K = 6)
+zs.median = apply(zs, MARGIN = 1, median)
+lambda = median(zs.median^2)/qchisq(0.5, df = 1) 
+adj.p.values1 = pchisq(zs.median^2/lambda, df = 1, lower = FALSE)
+adj.p.values=sample(x=adj.p.values,size=20000)
+library(ggplot2)
+pdf("qq.pdf")
+qq_dat <- data.frame(obs=-log10(sort(adj.p.values,decreasing=FALSE)),
+                     exp=-log10( ppoints(length(adj.p.values))))
+ggplot(data=qq_dat,aes(exp,obs))+
+  geom_point(alpha=0.7,color="#7F7F7FFF")+
+  geom_abline(color="#D62728FF")+
+  xlab("Expected -log10(P-value)")+
+  ylab("Observed -log10(P-value)")+
+  scale_x_continuous(limits = c(0,7))+
+  scale_y_continuous(limits = c(0,7))+
+  theme(
+    axis.title = element_text(size=12,face="bold"),
+    axis.text = element_text(face="bold",size=8,color = "black"),
+    #axis.line = element_line(size=0.8,color="black"),
+    axis.ticks= element_line(size=0.8,colour = "black"),
+    panel.grid =element_blank(),
+    panel.border = element_rect(fill=NA,size = 0.8),
+    panel.background = element_blank())
+dev.off()
+library(qvalue)
+pdf("qvalue.pdf")
+plot(qvalue(adj.p.values))
+dev.off()
+candidates.qv = which(qvalue(adj.p.values, fdr = 0.01)$signif)
+write.table(candidates.qv,"pos.txt",quote=F,row.names=F)
+
+
+

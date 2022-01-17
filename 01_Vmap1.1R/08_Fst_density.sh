@@ -84,7 +84,6 @@ done
 #转移到本地: /Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density
 #通过08_Fst_density.r进行统计画图
 
-
 额外添加一组比较
 204:/data2/yafei/003_project3/Project3/FST_group/VmapData/FST_selection/New_pop
 

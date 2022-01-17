@@ -1,9 +1,14 @@
+#jar
+204:/data1/home/yafei/005_Script/Jar/
 #E6 VCF
 204:yafei:/data2/yafei/003_Project3/Vmap1.1/E6/VCF
 204:yafei:/data2/yafei/003_Project3/Vmap1.1/E6/Landrace_locate_225
 204:xuebo:/data2/xuebo/Projects/Speciation/E6/Landrace_locate_225
+#RDA
 
 #做迁徙和环境适应性路径
+#RDA
+204:yafei:/data2/yafei/003_Project3/Vmap1.1/E6/Landrace_locate_225/Lineages
 #42chr
 204:yafei:/data2/yafei/003_Project3/Vmap1.1/E6
 203:yafei:/data1/home/yafei/008_Software/snpEff/data2
@@ -13,12 +18,12 @@
 204:yafei:/data1/home/yafei/003_Project3/Structure/group
 #EU_group.txt      North2_30_group.txt  South_group.txt          Tibet.txt
 #North1_group.txt  North2_group.txt     South_group_noTibet.txt  WA_group.txt
-
 #LFMM
 204@yafei /data1/home/yafei/003_Project3/Structure/LFMM/V2
 #XP-clr + smooth
 204:xuebo:/data2/xuebo/Projects/Speciation/xpclr/Selection_V2/smooth/smooth_result/Top5%
 203:xuebo:/data1/home/xuebo/Projects/Speciation/xpclr/Selection_V2
+204:/data2/xuebo/Projects/Speciation/xpclr/Selection_V3
 #VIP gene分析
 204:yafei:/data2/yafei/003_Project3/Vmap1.1/E6/Xp-CLR_V2/VIP_genes
 204:yafei:/data2/yafei/003_Project3/Vmap1.1/E6/Xp-CLR_V2
@@ -47,7 +52,6 @@ java -Xmx300g -jar /data2/yafei/004_Vmap3/Fastcall2/03_Jar/PrivatePlantGenetics.
 204:/data4/home/yafei/vcf_AB1/Filter2/chr001_VMap3.vcf.gz
 #53先导file
 204:/data4/home/yafei/vcf_AB1/vcf/VCF/chr001_VMap3.vcf.gz
-
 #gff文件
 204:/data2/yafei/GeneLulab1_1_LC.gff3
 204:/data2/yafei/gene_v1.1_Lulab.gff3

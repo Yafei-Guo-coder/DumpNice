@@ -36,7 +36,7 @@ bedtools intersect -a /data1/home/yafei/009_GWAS/gene/gene_v1.1_Lulab.gff3 -b te
 #bcftools
 bcftools merge chr0${chr}.vcf.gz chr0${chr}.vcf.gz chr0${chr}.vcf.gz chr${chr}.vcf.gz -o chr${chr}.all.vcf
 bcftools filter 1000Genomes.vcf.gz --regions 9:4700000-4800000 > 4700000-4800000.vcf
-bcftools view -R chr_pos.list  test.vcf.gz >new.pos.vcf
+bcftools view -R chr_pos.list -S sample_file.txt test.vcf.gz >new.pos.vcf
 #直接给区间也行
 #1  1　　 1000
 #1　2000　4500
@@ -44,17 +44,21 @@ bcftools view -R chr_pos.list  test.vcf.gz >new.pos.vcf
 #vcftools
 vcftools --gzvcf file.vcf.gz --positions specific_position.txt --recode --recode-INFO-all --out specific_position.vcf
 
+
 #getVcf.sh
-cat $1 |while read gene chr from to taxa
+cat $1 | while read chr from to taxa Name
 do
-    #echo $chr $from $to
-    #if echo $2 |grep -q '.*.vcf.gz$';then
-    #    vcftools --gzvcf $2 --chr $chr --from-bp $from --to-bp $to  --recode --recode-INFO-all --out $gene.$chr.$from-$to 
-    #elif echo $2 |grep -q '.*.vcf$';then
-        vcftools --gzvcf /data2/yafei/003_Project3/Vmap1.1/E6/VCF/chr${chr}.E6all.vcf.gz --keep ${taxa}_ancestor.txt --maf 0.0001 --chr $chr --from-bp $from --to-bp $to  --recode --recode-INFO-all --out 5k.$gene.$chr.$from-$to
-    #fi
+    echo $chr $from $to
+    if echo $2 |grep -q '.*.vcf.gz$';then
+        ehco $2 
+    elif echo $2 |grep -q '.*.vcf$';then
+        echo $2
+    fi
 done
+
+
 vcf-concat AB_noMiss_0.05.vcf.gz D_noMiss_0.05.vcf.gz | bgzip -c > noSort_noMiss_0.05.vcf.gz 
+
 
 #bedtools
 #提取vcf的特定区域
@@ -229,6 +233,7 @@ cat iwgsc_refseqv1.0_mapping_data.txt |awk '{print $2"\t"$3"\t"$3+1"\t"$4}'|tail
 
 datamash -g 1,2 mean 3 unique 4 
 
+
 plink2 --vcf test.vcf.gz --allow-extra-chr --alt1-allele 'force' test.vcf.gz 4 3 '#' --export vcf --out new --autosome-num 42
 
 zcat ../Dlineage_withBarleyTu.vcf.gz | awk '{if($0~/^#/) print $0; else if($312~/^0\/0/ && $313~/^0\/0/) print $0}' | bgzip -c > D_Ref.Anc.vcf.gz
@@ -286,3 +291,19 @@ done
 done
 wait
 exec 6>&-
+
+awk 'FNR==NR{a[$1]=$9;next}($1 in a){print $0"\t"a[$1]}' sample_20_1.infor.txt sample_20_1_nor.txt|awk '{split($22,a,",");{printf $1" ";for(i=1;i<=length(a);i)printf("%s ",$a[i])} {print ""}}'| awk '{ A=0; V=0; for(N=2; N<=NF; N) A+=$N ; A/=(NF-1) ; for(N=2; N<=NF; N++) V+=(($N-A)*($N-A))/(NF-1); print A" "sqrt(V) }' | head
+awk '{for(i=10;i<NF;i++) {split($i,a,":");printf a[1]"\t"};print}' test.vcf | less -LS
+awk '{print substr($0, index($0,$10))}' test.vcf 
+c=`expr $a + $b` #加号（+）前后要有空格
+echo "a+b=$c"
+
+bcftools view -i 'F_MISSING<0.1 && (COUNT(GT="0/1")/300)<=0.1'
+
+
+java -Xmx100g -jar filter3.jar 
+java -Xmx200g -jar /data1/home/yafei/005_Script/Jar/vcfCount.jar Filter3 count3.txt
+
+
+bedtools merge -i Top0001.env10_A.txt -d 1000000 -c 1 -o count
+

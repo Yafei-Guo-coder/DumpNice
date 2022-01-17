@@ -11,21 +11,21 @@
 #GenWin(smooth)的结果是这样的"WindowStart" "WindowStop" "SNPcount" "MeanY" "Wstat"，没有染色体，要加上染色体的信息
 #smooth结果添加染色体号并进行排序，并且合并成A，B，D lineage.
 Name=(EU_South North2_South Strang_WA Tibet_South WA_EU WA_South neg_North1_North2 neg_WA_North1 neg_WA_North2)
-Name=neg_WA_North1
+Name=neg_WA_1_2
 for num in {0..8}
 do
   for i in {1,2,7,8,13,14,19,20,25,26,31,32,37,38}
     do
       sed '1d' ${Name[$num]}_smooth${i}.txt | awk '{print "'$i'""\t"$0}'  
-    done |sed '/NA/d' | sort -k5,5g -k1,1n -k2,2n | sed '1i Chr\tWindowStart\tWindowStop\tSNPcount\tMeanY\tWstat' > ${Name[$num]}_smooth_A.txt
+    done |sed '/NA/d' | sort -k6,6g -k1,1n -k2,2n | sed '1i Chr\tWindowStart\tWindowStop\tSNPcount\tMeanY\tWstat' > ${Name[$num]}_smooth_A.txt
   for i in {3,4,9,10,15,16,21,22,27,28,33,34,39,40}
     do
       sed '1d' ${Name[$num]}_smooth${i}.txt | awk '{print "'$i'""\t"$0}'  
-    done |sed '/NA/d' | sort -k5,5g -k1,1n -k2,2n | sed '1i Chr\tWindowStart\tWindowStop\tSNPcount\tMeanY\tWstat' > ${Name[$num]}_smooth_B.txt
+    done |sed '/NA/d' | sort -k6,6g -k1,1n -k2,2n | sed '1i Chr\tWindowStart\tWindowStop\tSNPcount\tMeanY\tWstat' > ${Name[$num]}_smooth_B.txt
   for i in {5,6,11,12,17,18,23,24,29,30,35,36,41,42}
     do
       sed '1d' ${Name[$num]}_smooth${i}.txt | awk '{print "'$i'""\t"$0}'  
-    done |sed '/NA/d' | sort -k5,5g -k1,1n -k2,2n | sed '1i Chr\tWindowStart\tWindowStop\tSNPcount\tMeanY\tWstat' > ${Name[$num]}_smooth_D.txt
+    done |sed '/NA/d' | sort -k6,6g -k1,1n -k2,2n | sed '1i Chr\tWindowStart\tWindowStop\tSNPcount\tMeanY\tWstat' > ${Name[$num]}_smooth_D.txt
 done
 
 #42条染色体合并成21条(因为gff文件是42条染色体,此步可以跳过)
@@ -34,9 +34,14 @@ done
 
 #每个亚基因组取5%看信号(42条染色体): bash top.sh
 #File_name	Line_num	Top1%_num	Top5%_num
+#Top5
+for i in `ls *txt`; do  wc -l $i; done | awk '{print $2"\t"$1"\t"$1*0.01"\t"$1*0.05}' | awk -F"[.|\t]" '{print $1"\t"$3"\t"$4"\t"$6}' | awk '{print "tail -n "$4,$1".txt > Top5%/"$1".top5.bed"}'
+#Top1
 for i in `ls *txt`; do  wc -l $i; done | awk '{print $2"\t"$1"\t"$1*0.01"\t"$1*0.05}' | awk -F"[.|\t]" '{print $1"\t"$3"\t"$4"\t"$6}' | awk '{print "tail -n "$3,$1".txt > Top1%/"$1".top1.bed"}'
-#阈值3-4
-#阈值1-2
+#Top001
+for i in `ls *txt`; do  wc -l $i; done | awk '{print $2"\t"$1"\t"$1*0.001"\t"$1*0.05}' | awk -F"[.|\t]" '{print $1"\t"$3"\t"$4"\t"$6}' | awk '{print "tail -n "$3,$1".txt > Top001/"$1".top1.bed"}'
+#Top005
+for i in `ls *txt`; do  wc -l $i; done | awk '{print $2"\t"$1"\t"$1*0.005"\t"$1*0.05}' | awk -F"[.|\t]" '{print $1"\t"$3"\t"$4"\t"$6}' | awk '{print "tail -n "$3,$1".txt > Top005/"$1".top5.bed"}'
 
 #xuebo@204:/data2/xuebo/Projects/Speciation/xpclr/Selection_V3/smooth/lineage_V2/Top5%/Gene
 #定位已注释基因:gff
@@ -210,3 +215,5 @@ for ( i in c(1:3)){
   name<-merge(name,st,by="file") 
 }
 write.table(name,"heatmap_format2.txt",quote=F,row.names=F,col.names=T,sep="\t")
+
+

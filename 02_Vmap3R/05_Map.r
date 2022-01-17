@@ -11,13 +11,18 @@ taxa_AB <- taxa[which(taxa$Ploidy=="AABB"),]
 taxa_ABD <- taxa[which(taxa$Ploidy=="AABBDD"),]
 taxa_D <- taxa[which(taxa$Ploidy=="DD"),]
 
+
+#VMap3
+setwd("/Users/guoyafei/Documents/02_VmapIII/01_表格")
+taxa <- read.table("location.txt", header=T, sep="\t",stringsAsFactors = F)
+
 #绘图
 mp<-NULL
 mapworld<-borders("world",colour = "gray70",fill="white") 
 mp<-ggplot()+mapworld+ylim(-60,90) +theme_classic()
 color <- brewer.pal(8, "Dark2")[c(1,2,3,4,6)]
 #AABBDD----
-mp2<-mp+geom_point(aes(x=taxa$Logititude, y=taxa$Latitude, color=taxa$Genome),size=1.5)+
+mp2<-mp+geom_point(aes(x=taxa$Logititude, y=taxa$Latitude, color=taxa$Genome),size=0.5)+
   scale_size(range=c(1,1))+ 
   scale_color_manual(values = color) +
   theme_classic()+
@@ -29,6 +34,9 @@ mp2<-mp+geom_point(aes(x=taxa$Logititude, y=taxa$Latitude, color=taxa$Genome),si
   theme(axis.ticks = element_blank()) 
   #theme(panel.grid =element_blank()) + 
   #theme(axis.ticks.y = element_blank())
+
+
+
 
 #AABB----
 mp2<-mp+geom_point(aes(x=taxa_AB$Longitude, y=taxa_AB$Latitude, color=taxa_AB$TreeValidatedGroupbySubspecies),size=1.5)+scale_size(range=c(1,1))+ theme_classic()+

@@ -6,7 +6,6 @@ for ( i in v) {
   }
   print(i)
 }
-
 #连接两个字符串：paste
 paste (a, sep = " ", collapse = NULL)
 paste0(a, collapse = NULL)
@@ -140,3 +139,54 @@ ggplot(Bdata, aes(x = B))+
     axis.title.y=element_text(size = 15),
     axis.title.x=element_text(size = 15),
 ) 
+
+ggplot() + geom_bar(data = data_order, aes(x = x, y=y),stat = "identity")
+
+data_order %>%
+  mutate(name = fct_reorder(name, desc(y))) %>%
+  ggplot(aes(x=name, y=y)) +
+  geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
+  coord_flip() +
+  xlab("") + ylab("")
+theme_bw()
+
+data_sorted <- data %>% 
+  mutate(class = fct_reorder(x, y))
+
+data_order$name <- factor(data_order$x,levels = unique(data_order$x))
+
+colnames(data) <- c("taxa","elevation",paste("temp",seq(1,11),sep=""),paste("prec",seq(1,8),sep=""),c("latitude","longitude","population1","population"))
+
+
+data <- read.table("mergeall_env.txt",header=F,stringsAsFactors = F)
+p <- list()
+p[[1]] <- ggscatter(data, x = "longitude", y = "elevation", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
+p[[2]] <- ggscatter(data, x = "longitude", y = "temp1", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
+p[[3]] <- ggscatter(data, x = "longitude", y = "temp2", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
+p[[4]] <- ggscatter(data, x = "longitude", y = "temp3", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
+p[[5]] <- ggscatter(data, x = "longitude", y = "temp4", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
+p[[6]] <- ggscatter(data, x = "longitude", y = "temp5", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
+p[[7]] <- ggscatter(data, x = "longitude", y = "temp6", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
+p[[8]] <- ggscatter(data, x = "longitude", y = "temp7", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
+p[[9]] <- ggscatter(data, x = "longitude", y = "temp8", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
+p[[10]] <- ggscatter(data, x = "longitude", y = "temp9", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
+p[[11]] <- ggscatter(data, x = "longitude", y = "temp10", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
+p[[12]] <- ggscatter(data, x = "longitude", y = "temp11", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
+p[[13]] <- ggscatter(data, x = "longitude", y = "prec1", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
+p[[14]] <- ggscatter(data, x = "longitude", y = "prec2", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
+p[[15]] <- ggscatter(data, x = "longitude", y = "prec3", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
+p[[16]] <- ggscatter(data, x = "longitude", y = "prec4", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
+p[[17]] <- ggscatter(data, x = "longitude", y = "prec5", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
+p[[18]] <- ggscatter(data, x = "longitude", y = "prec6", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
+p[[19]] <- ggscatter(data, x = "longitude", y = "prec7", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
+p[[20]] <- ggscatter(data, x = "longitude", y = "prec8", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
+
+pdf("longidute3.pdf",width = 22,height = 22)
+grid.arrange(p[[1]],p[[2]],p[[3]],p[[4]],p[[5]],p[[6]],p[[7]],p[[8]],p[[9]],p[[10]],p[[11]],p[[12]],p[[13]],p[[14]],p[[15]],p[[16]],p[[17]],p[[18]],p[[19]],p[[20]],nrow=4)
+dev.off()
+
+  
+
+
+
+    

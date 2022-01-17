@@ -101,4 +101,48 @@ ggplot(Ald, aes(dis/100,R2)) +
     axis.title.x=element_text(size = 10),
   )
 
+#------------------------------PI plot-------------------------
+setwd("/Users/guoyafei/Documents/07_105XD/PI")
+name <- paste("chr",rep(c(1:7),each=3),c("A","B","D"),sep="")
+cen <- read.table("/Users/guoyafei/Documents/07_105XD/centro.txt",header=T,stringsAsFactors = F)
+
+p <- list()
+for (i in c(1:21)){
+  filename <- paste(i,".txt",sep="")
+  data <- read.table(filename,header=T,stringsAsFactors = F)
+  p[[i]] <- ggplot(data=data,aes(x = BIN_STOP/1000000, y=PI))+
+    geom_line()+
+    geom_point(data=cen, aes(cen[i,4]/1000000,0),color="blue")+
+    xlab("")+
+    ylab("PI")+
+    #scale_x_continuous(limits = c(0,0.5))+
+    #scale_y_continuous(limits = c(0,7))+
+    ggtitle(name[i])+
+    theme(
+      plot.title = element_text(color="red", size=12, face="bold.italic"),
+      axis.title = element_text(size=12,face="bold"),
+      axis.text = element_text(face="bold",size=8,color = "black"),
+      axis.ticks= element_line(size=0.8,colour = "black"),
+      panel.grid =element_blank(),
+      panel.border = element_rect(fill=NA,size = 0.8),
+      panel.background = element_blank())
+}
+
+pdf("A_PI.pdf",width = 7,height = 12)
+grid.arrange(p[[1]],p[[4]],p[[7]],p[[10]],p[[13]],p[[16]],p[[19]],nrow=7)
+dev.off()
+pdf("B_PI.pdf",width = 7,height = 12)
+grid.arrange(p[[2]],p[[5]],p[[8]],p[[11]],p[[14]],p[[17]],p[[20]],nrow=7)
+dev.off()
+pdf("D_PI.pdf",width = 7,height = 12)
+grid.arrange(p[[3]],p[[6]],p[[9]],p[[12]],p[[15]],p[[18]],p[[21]],nrow=7)
+dev.off()
+
+
+
+
+
+
+
+
 

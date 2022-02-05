@@ -300,10 +300,10 @@ echo "a+b=$c"
 
 bcftools view -i 'F_MISSING<0.1 && (COUNT(GT="0/1")/300)<=0.1'
 
-
 java -Xmx100g -jar filter3.jar 
 java -Xmx200g -jar /data1/home/yafei/005_Script/Jar/vcfCount.jar Filter3 count3.txt
 
-
 bedtools merge -i Top0001.env10_A.txt -d 1000000 -c 1 -o count
+
+qpBrute --par sim1.par --prefix sim5 --pops R1 R2 R3 R4 R5 R6 R8 --out outgroup
 

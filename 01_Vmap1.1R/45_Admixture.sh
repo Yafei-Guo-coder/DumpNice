@@ -1,5 +1,7 @@
 #按MAF>0.05和缺失率<0.1过滤
 plink --vcf test.imputed.vcf --maf 0.05 --geno 0.1 --recode vcf-iid --out test.filter --allow-extra-chr --double-id --autosome-num 42
+
+
 --keep-only-indels
 
 #对VCF进行LD筛选

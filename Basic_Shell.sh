@@ -233,7 +233,6 @@ cat iwgsc_refseqv1.0_mapping_data.txt |awk '{print $2"\t"$3"\t"$3+1"\t"$4}'|tail
 
 datamash -g 1,2 mean 3 unique 4 
 
-
 plink2 --vcf test.vcf.gz --allow-extra-chr --alt1-allele 'force' test.vcf.gz 4 3 '#' --export vcf --out new --autosome-num 42
 
 zcat ../Dlineage_withBarleyTu.vcf.gz | awk '{if($0~/^#/) print $0; else if($312~/^0\/0/ && $313~/^0\/0/) print $0}' | bgzip -c > D_Ref.Anc.vcf.gz
@@ -246,7 +245,6 @@ bcftools view -S sample.txt chr001.vcf.gz -Ov > 1000Genomes.vcf
 vcftools --gzvcf A1.vcf.gz --012 --recode --out snp_matrix
 #不允许位点有缺失
 vcftools --gzvcf Alineage_bayenv_pop5.vcf.gz --max-missing 1.0 --out A_noMissing
-
 bcftools view -S sample_file.txt -q 0.001:minor /data4/home/yafei/vcf_AB1/Merge/Filter2/chr${i}.vcf.gz -Oz -o chr${i}.vcf.gz
 vcf-compare first.vcf.gz second.vcf.gz
 for i in {001..042}

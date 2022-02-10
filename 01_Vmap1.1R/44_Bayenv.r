@@ -1,7 +1,7 @@
 #-----------------step1:运行bayenv---------
 /data1/home/yafei/003_Project3/bayenv/13pop/Add544Gene
-
-java -Xmx200g -Xms512m -jar /data1/home/yafei/008_Software/PGDSpider_2.1.1.5/PGDSpider2-cli.jar -inputfile chr36.maf0.01.recode.vcf -inputformat VCF -outputfile chr36.maf0.01.env -outputformat BAYENV -spid VCF_BAYENV.spid#!/bin/bash
+java -Xmx200g -Xms512m -jar /data1/home/yafei/008_Software/PGDSpider_2.1.1.5/PGDSpider2-cli.jar -inputfile chr36.maf0.01.recode.vcf -inputformat VCF -outputfile chr36.maf0.01.env -outputformat BAYENV -spid VCF_BAYENV.spid
+#!/bin/bash
 #just a small bash script to calculate BFs for all SNPs from SNPFILE
 #please copy this script into the same directory as bayenv and execute it there
 #please see the Bayenv2 manual for details about usage
@@ -22,10 +22,8 @@ rm -f snp_batch*
 #Working directory:
 #204:yafei:/data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY
 #准备环境变量文件
-
 awk 'NR==FNR{a[$1]=$2;b[$1]=$1}NR!=FNR{if($1 in b) print $0"\t"a[$1]}' pop.txt 225env.txt | sort -k24,24 > merge_env.txt
 datamash groupby 24 mean 2 mean 3 mean 4 mean 5 mean 6 mean 7 mean 8 mean 9 mean 10 mean 11 mean 12 mean 13 mean 14 mean 15 mean 16 mean 17 mean 18 mean 19 mean 20 mean 21 mean 22 mean 23 < merge_env.txt | datamash transpose > format1.txt
-
 #R
 data <- read.table("format1.txt",header=T,stringsAsFactors=F)
 m <- apply(data,1,mean)
@@ -37,7 +35,6 @@ write.table(sub,"format2.txt", sep="\t", quote=F,row.names=F)
 #awk '{print $1"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12"\t"$13"\t"$2"\t"$3"\t"$4"\t"$5}' format2.txt  > format3.txt
 #shell
 #datamash transpose < format2.txt > format3.txt
-
 #准备基因型文件
 /data1/home/xuebo/software/PGDSpider/
 vcftools --vcf chr36.E6_Landrace_locate.vcf --maf 0.01 --recode --recode-INFO-all --out chr36.maf0.01

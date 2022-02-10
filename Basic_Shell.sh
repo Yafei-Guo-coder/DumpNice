@@ -29,7 +29,6 @@ cat 687_f1_test.fq | paste - - - - | sort -k1,1 -t " "  > 687_f1_test.sorte
 grep -v -f 687_uniqid 687_f1_test.sorted | tr "\t" "\n" > 687_f1_test.sorted.fq
 zcat CRR061687_r2.filtered.fq.gz |paste - - - - |sort -k1,1 -S 500G | tr '\t' '\n' |gzip > CRR061687_r2.filtered_sorted.fq.gz
 seqkit sort -n CRR061687_r2.filtered.fq.gz | gzip -c > CRR061687_r2.filtered_sorted.fq.gz
-  
 #bedtools
 bedtools intersect -a /data2/xuebo/Projects/Speciation/tree/withBarley_segregate/chr${chr}.withBarley.vcf.gz -b merge_D.bed -header > chr${chr}.withBarley.vcf
 bedtools intersect -a /data1/home/yafei/009_GWAS/gene/gene_v1.1_Lulab.gff3 -b test -wb | awk 'split($9, array, ";") {print $1"\t"$4"\t"$5"\t"array[1]"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14}' 
@@ -40,11 +39,8 @@ bcftools view -R chr_pos.list -S sample_file.txt test.vcf.gz >new.pos.vcf
 #直接给区间也行
 #1  1　　 1000
 #1　2000　4500
-
 #vcftools
 vcftools --gzvcf file.vcf.gz --positions specific_position.txt --recode --recode-INFO-all --out specific_position.vcf
-
-
 #getVcf.sh
 cat $1 | while read chr from to taxa Name
 do
@@ -55,11 +51,7 @@ do
         echo $2
     fi
 done
-
-
 vcf-concat AB_noMiss_0.05.vcf.gz D_noMiss_0.05.vcf.gz | bgzip -c > noSort_noMiss_0.05.vcf.gz 
-
-
 #bedtools
 #提取vcf的特定区域
 for chr in {1,2,7,8,13,14,19,20,25,26,31,32,37,38}

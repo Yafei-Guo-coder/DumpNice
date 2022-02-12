@@ -6,12 +6,10 @@ awk -F',' 'NR==FNR{a[$1]=$2;}NR!=FNR && a[$1] {print $0,a[$1]}' b.txt a.txt
 #方法2
 awk -F',' 'NR==FNR{a[$1]=$2;}NR!=FNR && $1 in a {print $0,a[$1]}' b.txt a.txt
 awk 'FNR==NR{a[$1];next}($1 in a){next} {print}' a b 
-awk 'ORS=NR%2?" ":"\n"{print}' 
-  
+awk 'ORS=NR%2?" ":"\n"{print}'
 #shell
 ps aux|grep Volca|tail -n 20 | awk '{print $2}' > id
 for i in `cat id`; do kill -9 $i; done
-
 ## split by chromosome
 for chr in {0..42}
 do
@@ -22,7 +20,6 @@ for chr in {0..42}
 do
 samtools index $out/$ID.chr$chr.bam
 done
-
 samtools view test.bam | awk '{print $5"\t"$9}'| sed '1i mapping-qulity\tmate-length' > test
 awk '{print $5"\t"$9}' standard.bam| sed '1i mapping-qulity\tmate-length' > standard
 cat 687_f1_test.fq | paste - - - - | sort -k1,1 -t " "  > 687_f1_test.sorte

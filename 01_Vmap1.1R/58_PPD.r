@@ -15,9 +15,7 @@ annotation <- read.table("/Users/guoyafei/Documents/01_Migration/02_Environment/
 anno <- annotation[,c(2,9),drop=FALSE]
 
 AB_anno <- anno[which(anno$VMap3 %in% colnames(sub)),]
-
 rownames(AB_anno) <- AB_anno$VMap3
-
 AB_anno <- AB_anno[,2,drop=F]
 AB_anno <- AB_anno[!is.na(AB_anno$heatmap),1,drop=F]
 labels_row =  rownames(sub)
@@ -33,7 +31,6 @@ labels_row[28] <- "16bp"
 labels_row[29] <- "5bp"
 labels_row[32] <- "2k"
 pheatmap(sub, show_rownames=T, labels_row=labels_row,show_colnames=F, legend_breaks = -1:2, legend_labels = c("./.", "0/0", "0/1", "1/1"), annotation = AB_anno,cluster_col = F,annotation_names_col = F,annotation_colors = ann_color, cluster_row = FALSE) 
-
 #Haplotype Map: PPD-D1
 setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/10_Gene")
 data <- read.table("ppd_331taxa.txt", header = T, stringsAsFactors = F)
@@ -58,7 +55,6 @@ for( j in c(1:dim(sub)[1])){
     }
     }
 dev.off()
-
 #fst
 library(ggplot2)
 data <- read.table("topP.txt1",header=T,stringsAsFactors=F)

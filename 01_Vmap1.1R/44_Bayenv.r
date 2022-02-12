@@ -500,7 +500,7 @@ Rscript ../../../heatmap_format2.r
   
 #-----------------step5:画曼哈顿图-----
 本地：/Users/guoyafei/Documents/01_Migration/02_Environment/04_bayenv/V4/manhuttan
-服务器：204:/data1/home/yafei/003_Project3/bayenv/13pop/Add544Gene_V2_Top5/all_bio
+服务器：204:/data1/home/yafei/003_Project3/bayenv/run1/Add544Gene_V2_Top5/all_bio
 
 library(ggplot2)
 library(gridExtra)
@@ -570,7 +570,6 @@ for (i in c(1:19)){
       axis.title.x=element_text(size = 14),
     )
 }
-
 
 names <- paste(rep(c("B"),each=19),"bio",c(6:24),".all.txt",sep="")
 #p<-list()
@@ -683,7 +682,7 @@ for (i in c(1:19)){
     #geom_hline(yintercept = 0, color = 'gray', size = 0.5) +
     scale_y_continuous(limits = c(-2,5))+
     theme_classic() +
-    ylab("BF")+
+    ylab("BF")+  
     xlab("D")+
     theme( 
       legend.position="none",

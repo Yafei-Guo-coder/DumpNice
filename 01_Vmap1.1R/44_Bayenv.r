@@ -61,7 +61,7 @@ library(cluster)
 library(factoextra)
 #聚类
 #根据经纬度给样本聚类
-data <- read.table("/Users/guoyafei/Documents/01_Migration/02_Environment/04_bayenv/225env.txt", header=F,stringsAsFactors = F)
+data <- read.table("/Users/guoyafei/Documents/01_Migration/02_Environment/04_bayenv/V1/225env.txt", header=F,stringsAsFactors = F)
 colname <- c("elevation","temp1","temp2","temp3","temp4","temp5","temp6","temp7","temp8","temp9","temp10","temp11","prec1","prec2","prec3","prec4","prec5","prec6","prec7","prec8","Latitude","Logititude")
 rownames(data) <- data[,1]
 data2 <- data[!is.na(data$V6),-1]
@@ -70,8 +70,7 @@ colnames(data2) <- colname
 #按列进行标准化并聚类
 df = scale(data2,center = T,scale = T)
 colnames(df) <- colname
-
-------------------------------kmeans聚类---------
+#------------------------------kmeans聚类---------
 #确定应该分几个cluster
 data2<- data2[,c(1:22)]
 mydata <- data2

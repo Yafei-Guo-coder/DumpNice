@@ -3,7 +3,8 @@ library(RColorBrewer)
 display.brewer.all()
 ##Top5 VIP gene & Top1 NLR gene
 setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/04_bayenv/V3/site")
-data2 <- read.table("all.txt",
+setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/HeatMap/V6")
+data2 <- read.table("heatmap_eleBio.txt",
                     header=T,
                     row.names= 1, stringsAsFactors=F,sep="\t")
 data <- as.matrix(data2)
@@ -12,14 +13,17 @@ for ( i in c(1:dim(data)[2])){
   x <- c(x,strsplit(colnames(data), "type_")[[i]][2])
 }
 colnames(data)<-x
+
+region <- c("WA_EU","neg_WA_North1","neg_WA_North2","WA_South","EU_North1","EU_North2","EU_South","neg_North1_North2","South_North1","North2_South")
 #region <- c("Strang_WA", "WA_EU", "WA_CA", "WA_NW_A", "WA_NE_A", "WA_SA", "WA_SW_A", "WA_Tibet", "WA_SE_A", "CA_SA", "SA_SW_A", "SA_Tibet", "NW_A_NE_A", "SW_A_NE_A", "SE_A_NE_A")
 #region <- c("neg_North1_North2", "neg_WA_North1", "neg_WA_North2", "WA_EU", "Strang_WA","WA_South","Tibet_South", "North2_South")
 region <- c("neg_WA_1_2", "Strang_WA", "WA_EU", "WA_South", "EU_South","neg_WA_North1","neg_WA_North2","North2_South","Tibet_South")
 
 data <- data[region,]
 colsA = c("#F7FCFD","#8C96C6","#F7FCF5","#74C476","#FFFFCC","#FD8D3C")
-pheatmap(data,cluster_rows = F,cluster_cols = T,border_color=NA,color = colsA,fontsize=8)
+pheatmap(data,cluster_rows = F,cluster_cols = F,border_color=NA,color = colsA,fontsize=8)
 
+pheatmap(data,cluster_rows = F,cluster_cols = F,border_color=NA,fontsize=8)
 #画top5% nlr基因的曼哈顿图----
 #204@xuebo:/data2/xuebo/Projects/Speciation/xpclr/Selection_V3/smooth/lineage_V2/Top5%/nlr
 #cat neg_WA_North2_smooth_* > manhattan/neg_WA_North2.txt
@@ -41,6 +45,7 @@ filePath <- sapply(fileNames, function(x){
 data <- lapply(filePath, function(x){
   read.table(x, header=F,stringsAsFactors = F)})
 tit <- c("EU_South","WA_North2","North2_South","Strang_WA","Tibet_South","WA_EU","WA_South")
+
 pdf("nlr.xpclr.pdf",width = 7.5,height = 4)
 for(i in c(1:length(data))){
   data1 <- data[[i]]

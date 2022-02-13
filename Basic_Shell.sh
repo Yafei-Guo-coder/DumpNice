@@ -32,7 +32,7 @@ bedtools intersect -a /data1/home/yafei/009_GWAS/gene/gene_v1.1_Lulab.gff3 -b te
 #bcftools
 bcftools merge chr0${chr}.vcf.gz chr0${chr}.vcf.gz chr0${chr}.vcf.gz chr${chr}.vcf.gz -o chr${chr}.all.vcf
 bcftools filter 1000Genomes.vcf.gz --regions 9:4700000-4800000 > 4700000-4800000.vcf
-bcftools view -R chr_pos.list -S sample_file.txt test.vcf.gz >new.pos.vcf
+bcftools view -R chr_pos.list -S sample_file.txt test.vcf.gz > new.pos.vcf
 #直接给区间也行
 #1  1　　 1000
 #1　2000　4500

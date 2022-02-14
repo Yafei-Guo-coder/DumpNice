@@ -82,8 +82,7 @@ plot(1:20, wss, type="b", xlab="Number of Clusters",
      
 #kmeans聚类，标准化后
 data2<- data2[,c(1:22)]
-km <- kmeans(df,13,iter.max = 10000)
-km <- kmeans(data2, 11,iter.max = 5000) #用于画地图
+km <- kmeans(data2, 13,iter.max = 10000) #用于画地图
 fviz_cluster(km, data = df,
   #palette = c("#2E9FDF", "#00AFBB", "#E7B800", "#FC4E07"),
   ellipse.type = "euclid",

@@ -79,7 +79,6 @@ wss <- (nrow(mydata)-1)*sum(apply(mydata,2,var))
 for (i in 2:20) wss[i] <- sum(kmeans(mydata,centers=i)$withinss)
 plot(1:20, wss, type="b", xlab="Number of Clusters",
      ylab="Within groups sum of squares")
-     
 #kmeans聚类，标准化后
 data2<- data2[,c(1:22)]
 km <- kmeans(data2, 13,iter.max = 10000) #用于画地图

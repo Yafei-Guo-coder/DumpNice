@@ -294,3 +294,4 @@ bedtools merge -i Top0001.env10_A.txt -d 1000000 -c 1 -o count
 
 qpBrute --par sim1.par --prefix sim5 --pops R1 R2 R3 R4 R5 R6 R8 --out outgroup
 
+

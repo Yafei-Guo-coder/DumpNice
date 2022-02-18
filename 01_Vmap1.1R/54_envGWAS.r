@@ -5,6 +5,8 @@
 #工作目录：
 #服务器:/data2/yafei/003_Project3/Vmap1.1/E6/Landrace_locate_220/maf005/env1/Result
 #本地:/Users/guoyafei/Documents/01_Migration/02_Environment/09_GWAS
+
+#服务器:SH1&SH2:/data2/yafei/003_Project3/Vmap1.1/E6/GWAS
 library(dplyr)
 library(ggridges)
 library(RColorBrewer)

@@ -184,9 +184,9 @@ done
 samtools faidx genome.fa
 #生成gemome.fa.fai文件第一列为染色体，第二列为对应染色体长度
 #2.根据染色体的长度产出区域文件
-bedtools makewindows -g genome.fa.fai -w 100000 >region.bed
+bedtools makewindows -g genome.fa.fai -w 100000 > region.bed
 #3.输入vcf文件统计不同区域里面变异个数
-bedtools coverage -a region.bed -b q4.vcf -counts >result.txt
+bedtools coverage -a region.bed -b q4.vcf -counts > result.txt
 
 #sed里面引用shell变量
 a="one"

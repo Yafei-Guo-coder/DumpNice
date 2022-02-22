@@ -152,7 +152,7 @@ for (i in seq(1,40,by=2)){
     a <- i+j
     gwasResults2 <- data[[a]]
     colnames(gwasResults2) <- c("SNP", "CHR", "BP","P")
-    gwasResults3 <- gwasResults2[which(gwasResults2$P < 0.01),]
+    gwasResults3 <- gwasResults2[which(gwasResults2$P < 0.25),]
     other <- gwasResults2[which(gwasResults2$P > 0.01 & gwasResults2$P <0.2),]
     #other2 <- other[sample(nrow(other), 20000), ]
     gwasResults <- rbind(gwasResults3,other)
@@ -337,7 +337,7 @@ done
 203:/data1/home/yafei/003_Project3/GWAS
 #58个高低海拔样本的环境GWAS分析
 setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/09_GWAS/58taxa")
-data <- read.table("D_glm1.txt",header=T,stringsAsFactors = F)
+data <- read.table("D_mlm2.txt",header=T,stringsAsFactors = F)
 
 
 

@@ -335,6 +335,9 @@ done
 #服务器:SH1&SH2:
 204:/data2/yafei/003_Project3/Vmap1.1/E6/GWAS
 203:/data1/home/yafei/003_Project3/GWAS
+#58个高低海拔样本的环境GWAS分析
+setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/09_GWAS/58taxa")
+data <- read.table("D_glm1.txt",header=T,stringsAsFactors = F)
 
 
 

@@ -15,6 +15,7 @@ df = scale(data2,center = T,scale = T)
 colnames(df) <- colname
 #按列进行标准化
 #先求样本之间两两相似性
+
 result <- dist(df, method = "euclidean")
 #使用指定距离来计算数据矩阵行之间的距离
 #euclidean：欧几里得距离

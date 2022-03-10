@@ -208,7 +208,13 @@ awk '{for (i = 1; i <= NF; ++i) {split($i, array, ":"); print $1"\t"array[1]}}'
 awk 'split($9, array, ";") {print $1"\t"array[1]}'
 awk '{output="chr"$1."noheader.vcf"; print $0 > $output}' sorted_noMiss_gene_noHeader.vcf
 
-plink2 --vcf test.vcf.gz --allow-extra-chr --alt1-allele 'force' test.vcf.gz 4 3 '#' --export vcf --out new
+plink2 --vcf test.vcf.gz --allow-extra-chr --alt1-allele 'force' test.vcf.gz 4 3 '#' --export vcf --out new --autosome-num 42
+plink --vcf input.vcf --recode --out output --double-id  --autosome-num 42
+plink --file A --make-bed --out A --autosome-num 42
+
+#结果生成：ped/map以及二进制文件bed/bim/fam
+#添加--recode参数将输出结果调整为ped格式
+plink2 --vcf Alineage001_Domesticated_emmer.vcf.gz --allow-extra-chr --export haps --out new --autosome-num 42
 
 bcftools concat chr001.vcf.gz chr002.vcf.gz chr007.vcf.gz chr008.vcf.gz chr013.vcf.gz chr014.vcf.gz chr019.vcf.gz chr020.vcf.gz chr025.vcf.gz chr026.vcf.gz chr031.vcf.gz chr032.vcf.gz chr037.vcf.gz chr038.vcf.gz -o Alineage.vcf.gz -O z &
 bcftools concat chr003.vcf.gz chr004.vcf.gz chr009.vcf.gz chr010.vcf.gz chr015.vcf.gz chr016.vcf.gz chr021.vcf.gz chr022.vcf.gz chr027.vcf.gz chr028.vcf.gz chr033.vcf.gz chr034.vcf.gz chr039.vcf.gz chr040.vcf.gz -o Blineage.vcf.gz -O z &
@@ -294,4 +300,5 @@ bedtools merge -i Top0001.env10_A.txt -d 1000000 -c 1 -o count
 
 qpBrute --par sim1.par --prefix sim5 --pops R1 R2 R3 R4 R5 R6 R8 --out outgroup
 
+vawk '{print $s*GT}' test.vcf
 

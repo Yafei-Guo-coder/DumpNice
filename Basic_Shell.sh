@@ -246,6 +246,7 @@ for i in {001..042}
 do
 bcftools reheader -h ../VMap3_RawVCF/chr${i}.header <(zcat chr${i}.vcf.gz) | bgzip -c > reheader/chr${i}.re.vcf.gz &
 done
+
 for i in {001,002,003,004,007,008,009,010,013,014,015,016,019,020,021,022,025,026,027,028,031,032,033,034,037,038,039,040}
 do
 bcftools view chr${i}_VMap3.vcf.gz -Oz -o chr${i}_VMap3.vcf2.gz &

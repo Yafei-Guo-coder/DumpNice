@@ -206,7 +206,7 @@ bedtools merge -i A.bed
 
 awk '{for (i = 1; i <= NF; ++i) {split($i, array, ":"); print $1"\t"array[1]}}'
 awk 'split($9, array, ";") {print $1"\t"array[1]}'
-awk '{output="chr"$1."noheader.vcf"; print $0 > $output}' sorted_noMiss_gene_noHeader.vcf
+awk '{output="chr"$1."noheader.vcf"; print $0 > output}' sorted_noMiss_gene_noHeader.vcf
 
 plink2 --vcf test.vcf.gz --allow-extra-chr --alt1-allele 'force' test.vcf.gz 4 3 '#' --export vcf --out new --autosome-num 42
 plink --vcf input.vcf --recode --out output --double-id  --autosome-num 42

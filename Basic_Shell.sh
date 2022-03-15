@@ -134,10 +134,8 @@ do
 done
 
 samtools mpileup -A -B -q 30 -Q 20 -f /data1/home/xinyue/ref/byChr/chr032.fa.gz /data3/wgs/bam/ABD/ABD_0372.bam -r 32:89999900-89999996
-
 vcf-concat *shuf.vcf.gz |awk '$1 ~ /^#/ {print $0;next} {print $0 | "sort -k1,1n -k2,2n"}' > Alineage.10000.vcf &
 vcftools --vcf file1.snp.vcf --diff file2.snp.vcf --diff-site --out Diff.site
-
 
 cd Out/vcf/VCF/
 sed '/^#/d' chr001.vcf | awk '{print $1"\t"$2"\t"$10"\t"$11"\t"$12}'  > ../../../pos.txt
@@ -285,21 +283,14 @@ done
 done
 wait
 exec 6>&-
-
 awk 'FNR==NR{a[$1]=$9;next}($1 in a){print $0"\t"a[$1]}' sample_20_1.infor.txt sample_20_1_nor.txt|awk '{split($22,a,",");{printf $1" ";for(i=1;i<=length(a);i)printf("%s ",$a[i])} {print ""}}'| awk '{ A=0; V=0; for(N=2; N<=NF; N) A+=$N ; A/=(NF-1) ; for(N=2; N<=NF; N++) V+=(($N-A)*($N-A))/(NF-1); print A" "sqrt(V) }' | head
 awk '{for(i=10;i<NF;i++) {split($i,a,":");printf a[1]"\t"};print}' test.vcf | less -LS
 awk '{print substr($0, index($0,$10))}' test.vcf 
 c=`expr $a + $b` #加号（+）前后要有空格
 echo "a+b=$c"
-
 bcftools view -i 'F_MISSING<0.1 && (COUNT(GT="0/1")/300)<=0.1'
-
 java -Xmx100g -jar filter3.jar 
 java -Xmx200g -jar /data1/home/yafei/005_Script/Jar/vcfCount.jar Filter3 count3.txt
-
 bedtools merge -i Top0001.env10_A.txt -d 1000000 -c 1 -o count
-
 qpBrute --par sim1.par --prefix sim5 --pops R1 R2 R3 R4 R5 R6 R8 --out outgroup
-
 vawk '{print $s*GT}' test.vcf
-

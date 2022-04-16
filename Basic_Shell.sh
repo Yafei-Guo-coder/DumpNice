@@ -8,7 +8,7 @@ awk -F',' 'NR==FNR{a[$1]=$2;}NR!=FNR && $1 in a {print $0,a[$1]}' b.txt a.txt
 awk 'FNR==NR{a[$1];next}($1 in a){next} {print}' a b 
 awk 'ORS=NR%2?" ":"\n"{print}'
 #shell
-ps aux|grep Volca|tail -n 20 | awk '{print $2}' > id
+ps aux|grep vcftools|awk '{print $2}' > id
 for i in `cat id`; do kill -9 $i; done
 ## split by chromosome
 for chr in {0..42}
@@ -228,6 +228,8 @@ datamash -g 1,2 mean 3 unique 4
 
 plink2 --vcf test.vcf.gz --allow-extra-chr --alt1-allele 'force' test.vcf.gz 4 3 '#' --export vcf --out new --autosome-num 42
 
+plink --vcf /data2/yafei/004_Vmap3/VCF/4M/chr006.vcf.gz --keep group.txt --maf 0.01 --geno 0.1 --recode vcf-iid --out
+
 zcat ../Dlineage_withBarleyTu.vcf.gz | awk '{if($0~/^#/) print $0; else if($312~/^0\/0/ && $313~/^0\/0/) print $0}' | bgzip -c > D_Ref.Anc.vcf.gz
 zcat AB_Alt.Anc.vcf.gz |awk '{if($0!~/^#/) print $1"\t"$2}' > set1.pos
 zcat AB_Ref.Anc.vcf.gz |awk '{if($0!~/^#/) print $1"\t"$2}' > set2.pos
@@ -295,3 +297,5 @@ java -Xmx200g -jar /data1/home/yafei/005_Script/Jar/vcfCount.jar Filter3 count3.
 bedtools merge -i Top0001.env10_A.txt -d 1000000 -c 1 -o count
 qpBrute --par sim1.par --prefix sim5 --pops R1 R2 R3 R4 R5 R6 R8 --out outgroup
 vawk '{print $s*GT}' test.vcf
+
+

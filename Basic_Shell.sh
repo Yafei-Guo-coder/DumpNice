@@ -8,7 +8,7 @@ awk -F',' 'NR==FNR{a[$1]=$2;}NR!=FNR && $1 in a {print $0,a[$1]}' b.txt a.txt
 awk 'FNR==NR{a[$1];next}($1 in a){next} {print}' a b 
 awk 'ORS=NR%2?" ":"\n"{print}'
 #shell
-ps aux|grep vcftools|awk '{print $2}' > id
+ps aux | grep plink|awk '{print $2}' > id
 for i in `cat id`; do kill -9 $i; done
 ## split by chromosome
 for chr in {0..42}
@@ -54,18 +54,15 @@ vcf-concat AB_noMiss_0.05.vcf.gz D_noMiss_0.05.vcf.gz | bgzip -c > noSort_noMiss
 for chr in {1,2,7,8,13,14,19,20,25,26,31,32,37,38}
 do
 bedtools intersect -a /data2/xuebo/Projects/Speciation/tree/withBarley_segregate/chr${chr}.withBarley.vcf.gz -b merge_A.bed -header > chr${chr}.withBarley.vcf &
-  done
-
+done
 for chr in {3,4,9,10,15,16,21,22,27,28,33,34,39,40}
 do
 bedtools intersect -a /data2/xuebo/Projects/Speciation/tree/withBarley_segregate/chr${chr}.withBarley.vcf.gz -b merge_B.bed -header > chr${chr}.withBarley.vcf &
-  done
-
+done
 for chr in {5,6,11,12,17,18,23,24,29,30,35,36,41,42}
 do
 bedtools intersect -a /data2/xuebo/Projects/Speciation/tree/withBarley_segregate/chr${chr}.withBarley.vcf.gz -b merge_D.bed -header > chr${chr}.withBarley.vcf &
-  done
-  
+done
 #删除行首空格
 sed 's/^[ \t]*//g'
 #删除行尾空格
@@ -79,7 +76,6 @@ for i in `cat depth.txt`
 do
  tail -n1 *${i} | awk '{print $4}' | sed '/^$/d' |awk 'BEGIN{count=0} {count = count+$1} END{print count/NR}'
 done
-
 for i in `cat fqlist.txt`
 do
 bwa mem -t 20 -R '@RG\tID:Aegilops\tPL:illumina\tSM:Aegilops' /data1/publicData/wheat/reference/v1.0/D/bwaLib/d_iwgscV1.fa.gz ${i}_1.fq.gz ${i}_2.fq.gz | samtools view -S -b -> ${i}.bam
@@ -166,7 +162,7 @@ est_alpha_omega -c est_alpha_omega_config_file.txt
 vcftools --gzvcf test.vcf.gz --freq --stdout |tail -n +2| awk '{A=0;C=0;G=0;T=0;if(substr($5,1,1)"G"){G=substr($5,3,length($5))*100}else if(substr($5,1,1)"A"){A=substr($5,3,length($5))100}else if(substr($5,1,1)=="C"){C=substr($5,3,length($5))100}else if(substr($5,1,1)"T"){T=substr($5,3,length($5))*100} print"chr"$1"\t"$2-1"\t"$2"\t"substr($5,1,1)"\t"substr($6,1,1)"\t"int(A)","int(C)","int(G)","int(T)}'|awk '{split($6,a,",");A=a[1];C=a[2];G=a[3];T=a[4];sum=a[1]+a[2]+a[3]+a[4];if($5"A"){A=100-sum}else if($5"C"){C=100-sum}else if($5"G"){G=100-sum}else if($5=="T"){T=100-sum}print $1"\t"$2"\t"$3"\t"$4"\t"$5"\t"int(A)","int(C)","int(G)","int(T)}' | head
 cat test.txt | sed 's/,/\t/g' | awk '{for(i=6; i<= NF; i++)sum+=$i;printf "%s\t%s\t%s\t%.0f,%.0f,%.0f,%.0f\n",$2,$3,$4,$6/sum*100,$7/sum*100,$8/sum*100,$9/sum*100;}sum=0' | head
 
-for i in {001,002,003,004,007,008,009,010,013,014,015,016,019,020,021,022,025,026,027,028,031,032,033,034,037,038,039,040}
+for i in {
 do
 bcftools view chr${i}_VMap3.vcf.gz -Oz -o chr${i}_VMap3.vcf2.gz
 tabix chr${i}_VMap3.vcf2.gz
@@ -236,6 +232,9 @@ zcat AB_Ref.Anc.vcf.gz |awk '{if($0!~/^#/) print $1"\t"$2}' > set2.pos
 zcat D_Ref.Anc.vcf.gz |awk '{if($0!~/^#/) print $1"\t"$2}' > set3.pos
 zcat D_Alt.Anc.vcf.gz |awk '{if($0!~/^#/) print $1"\t"$2}' > set4.pos
 vcftools --vcf input.vcf --chr n --recode --recode-INFO-all --stdout | gzip -c > output.vcf.gz
+
+vcftools --vcf input.vcf --singletons --recode --recode-INFO-all --stdout | gzip -c > output.vcf.gz
+
 bcftools view -S sample.txt chr001.vcf.gz -Ov > 1000Genomes.vcf
 vcftools --gzvcf A1.vcf.gz --012 --recode --out snp_matrix
 #不允许位点有缺失
@@ -254,7 +253,6 @@ done
 
 bcftools concat chr001.vcf.gz chr002.vcf.gz chr003.vcf.gz chr004.vcf.gz chr007.vcf.gz chr008.vcf.gz chr009.vcf.gz chr010.vcf.gz chr013.vcf.gz chr014.vcf.gz chr015.vcf.gz chr016.vcf.gz chr019.vcf.gz chr020.vcf.gz chr021.vcf.gz chr022.vcf.gz chr025.vcf.gz chr026.vcf.gz chr027.vcf.gz chr028.vcf.gz chr031.vcf.gz chr032.vcf.gz chr033.vcf.gz chr034.vcf.gz chr037.vcf.gz chr038.vcf.gz chr039.vcf.gz chr040.vcf.gz -o Lineage/ABlineage.vcf.gz -O z &
 bcftools concat chr005.vcf.gz chr006.vcf.gz chr011.vcf.gz chr012.vcf.gz chr017.vcf.gz chr018.vcf.gz chr023.vcf.gz chr024.vcf.gz chr029.vcf.gz chr030.vcf.gz chr035.vcf.gz chr036.vcf.gz chr041.vcf.gz chr042.vcf.gz -o  Lineage/Dlineage.vcf.gz -O z &
-
 
 plink --vcf vcf_file --allow-no-sex --r2 --ld-window 99999 --ld-window-kb 10 --ld-window-r2 0.2 --out out_file
 
@@ -298,4 +296,23 @@ bedtools merge -i Top0001.env10_A.txt -d 1000000 -c 1 -o count
 qpBrute --par sim1.par --prefix sim5 --pops R1 R2 R3 R4 R5 R6 R8 --out outgroup
 vawk '{print $s*GT}' test.vcf
 
+nohup raxmlHPC-PTHREADS-SSE3 -f a -m GTRGAMMA -p 12345 -x 12345 -# 100 -s ../AA_0.2.phy -n AA_0.2.raxml -o A001 -T 30 > nohupAA_0.2 2>& 1 &
 
+for i in {001..042}
+do
+plink --bfile /data4/home/yafei/plink_VCF/chr${i} --keep /data2/yafei/004_Vmap3/Group/type_8/plink_group/AABB.txt --maf 0.0001 --geno 0.1 --make-bed --out bfile_AABB/chr${i} --autosome-num 42 &
+done
+
+for i in {001..042}
+do
+plink --bfile 105XD_chr${i} --extract 105XD_chr${i}.snp --export vcf --out 105XD_chr${i} --autosome-num 42 &
+done
+
+for i in {001..042}
+do
+plink --bfile /data4/home/yafei/plink_VCF/chr024 --keep 105XD.txt --maf 0.01 --geno 0.1 --make-bed --out 105XD_chr024 --autosome-num 42 &
+done
+
+plink --freq --counts --noweb --bfile file --make-bed --out file
+
+plink2 --vcf test.vcf --allow-extra-chr --alt1-allele 'force' test.pos.txt 2 1 --export vcf --out new

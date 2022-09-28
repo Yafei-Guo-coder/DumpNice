@@ -79,3 +79,4 @@ p2<-ggplot(data = df,aes(x=PC1,y=PC2,color=df$lat_bin))+
   guides(fill=F)+
   theme_classic()
 p1
+

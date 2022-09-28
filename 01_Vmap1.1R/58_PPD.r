@@ -31,6 +31,7 @@ labels_row[28] <- "16bp"
 labels_row[29] <- "5bp"
 labels_row[32] <- "2k"
 pheatmap(sub, show_rownames=T, labels_row=labels_row,show_colnames=F, legend_breaks = -1:2, legend_labels = c("./.", "0/0", "0/1", "1/1"), annotation = AB_anno,cluster_col = F,annotation_names_col = F,annotation_colors = ann_color, cluster_row = FALSE) 
+
 #Haplotype Map: PPD-D1
 setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/10_Gene")
 data <- read.table("ppd_331taxa.txt", header = T, stringsAsFactors = F)
@@ -102,3 +103,137 @@ ggplot(data = data) +
   xlab("")+
   ylab("")
 dev.off()
+
+#大麦中检测
+#统一设置：注释内容及颜色
+library(pheatmap)
+require(reshape)
+require (rworldmap)
+require(rworldxtra)
+library(RColorBrewer)
+setwd("/Users/guoyafei/Documents/01_Migration/07_ManuScript/NP/reviewer")
+
+#A
+annotation_col <- read.table("Qingke-anno.txt",header=T,stringsAsFactors = F,sep="\t")
+rownames(annotation_col) = c(1:172)
+anno2 <- annotation_col[which(annotation_col$classfication != "NA"),] 
+seq <- anno2[,2]
+data <- read.table("/Users/guoyafei/Documents/01_Migration/07_ManuScript/NP/reviewer/Qingke.PPD-H1.sample.10k.txt", header=F, stringsAsFactors = F)
+colnames(data) <- c(1:172)
+#plot haplotype heatmap
+anno <- annotation_col[,3,drop=FALSE]
+
+cols <- c("#225EA8","#DEEBF7","#FEB24C","#BD0026")
+
+ann_color = list(
+  Region_sub = c(cultivar = "#8C510A", landrace = "#DFC27D", qingkecultivar = "#F6E8C3", qingkelandrace="#66C2A5", Tibetanweedybarley= "#FC8D62",wild="#8DA0CB"))
+
+pdf("A.pdf")
+  data <- data[,seq]
+  colnames(data) <- c(1:171)
+  pheatmap(data, show_rownames=FALSE, show_colnames=FALSE, color = cols, legend_breaks = -1:2, legend_labels = c("./.", "0/0", "0/1", "1/1"), cluster_col = F, cluster_row = FALSE, annotation = anno, annotation_colors = ann_color,annotation_names_col = F)
+dev.off()
+
+##reviewer
+library(ggplot2)
+setwd("/Users/guoyafei/Documents/01_Migration/07_ManuScript/NP/reviewer")
+data <- read.table("gene_up100k.result.txt", header=T, stringsAsFactors = F)
+sub1 <- data[-1,c(1,2,61)]
+sub2 <- as.data.frame(t(data[c(1,3,62,16,20,17,51),1:2]))
+data2 <- as.data.frame(t(data[c(1,3,62,16,20,17,51),3:60]))
+colnames(data2) <- c("Altitude","pos_33953684","pos_34000377","pos_33963940","pos_33966039","pos_33964177","pos_34000269")
+r2<-as.data.frame(t(data[c(1,3,62,16,20,17,51),61]))
+
+library(gridExtra)
+a <- ggplot(data2,aes(x=Altitude,y=pos_33953684))+geom_point()+stat_smooth(method=lm)+geom_text(x=1000, y=0.9, label="r2=0.778",size=3.5) +ggtitle("33953684")+ylab("Allele Frequency")+theme_classic()+theme(plot.title = element_text(colour = "red",size = 10,face = "bold"))
+
+b <- ggplot(data2,aes(x=Altitude,y=pos_34000377))+geom_point()+stat_smooth(method=lm)+geom_text(x=3000, y=0.015, label="r2=0.758",size=3.5)  +ggtitle("34000377")+ylab("Allele Frequency")+theme_classic()+theme(plot.title = element_text(colour = "red",size = 10,face = "bold"))
+c <- ggplot(data2,aes(x=Altitude,y=pos_33963940))+geom_point()+stat_smooth(method=lm)+geom_text(x=3000, y=0.018, label="r2=0.681",size=3.5)  +ggtitle("33963940")+ylab("Allele Frequency")+theme_classic()+theme(plot.title = element_text(colour = "red",size = 10,face = "bold"))
+d <- ggplot(data2,aes(x=Altitude,y=pos_33966039))+geom_point()+stat_smooth(method=lm)+geom_text(x=3000, y=0.012, label="r2=0.619",size=3.5)  +ggtitle("33966039")+ylab("Allele Frequency")+theme_classic()+theme(plot.title = element_text(colour = "red",size = 10,face = "bold"))
+e <- ggplot(data2,aes(x=Altitude,y=pos_33964177))+geom_point()+stat_smooth(method=lm)+geom_text(x=3000, y=0.025, label="r2=0.609",size=3.5)  +ggtitle("33964177")+ylab("Allele Frequency")+theme_classic()+theme(plot.title = element_text(colour = "red",size = 10,face = "bold"))
+f <- ggplot(data2,aes(x=Altitude,y=pos_34000269))+geom_point()+stat_smooth(method=lm)+geom_text(x=3000, y=0.015, label="r2=0.593",size=3.5)  +ggtitle("34000269")+ylab("Allele Frequency")+theme_classic()+theme(plot.title = element_text(colour = "red",size = 10,face = "bold"))
+
+grid.arrange(a,b,c,d,e,f,nrow=2)
+
+
+###snpEff
+library(ggplot2)
+library(ggseqlogo)
+library(cowplot)
+substrRight <- function(x){
+  num = nchar(x)-2
+  gsub('[0-9.]', '', substr(x, 6, nchar(x)))
+}
+setwd("/Users/guoyafei/Documents/01_Migration/07_ManuScript/NP/reviewer/snpEff")
+pdf("Glu-1A.pdf", width = 13, height = 8)
+
+  fasta_file = read.table("ppd.logo.seq",header=F,stringsAsFactors = F)
+  fasta = fasta_file[,2]
+  snpEff <- read.table("ppd.snpEff",header=F,stringsAsFactors = F,fill=TRUE,sep="\t")
+  p1 <- ggseqlogo(fasta,method="prob")+
+    theme(axis.text.x = element_blank(),axis.text.y = element_blank(),legend.position="none")+
+    #labs(title = pdf_tit[i,1])+
+    theme(plot.title = element_text(hjust = 0.5,size = 15))
+  Ref <- as.data.frame(snpEff$V3)
+  colnames(Ref) <- "letter"
+  Alt <- as.data.frame(snpEff$V4)
+  colnames(Alt) <- "letter"
+  if(dim(snpEff)[2] >6){
+    Old <- as.data.frame(substring(snpEff$V7,3,5)) 
+    colnames(Old) <- "letter"
+    Pos <- as.data.frame(gsub('[a-zA-Z.*]', '', snpEff$V7))
+    colnames(Pos) <- "letter"
+    New <- as.data.frame(substrRight(snpEff$V7))
+    colnames(New) <- "letter"
+    all <- rbind(Ref,Alt,Old,Pos,New)
+    num <- dim(Ref)[1]
+    aln <- data.frame(
+      letter = all,
+      Type=rep(c("Ref","Alt","Old","Pos","New"), each=num),
+      x=rep(1:num,5)
+    )
+    p2 <- ggplot(aln, aes(x, Type)) +
+      geom_text(aes(label=letter,)) +
+      scale_y_discrete(limits=c("New","Pos","Old","Alt","Ref"))+
+      scale_x_continuous(breaks=1:10, expand = c(0.07, 0)) + xlab('') +
+      theme_logo() +
+      theme(legend.position = 'none', axis.text.x = element_blank(),)
+  } else{
+    all <- rbind(Ref,Alt)
+    num <- dim(Ref)[1]
+    aln <- data.frame(
+      letter = all,
+      species=rep(c("Ref","Alt"), each=num),
+      x=rep(1:num,2)
+    )
+    p2 <- ggplot(aln, aes(x, Type)) +
+      geom_text(aes(label=letter,),check_overlap = TRUE) +
+      scale_y_discrete(limits=c("Alt","Ref"))+
+      scale_x_continuous(breaks=1:10, expand = c(0.13, 0)) + xlab('') +
+      theme_logo() +
+      theme(legend.position = 'none', axis.text.x = element_blank())  
+  }
+  snpEff$impact <- NA
+  snpEff[which(snpEff$V6=="HIGH"),8] <- 4
+  snpEff[which(snpEff$V6=="MODERATE"),8] <- 3
+  snpEff[which(snpEff$V6=="LOW"),8] <- 2
+  snpEff[which(snpEff$V6=="MODIFILER"),8] <- 1
+  bp_data <- data.frame(
+    x=snpEff$V2,
+    Impact=snpEff$impact
+  )
+  #bp_data$x <- c(1:dim(bp_data)[1])
+  p3 <- ggplot(bp_data, aes(x, Impact))+
+    geom_bar(stat = "identity", fill="grey")+
+    theme_logo()+
+    #scale_x_discrete( expand = c(0.055, 0))+
+    xlab("")+
+    theme(axis.text.x = element_text(angle = 90,size=15))
+  suppressMessages(require(cowplot))
+  p <- plot_grid(p1,p2,p3,ncol = 1, align = "v")
+  print(p)
+
+dev.off()
+
+
+

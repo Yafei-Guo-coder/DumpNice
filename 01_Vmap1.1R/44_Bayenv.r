@@ -1,4 +1,4 @@
-#-----------------step1:运行bayenv---------
+#--------------------step1:运行bayenv---------------------
 /data1/home/yafei/003_Project3/bayenv/13pop/Add544Gene
 java -Xmx200g -Xms512m -jar /data1/home/yafei/008_Software/PGDSpider_2.1.1.5/PGDSpider2-cli.jar -inputfile chr36.maf0.01.recode.vcf -inputformat VCF -outputfile chr36.maf0.01.env -outputformat BAYENV -spid VCF_BAYENV.spid
 #!/bin/bash
@@ -30,8 +30,8 @@ m <- apply(data,1,mean)
 s <- apply(data,1,sd)
 sub <- (data-m)/s
 write.table(sub,"format2.txt", sep="\t", quote=F,row.names=F)
-#去掉第一行就是bayenv的输入文件。
-#调整pop的顺序。
+#去掉第一行就是bayenv的输入文件
+#调整pop的顺序
 #awk '{print $1"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12"\t"$13"\t"$2"\t"$3"\t"$4"\t"$5}' format2.txt  > format3.txt
 #shell
 #datamash transpose < format2.txt > format3.txt
@@ -168,6 +168,7 @@ done
 ./calc_bf.sh lineage/Blineage.envgenofile 13pop.env matrix/B.matrix 13 100000 22 Blineage_out
 ./calc_bf.sh lineage/Dlineage.envgenofile 13pop.env matrix/D.matrix 13 100000 22 Dlineage_out
 5.结果解析
+
 --------------------------------------------------------重新统计---------------------------------------------------------------
 204:/data2/xuebo/Projects/Speciation/BAYENV/bayenv2_out_lineageA
 204:/data2/xuebo/Projects/Speciation/BAYENV/genofile/Alineage2
@@ -713,3 +714,58 @@ dev.off()
 pdf("Prec.pdf",height = 20, width = 20)
 grid.arrange(p[[12]],p[[31]],p[[50]],p[[13]],p[[32]],p[[51]],p[[14]],p[[33]],p[[52]],p[[15]],p[[34]],p[[53]],p[[16]],p[[35]],p[[54]],p[[17]],p[[36]],p[[55]],p[[18]],p[[37]],p[[56]],p[[19]],p[[38]],p[[57]],nrow=8)
 dev.off()
+
+#只计算xp-clr top5的bayenv值
+#/data1/home/yafei/003_Project3/bayenv/run1/XP-CLR/Top5/Alineage.top5.bed2，Blineage.top5.bed2，Dlineage.top5.bed2
+#/data2/yafei/003_Project3/Vmap1.1/E6/Landrace_locate_225/Lineages/Alineage.E6_Landrace_locate.vcf.gz, Blineage.E6_Landrace_locate.vcf.gz, Dlineage.E6_Landrace_locate.vcf.gz
+#/data2/yafei/003_Project3/bayenv
+#xuebo:204:/data2/xuebo/Projects/Speciation/E6/Landrace_locate_225/Lineages
+#/data1/home/yafei/010_DataSet/gene_v1.1_withupdown300k_Lulab.bed
+
+bedtools intersect -a Alineage.E6_Landrace_locate.vcf.gz -b Alineage.top5.bed2 -header | bgzip -c > Alineage.top5.vcf.gz &
+bedtools intersect -a Blineage.E6_Landrace_locate.vcf.gz -b Blineage.top5.bed2 -header | bgzip -c > Blineage.top5.vcf.gz &
+bedtools intersect -a Dlineage.E6_Landrace_locate.vcf.gz -b Dlineage.top5.bed2 -header | bgzip -c > Dlineage.top5.vcf.gz &
+
+#A:2705021 B:2161251 D:2498868
+#过基因及上下游300k
+  bedtools intersect -a Alineage.top5.vcf.gz -b /data1/home/yafei/010_DataSet/gene_v1.1_Lulab.bed -header | bgzip -c > Alineage.gene.top5.vcf.gz &
+  bedtools intersect -a Blineage.top5.vcf.gz -b /data1/home/yafei/010_DataSet/gene_v1.1_Lulab.bed -header | bgzip -c > Blineage.gene.top5.vcf.gz &
+  bedtools intersect -a Dlineage.top5.vcf.gz -b /data1/home/yafei/010_DataSet/gene_v1.1_Lulab.bed -header | bgzip -c > Dlineage.gene.top5.vcf.gz &
+#过LD(无)
+  plink --vcf Alineage.gene5k.top5.vcf.gz --indep-pairwise 50 10 0.8 --out Alineage.filterLD --allow-extra-chr --autosome-num 42 &
+  plink --vcf Alineage.gene5k.top5.vcf.gz --make-bed --extract Alineage.filterLD.prune.in --recode vcf-iid --out Alineage.filter.prune.in --autosome-num 42 &
+  plink --vcf Blineage.gene5k.top5.vcf.gz --indep-pairwise 50 10 0.8 --out Blineage.filterLD --allow-extra-chr --autosome-num 42 &
+  plink --vcf Blineage.gene5k.top5.vcf.gz --make-bed --extract Blineage.filterLD.prune.in --recode vcf-iid --out Blineage.filter.prune.in --autosome-num 42 &
+  plink --vcf Dlineage.gene5k.top5.vcf.gz --indep-pairwise 50 10 0.8 --out Dlineage.filterLD --allow-extra-chr --autosome-num 42 &
+  plink --vcf Dlineage.gene5k.top5.vcf.gz --make-bed --extract Dlineage.filterLD.prune.in --recode vcf-iid --out Dlineage.filter.prune.in --autosome-num 42 &
+  
+#/data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY/V1/Gene50k/spid
+  for chr in {1,2,7,8,13,14,19,20,25,26,31,32,37,38}
+do
+java -jar -Xmx500g -Xms100g /data1/home/yafei/008_Software/PGDSpider_2.1.1.5/PGDSpider2-cli.jar -inputfile ../Alineage.filter.prune.in.vcf -inputformat VCF -outputfile envgenofile/chr${chr}.envgenofile -outputformat BAYENV -spid /data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY/V1/Gene50k/spid/VCF_BAYENV_chr${chr}.spid
+done
+for chr in {3,4,9,10,15,16,21,22,27,28,33,34,39,40}
+do
+java -jar -Xmx500g -Xms100g /data1/home/yafei/008_Software/PGDSpider_2.1.1.5/PGDSpider2-cli.jar -inputfile ../Blineage.filter.prune.in.vcf -inputformat VCF -outputfile envgenofile/chr${chr}.envgenofile -outputformat BAYENV -spid /data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY/V1/Gene50k/spid/VCF_BAYENV_chr${chr}.spid
+done
+for chr in {5,6,11,12,17,18,23,24,29,30,35,36,41,42}
+do
+java -jar -Xmx500g -Xms100g /data1/home/yafei/008_Software/PGDSpider_2.1.1.5/PGDSpider2-cli.jar -inputfile ../Dlineage.filter.prune.in.vcf -inputformat VCF -outputfile envgenofile/chr${chr}.envgenofile -outputformat BAYENV -spid /data1/home/yafei/003_Project3/Structure/bayenv/ENVBAY/V1/Gene50k/spid/VCF_BAYENV_chr${chr}.spid
+done
+
+#/data2/yafei/003_Project3/bayenv/spid/envgenofile/chr1.envgenofile 
+for chr in {1,2,7,8,13,14,19,20,25,26,31,32,37,38}
+do
+./calc_bf.sh /data2/yafei/003_Project3/bayenv/spid/envgenofile/chr${chr}/chr${chr}.envgenofile /data2/yafei/003_Project3/bayenv/13pop.env /data2/yafei/003_Project3/bayenv/matrix/matrixA 13 100000 22 run1/chr${chr}_out
+done
+
+for chr in {3,4,9,10,15,16,21,22,27,28,33,34,39,40}
+do
+./calc_bf.sh /data2/yafei/003_Project3/bayenv/spid/envgenofile/chr${chr}/chr${chr}.envgenofile /data2/yafei/003_Project3/bayenv/13pop.env /data2/yafei/003_Project3/bayenv/matrix/matrixB 13 100000 22 run1/chr${chr}_out
+done
+
+for chr in {5,6,11,12,17,18,23,24,29,30,35,36,41,42}
+do
+./calc_bf.sh /data2/yafei/003_Project3/bayenv/spid/envgenofile/chr${chr}/chr${chr}.envgenofile /data2/yafei/003_Project3/bayenv/13pop.env /data2/yafei/003_Project3/bayenv/matrix/matrixD 13 100000 22 run1/chr${chr}_out
+done
+  

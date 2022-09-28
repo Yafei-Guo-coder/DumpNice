@@ -123,13 +123,3 @@ brewer.pal(9, "YlOrRd")[c(4)]
 "#FEB24C"
 brewer.pal(9, "YlOrRd")[c(8)]
 "#BD0026"
-
-
-
-
-
-  
-  
-
-
-

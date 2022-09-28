@@ -157,7 +157,6 @@ data_order$name <- factor(data_order$x,levels = unique(data_order$x))
 
 colnames(data) <- c("taxa","elevation",paste("temp",seq(1,11),sep=""),paste("prec",seq(1,8),sep=""),c("latitude","longitude","population1","population"))
 
-
 data <- read.table("mergeall_env.txt",header=F,stringsAsFactors = F)
 p <- list()
 p[[1]] <- ggscatter(data, x = "longitude", y = "elevation", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
@@ -185,8 +184,15 @@ pdf("longidute3.pdf",width = 22,height = 22)
 grid.arrange(p[[1]],p[[2]],p[[3]],p[[4]],p[[5]],p[[6]],p[[7]],p[[8]],p[[9]],p[[10]],p[[11]],p[[12]],p[[13]],p[[14]],p[[15]],p[[16]],p[[17]],p[[18]],p[[19]],p[[20]],nrow=4)
 dev.off()
 
-  
 ggbuild + ggplot (抠图上的点)
 
-
-    
+#画地图
+library("sf")
+ggplot() +
+  geom_sf(data = world,color = "dark grey", fill = "white",alpha=1) +
+  geom_point(data = LR_clust,aes(x=Longitude,y=Latitude,color=Group_BayPass)) +
+  xlab("Longitude") + ylab("Latitude") +
+  ggtitle("442 landrace distribution for GEA analysis") +
+  coord_sf(xlim = c(0, 140),
+           ylim = c(10, 60),
+           expand = T)

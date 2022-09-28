@@ -1,6 +1,6 @@
 library(tidyverse)
 library(reshape2)
-setwd("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/01_BasicStatistic/13_Plots/05_Drift")
+setwd("/Users/guoyafei/Documents/01_Migration/01_BasicStatistic/13_Plots/05_Drift")
 dataA <- read.table("A_drift.txt",header=F,stringsAsFactors = F)
 dataA$group <- "A"
 dataB <- read.table("B_drift.txt",header=F,stringsAsFactors = F)
@@ -38,7 +38,7 @@ grid_data <- base_data
 grid_data$end <- grid_data$end[ c( nrow(grid_data), 1:nrow(grid_data)-1)] + 1
 grid_data$start <- grid_data$start - 1
 grid_data <- grid_data[-1,]
-pi <- read.table("/Users/guoyafei/Documents/01_个人项目/01_Migration/02_Add_ZNdata/01_BasicStatistic/13_Plots/06_PI/Pi_stat.txt",header=T,stringsAsFactors = F,sep="\t")
+pi <- read.table("/Users/guoyafei/Documents/01_Migration/01_BasicStatistic/13_Plots/06_PI/Pi_stat.txt",header=T,stringsAsFactors = F,sep="\t")
 data$pi <- pi$value
 data$sd <- pi$sd
 label_data$value[1] <- label_data$value[1]

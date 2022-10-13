@@ -20,6 +20,7 @@ for chr in {0..42}
 do
 samtools index $out/$ID.chr$chr.bam
 done
+
 samtools view test.bam | awk '{print $5"\t"$9}'| sed '1i mapping-qulity\tmate-length' > test
 awk '{print $5"\t"$9}' standard.bam| sed '1i mapping-qulity\tmate-length' > standard
 cat 687_f1_test.fq | paste - - - - | sort -k1,1 -t " "  > 687_f1_test.sorte
@@ -284,6 +285,9 @@ done
 done
 wait
 exec 6>&-
+
+
+
 awk 'FNR==NR{a[$1]=$9;next}($1 in a){print $0"\t"a[$1]}' sample_20_1.infor.txt sample_20_1_nor.txt|awk '{split($22,a,",");{printf $1" ";for(i=1;i<=length(a);i)printf("%s ",$a[i])} {print ""}}'| awk '{ A=0; V=0; for(N=2; N<=NF; N) A+=$N ; A/=(NF-1) ; for(N=2; N<=NF; N++) V+=(($N-A)*($N-A))/(NF-1); print A" "sqrt(V) }' | head
 awk '{for(i=10;i<NF;i++) {split($i,a,":");printf a[1]"\t"};print}' test.vcf | less -LS
 awk '{print substr($0, index($0,$10))}' test.vcf 
@@ -315,4 +319,10 @@ done
 
 plink --freq --counts --noweb --bfile file --make-bed --out file
 
+#--ref-allele ['force'] <filename> [REF col. number] [variant ID col.] [skip]
+#--alt1-allele ['force'] <filename> [ALT1 col. number] [variant ID col.] [skip]
+#--ref-from-fa ['force']
 plink2 --vcf test.vcf --allow-extra-chr --alt1-allele 'force' test.pos.txt 2 1 --export vcf --out new
+
+#上下两行合并成一行
+sed '{N;s/\n//}' filename

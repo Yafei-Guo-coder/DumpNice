@@ -196,3 +196,39 @@ ggplot() +
   coord_sf(xlim = c(0, 140),
            ylim = c(10, 60),
            expand = T)
+
+
+a <- vector()
+for ( i in c(1:30)) {
+  a <- append(a,as.numeric(dpois(0, i, log = FALSE)))
+}
+b <- c(1:30)
+data <- as.data.frame(cbind(b,a))
+
+psmc <- read.table("/Users/guoyafei/Desktop/NP/PSMC_miss.txt",header=F,stringsAsFactors = F)
+vmap <- read.table("/Users/guoyafei/Desktop/NP/Chr1A_snpcount_missing.txt", header=F,stringsAsFactors = F)
+
+colnames(data) <- c("coverage","missing")
+data$type <- "possion"
+colnames(vmap) <- c("coverage","missing")
+vmap$type <- "vmap"
+colnames(psmc) <- c("coverage","missing")
+psmc$type <- "psmc"
+all <- rbind(data,vmap,psmc)
+
+brewer.pal(8, "Set12")[1,2,3]
+scale_fill_brewer(palette = "RdYiBu")
+scale_fill_manual(values = c("#FDC086","#BEAED4")) 
+scale_color_manual(values = color) 
+
+ggplot(data = all, 
+       aes(x = coverage, y = missing, color = type)) +
+  geom_point() +
+  geom_smooth(se = TRUE, method = "gam", formula = y ~ s(log(x)))+
+  theme_bw()+
+  scale_color_manual(values = c("#66C2A5", "#FC8D62", "#8DA0CB"))
+  
+
+
+
+

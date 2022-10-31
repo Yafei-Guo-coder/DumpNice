@@ -1,3 +1,5 @@
+#working directory
+#yafei@204:/data2/yafei/003_Project3/Vmap1.1/E6/Landrace_locate_225/PPD
 #PPD-D1
 setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/10_Gene")
 data<- read.table("all.bin.depth.txt",header=T,row.names = 1,stringsAsFactors = F)
@@ -10,7 +12,7 @@ for(i in c(1:331)){
     sub[which(sub[,i] >0 & sub[,i] <10),i] <- 10
     sub[which(sub[,i] >10 & sub[,i] <30),i] <- 25
     sub[which(sub[,i] >30),i] <- 50
-  }
+ }
 annotation <- read.table("/Users/guoyafei/Documents/01_Migration/02_Environment/01_RDA_plot/select_taxa4.txt", header=T,  stringsAsFactors = F, sep="\t")
 anno <- annotation[,c(2,9),drop=FALSE]
 
@@ -234,6 +236,99 @@ pdf("Glu-1A.pdf", width = 13, height = 8)
   print(p)
 
 dev.off()
+
+
+##reviewer V2 -------------------------------------------------------------
+library(ggplot2)
+setwd("/Users/guoyafei/Desktop/NP/reviewer")
+#data <- read.table("result4.txt", header=T, stringsAsFactors = F)
+#data <- read.table("average_result.txt", header=T, stringsAsFactors = F)
+data <- read.table("snp_lm.txt", header=T, stringsAsFactors = F)
+sub <- data[which(data$pop1.1 != " NA"), c(1,2,61,62)]
+sub1 <- as.data.frame(sub[-1,])
+colnames(sub1) <- c("ID1","POS","r2","P")
+sub1$POS <- as.character(sub1$POS)
+sub1$r2 <- as.numeric(sub1$r2)
+sub1$P <- as.numeric(sub1$P)
+sub1$color <- -log10(sub1$P)
+  
+ggplot(data = sub1, 
+       aes(x = POS, y = r2,color=color)) +
+  geom_point() +
+  #geom_smooth(se = TRUE, method = "gam", formula = y ~ s(log(x)))+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 90, size = 8))+
+  scale_color_gradient(low = "cyan",high = "red")
+  #scale_color_manual(values = c("#66C2A5", "#FC8D62", "#8DA0CB"))
+
+
+snp <- as.data.frame(t(data[c(1,10),3:60]))
+colnames(snp) <- c("Altitude","Genotype")
+a <- ggplot(snp,aes(x=Altitude,y=Genotype))+geom_point()+stat_smooth(method=lm)
++geom_text(x=1000, y=0.9, label="r2=0.778",size=3.5) +ggtitle("33953684")+ylab("Allele Frequency")+theme_classic()+theme(plot.title = element_text(colour = "red",size = 10,face = "bold"))
+
+
+### reviewer----------------
+
+
+##R: library prepare
+library(pheatmap)
+require(reshape)
+require (rworldmap)
+require(rworldxtra)
+library(RColorBrewer)
+#display.brewer.all()
+setwd("/Users/guoyafei/Desktop/NP/PPD")
+annotation_col <- read.table("ppd_anno.txt",header=T,stringsAsFactors = F,sep="\t")
+#rownames(annotation_col) <- c(paste("AB_",c(001:212),sep=""),paste("ABD_",c(0001:1196),sep=""),paste("D_",c(001:220),sep=""))
+rownames(annotation_col) <- annotation_col[,1]
+all <- read.table("ppd.txt",header=T,stringsAsFactors = F)
+#colnames(all) <- c("ID","REF","ALT",paste("ABD_",c(0001:1143),sep=""),paste("AB_",c(001:212),sep=""),paste("ABD_",c(1144:1196),sep=""))
+data <- all[,4:61]
+### ploidy,common name,region ------>
+anno <- annotation_col[colnames(data),2,drop=FALSE]
+anno <- anno[rownames(data),]
+#anno2 <- anno[which(anno$Common_name != "OtherHexaploids"),]
+#anno2$type <- anno2$Common_name
+#anno2[which(anno2$Common_name == "Polish_wheat" |anno2$Common_name == "Rivet_wheat" | anno2$Common_name == "Persian_wheat" |anno2$Common_name == "Khorasan_wheat"  |anno2$Common_name ==  "Durum"),4] <- "Freethreshing-Tetraploids"
+#anno3 <- anno2[,c(1,3,4)]
+#anno3$type <- factor(anno3$type,levels = c("Wild_emmer","Domesticated_emmer","Ispahanicum","Georgian_wheat","Freethreshing-Tetraploids","Spelt","Macha","Club_wheat","Tibetan_semi_wild", "Xinjiang_wheat", "Vavilovii","Indian_dwarf_wheat", "Yunan_wheat","Landrace","Cultivar"))
+anno2 <- anno[order(anno$RDA_Region),,drop=FALSE]
+
+anno$RDA_Region <- factor(anno$RDA_Region,levels = c("EU","WA","IA","EA","SH"))
+
+### extract data & plot ------>
+data2 <- data[,which(colnames(data) %in% rownames(anno2))]
+
+seq <- read.table("file58_ppd_SH_taxa.txt",header=F,stringsAsFactors = F)
+seq2 <- seq[which(seq$V1 %in% colnames(data2)),]
+data3 <- data2[,seq2]
+
+#ann_color = list(
+#  Taxa = c(AABB="orange", AABBDD="blue"),
+#  Common_name = c(Wild_emmer = "#8C510A", Domesticated_emmer = "#DFC27D", Freethreshing = "#F6E8C3", EU="#66C2A5", WA= "#FC8D62",North1="#8DA0CB", North2 ="#E78AC3",South="#A6D854", Tibet="#FFD92F",Other ="#B3B3B3"))
+cols <- c(brewer.pal(11, "Set3")[c(5)],"#DEEBF7","#FEB24C","#BD0026")
+pdf("test.pdf",width=12,height = 8 )
+pheatmap(data3, show_rownames=F, show_colnames=FALSE, color = cols, legend_breaks = -1:2, legend_labels = c("./.", "0/0", "0/1", "1/1"), cluster_col = F, cluster_row = FALSE,  annotation_names_col = F)
+dev.off()
+
+
+test <- read.table("test.txt",header=T,stringsAsFactors = F)
+test2 <- t(test[,-c(1:2)])
+test3 <- as.data.frame(test2)
+colnames(test3) <- c("a","b")
+
+
+a <- ggplot(test3,aes(x=a,y=b))+geom_point()+stat_smooth(method=lm)+geom_text(x=1000, y=0.9, label="r2=0.778",size=3.5) +ggtitle("33953684")+ylab("Allele Frequency")+theme_classic()+theme(plot.title = element_text(colour = "red",size = 10,face = "bold"))
+
+ggplot(data = test2, 
+       aes(x = a, y = b)) +
+  geom_point() +
+  #geom_smooth(se = TRUE, method = "gam", formula = y ~ s(log(x)))+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 90, size = 8))
+  #scale_color_gradient(low = "cyan",high = "red")
+
 
 
 

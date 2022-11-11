@@ -228,7 +228,47 @@ ggplot(data = all,
   theme_bw()+
   scale_color_manual(values = c("#66C2A5", "#FC8D62", "#8DA0CB"))
   
+####wanghao
+setwd("/Users/guoyafei/Documents/02_VmapIII/13_Haplotype/wanghao")
+data <- read.table("Chr_A_dom.xpclr.TE.bed",header=F,stringsAsFactors = F)
+ggplot(data, aes(x=V2, y=V4)) +
+  geom_point(size=0.5)+
+  geom_line()+
+  theme_bw()+
+  #theme(axis.title.y = element_blank()) 
+  xlab("Position") + ylab("XP-CLR") +
+  geom_hline(yintercept=3.37,color='#E69F00',linetype = "dashed")+
+  geom_vline(xintercept=759451668,color='red')
+  
+data <- read.table("Chr_AB_dom.xpclr.TE.bed",header=F,stringsAsFactors = F)
+ggplot(data, aes(x=V2, y=V4)) +
+  geom_point(size=0.5)+
+  geom_line()+
+  theme_bw()+
+  #theme(axis.title.y = element_blank()) 
+  xlab("Position") + ylab("XP-CLR") +
+  geom_hline(yintercept=1.908,color='#E69F00',linetype = "dashed")+
+  geom_vline(xintercept=759451668,color='red')
 
+data <- read.table("Chr_AB_imp.xpclr.TE.bed",header=F,stringsAsFactors = F)
+ggplot(data, aes(x=V2, y=V4)) +
+  geom_point(size=0.5)+
+  geom_line()+
+  theme_bw()+
+  #theme(axis.title.y = element_blank()) 
+  xlab("Position") + ylab("XP-CLR") +
+  geom_hline(yintercept=3.09,color='#E69F00',linetype = "dashed")+
+  geom_vline(xintercept=759451668,color='red')
 
+3.63
 
+data <- read.table("Chr_ABD_imp.xpclr.TE.bed",header=F,stringsAsFactors = F)
+ggplot(data, aes(x=V2, y=V4)) +
+  geom_point(size=0.5)+
+  geom_line()+
+  theme_bw()+
+  #theme(axis.title.y = element_blank()) 
+  xlab("Position") + ylab("XP-CLR") +
+  geom_hline(yintercept=3.63,color='#E69F00',linetype = "dashed")+
+  geom_vline(xintercept=759451668,color='red')
 

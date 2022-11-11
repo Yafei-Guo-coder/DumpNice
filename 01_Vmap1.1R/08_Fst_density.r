@@ -139,7 +139,6 @@ dev.off()
 #画图:密度图&标注关注基因----
 pdf("fst_select_gene.pdf",height = 5,width = 10)
 for(i in c(1:18)){
-  
   gene[[i]]$Pop <- data[[i]][1,7]
   p <- ggplot(data[[i]], aes(MEAN_FST, colour = Pop)) +
     scale_fill_manual() +
@@ -154,7 +153,9 @@ for(i in c(1:18)){
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.position="none",legend.text = element_blank(),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
   print(p)
 }
+
 dev.off()
+
 
 for(i in c(1:18)){
   print(gene_resis[[i]][which(gene_resis[[i]]$MEAN_FST > 0.2),])
@@ -163,7 +164,8 @@ for(i in c(1:18)){
   print("ok")
 }
 
-#提取abioticgene的位置----
+
+#提取abioticgene的位置
 path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Gene/V5/Fst_density/abioticgene"
 fileNames <- dir(path)
 filePath <- sapply(fileNames, function(x){ 

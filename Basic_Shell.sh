@@ -326,3 +326,7 @@ plink2 --vcf test.vcf --allow-extra-chr --alt1-allele 'force' test.pos.txt 2 1 -
 
 #上下两行合并成一行
 sed '{N;s/\n//}' filename
+
+awk '{ A=0; V=0; for(N=1; N<=NF; N++) A+=$N ; A/=(NF-0) ; for(N=1; N<=NF; N++) V+=(($N-A)*($N-A))/(NF-0); print A" "sqrt(V) }'
+awk '{ A=0; for(N=2; N<=NF; N++) A+=$N ; A/=(NF-0) ; print $1"\t"A }'
+

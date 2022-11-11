@@ -312,12 +312,11 @@ pdf("test.pdf",width=12,height = 8 )
 pheatmap(data3, show_rownames=F, show_colnames=FALSE, color = cols, legend_breaks = -1:2, legend_labels = c("./.", "0/0", "0/1", "1/1"), cluster_col = F, cluster_row = FALSE,  annotation_names_col = F)
 dev.off()
 
-
-test <- read.table("test.txt",header=T,stringsAsFactors = F)
+setwd("/Users/guoyafei/Desktop/NP/reviewer/")
+test <- read.table("/Users/guoyafei/Desktop/NP/reviewer/snp_lm.txt",header=T,stringsAsFactors = F)
 test2 <- t(test[,-c(1:2)])
 test3 <- as.data.frame(test2)
 colnames(test3) <- c("a","b")
-
 
 a <- ggplot(test3,aes(x=a,y=b))+geom_point()+stat_smooth(method=lm)+geom_text(x=1000, y=0.9, label="r2=0.778",size=3.5) +ggtitle("33953684")+ylab("Allele Frequency")+theme_classic()+theme(plot.title = element_text(colour = "red",size = 10,face = "bold"))
 
@@ -328,7 +327,4 @@ ggplot(data = test2,
   theme_classic()+
   theme(axis.text.x = element_text(angle = 90, size = 8))
   #scale_color_gradient(low = "cyan",high = "red")
-
-
-
 

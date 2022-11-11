@@ -20,6 +20,20 @@ data2 <- read.table(filenames[2], header=T,stringsAsFactors = F)
 data3 <- read.table(filenames[3], header=T,stringsAsFactors = F)
 data4 <- read.table(filenames[4], header=T,stringsAsFactors = F)
 
+######
+data1 <- read.table("shuf.217.degree",header=F,stringsAsFactors = F)
+ggplot(data1, aes(x=V1))+geom_histogram(bins=15,aes(y=..density..))+xlab("Degree")+theme_bw()
+
+
+data2 <- read.table("shuf.217.degree.sum",header=F,stringsAsFactors = F)
+ggplot(data2, aes(x=V2))+geom_histogram(bins=15,aes(y=..density..))+xlab("sumR")+theme_bw()
+
+
+pdf(outnames[1],width = 10.7,height = 3.7)
+grid.arrange(p[[1]],p[[2]],p[[3]],nrow=1)
+dev.off()
+
+
 #PPI
 library(ggplot2)
 library(RColorBrewer)

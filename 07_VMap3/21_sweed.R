@@ -110,4 +110,103 @@ listInput <- list(domemmerA =p[[1]][,1], domemmerB = p[[2]][,1], freethreshA = p
 upset(fromList(listInput), order.by = "freq",text.scale = c(2),point.size = 3.5, line.size = 2,keep.order=T)
 
 
+################################################ hard versus soft figure 4 #############################################
+library(ggplot2)
+#library(gridExtra)
+library(RColorBrewer)
+#library(fitdistrplus)
+
+setwd("/Users/guoyafei/Documents/02_VmapIII/17_sweed")
+name <- read.table("/Users/guoyafei/Documents/02_VmapIII/11_piratio/pi-ratio/gene.txt", header=F, stringsAsFactors = F)
+rownames(name) <- name$V1
+
+#thresh
+cultivar_t <- 8.46
+domemmer_t <- 5.09
+freethresh_t <- 5.57
+landrace_t <- 8.68
+wildemmer_t <- 2.09
+
+#wildemmer
+all1 <- read.table("sweed/wildemmer.AB.sweed.shuf6k", header=F,stringsAsFactors = F)
+gene1 <- read.table("sweed/gene.wildemmer.AB.sweed",header=F,stringsAsFactors = F)
+gene1$name <- name[gene1$V1,2]
+gene1$type <- "NA"
+gene1[which(gene1$V2 > wildemmer_t),4] <- "yes"
+sub_gene1 <- gene1[which(gene1$type  == "yes"),]
+
+#domemmer
+all2 <- read.table("sweed/domemmer.AB.sweed.shuf6k", header=F,stringsAsFactors = F)
+gene2 <- read.table("sweed/gene.domemmer.AB.sweed",header=F,stringsAsFactors = F)
+gene2$name <- name[gene2$V1,2]
+gene2$type <- "NA"
+gene2[which(gene2$V2 > domemmer_t),4] <- "yes"
+sub_gene2 <- gene2[which(gene2$type  == "yes"),]
+#freethresh
+all3 <- read.table("sweed/freethresh.AB.sweed.shuf6k", header=F,stringsAsFactors = F)
+gene3 <- read.table("sweed/gene.freethresh.AB.sweed",header=F,stringsAsFactors = F)
+gene3$name <- name[gene3$V1,2]
+gene3$type <- "NA"
+gene3[which(gene3$V2 > freethresh_t),4] <- "yes"
+sub_gene3 <- gene3[which(gene3$type  == "yes"),]
+
+#landrace
+all4 <- read.table("sweed/landrace.AB.sweed.shuf6k", header=F,stringsAsFactors = F)
+gene4 <- read.table("sweed/gene.landrace.AB.sweed",header=F,stringsAsFactors = F)
+gene4$name <- name[gene4$V1,2]
+gene4$type <- "NA"
+gene4[which(gene4$V2 > landrace_t),4] <- "yes"
+sub_gene4 <- gene4[which(gene4$type  == "yes"),]
+
+#cultivar
+all5 <- read.table("sweed/cultivar.AB.sweed.shuf6k", header=F,stringsAsFactors = F)
+gene5 <- read.table("sweed/gene.cultivar.AB.sweed",header=F,stringsAsFactors = F)
+gene5$name <- name[gene5$V1,2]
+gene5$type <- "NA"
+gene5[which(gene5$V2 > cultivar_t),4] <- "yes"
+sub_gene5 <- gene5[which(gene5$type  == "yes"),]
+
+a <- merge(sub_gene1,sub_gene2,by="V1",all=TRUE)[,c(1,2,5)]
+b <- merge(a, sub_gene3, by="V1",all=TRUE)[,c(1,2,3,4)]
+c <- merge(b, sub_gene4, by="V1",all=TRUE)[,c(1,2,3,4,5)]
+d <- merge(c, sub_gene5, by="V1",all=TRUE)[,c(1,2,3,4,5,6)]
+colnames(d) <- c("ID","wildemmer","domemmer","freethresh","landrace","cultivar")
+d$name <- NA
+d$name <- name[d$ID,2]
+
+alldata <- as.data.frame(cbind(all1$V4, all2$V4,all3$V4,all4$V4,all5$V4))
+colnames(alldata) <- c("wildemmer","domemmer","freethresh","landrace","cultivar")
+
+#domemmer-freethresh
+df <- d[,c(1,3,4,7)]
+df2 <- df[!is.na(df$domemmer) | !is.na(df$freethresh),]
+df2[is.na(df2$domemmer),2] <- mean(alldata$domemmer)
+df2[is.na(df2$freethresh),3] <- mean(alldata$freethresh)
+
+#landrace-cultivar
+df <- d[,c(1,5,6,7)]
+df2 <- df[!is.na(df$landrace) | !is.na(df$cultivar),]
+df2[is.na(df2$landrace),2] <- mean(alldata$landrace)
+df2[is.na(df2$cultivar),3] <- mean(alldata$cultivar)
+
+
+d[is.na(d$wildemmer),2] <- mean(alldata$wildemmer)
+d[is.na(d$domemmer),3] <- mean(alldata$domemmer)
+d[is.na(d$freethresh),4] <- mean(alldata$freethresh)
+d[is.na(d$landrace),5] <- mean(alldata$landrace)
+d[is.na(d$cultivar),6] <- mean(alldata$cultivar)
+
+
+library(ggrepel)
+ggplot(alldata, aes(log(landrace), log(cultivar))) +
+  geom_point(size=2, alpha = 0.5,colour = "grey",shape = 20) +
+  geom_point(data = df2, aes(log(landrace), log(cultivar)), size=2, alpha = 0.5,colour = "red",shape = 20) +
+  geom_vline(xintercept=log(landrace_t),color='red',linetype = "dotted")+
+  geom_hline(yintercept=log(cultivar_t),color='red',linetype = "dotted")+
+  geom_text_repel(data = df2,aes(log(landrace), log(cultivar), label = name),max.overlaps = 100) +
+  xlab("landrace")+
+  ylab("cultivar")+
+  theme_bw()+
+  theme(legend.text = element_text(size=20),legend.title=element_blank(),axis.text.x = element_text(size = 20), axis.title.x = element_text(size = 20),axis.text.y = element_text(size = 20),axis.title.y = element_text(size = 20))
+
 

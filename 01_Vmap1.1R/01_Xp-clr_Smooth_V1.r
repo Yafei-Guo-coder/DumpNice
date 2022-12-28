@@ -50,3 +50,50 @@ for (num in c(1:16)){
 #GenWin(smooth)的结果是这样的"WindowStart" "WindowStop" "SNPcount" "MeanY" "Wstat"，没有染色体，要加上染色体的信息
 #工作路径：xuebo@204:/data2/xuebo/Projects/Speciation/xpclr/North_South_SCA/XPCLRresultSouth_SCA/smooth
 #接下来给smooth结果添加染色体号并进行排序，并且合并成A，B，D lineage.
+
+library(GenWin)
+library(dplyr)
+Folder <- c("SH_EA", "SH_IA")
+for (num in c(1:9)){
+  filePath <- paste("/data1/home/yafei/004_Vmap3/xpclr/ResultXPCLR/",Folder[num],"/",sep="")
+  setwd(filePath)
+  for(i in c(1:9)){
+    file=paste(Folder[num],"_10kchr00",i,".xpclr.txt",sep="")
+    Data1=read.table(file,sep=" ")
+    Data2<-na.omit(Data1)
+    Data <- filter(Data2, Data2[,6] != Inf)
+    Z=matrix(, nrow = nrow(Data),ncol=1)
+    figure=paste("pdfnom_c",i,".pdf",sep="")
+    pdf(figure,width=12,height=8)
+    m <- mean(Data$V6)
+    s <- sd(Data$V6)
+    for(j in 1:nrow(Data)){
+      Z[j,1]=(Data[j,6]-m)/s
+    }
+    NORM=splineAnalyze(Y=Z,map=Data$V4,smoothness = 2000,plotRaw=T,plotWindows = T,method = 4)
+    dev.off()
+    normScore=NORM$windowData
+    outFile=paste("/data1/home/yafei/004_Vmap3/xpclr/ResultXPCLR/",Folder[num],"/smooth/",Folder[num],"_smooth",i,".txt",sep="")
+    write.table(normScore,outFile,sep="\t",col.names = T,row.names = F)
+  }
+  for(i in c(10:42)){
+    file=paste(Folder[num],"_10kchr0",i,".xpclr.txt",sep="")
+    Data1=read.table(file,sep=" ")
+    Data2<-na.omit(Data1)
+    Data <- filter(Data2, Data2[,6] != Inf)
+    Z=matrix(, nrow = nrow(Data),ncol=1)
+    figure=paste("pdfnom_c",i,".pdf",sep="")
+    pdf(figure,width=12,height=8)
+    m <- mean(Data$V6)
+    s <- sd(Data$V6)
+    for(j in 1:nrow(Data)){
+      Z[j,1]=(Data[j,6]-m)/s
+    }
+    NORM=splineAnalyze(Y=Z,map=Data$V4,smoothness = 2000,plotRaw=T,plotWindows = T,method = 4)
+    dev.off()
+    normScore=NORM$windowData
+    outFile=paste("/data1/home/yafei/004_Vmap3/xpclr/ResultXPCLR/",Folder[num],"/smooth/",Folder[num],"_smooth",i,".txt",sep="")
+    write.table(normScore,outFile,sep="\t",col.names = T,row.names = F)
+  }
+}
+}

@@ -6,7 +6,7 @@ library(factoextra)
 #dataA <- data[,c(3,4)]
 #data2 <- dataA[!is.na(dataA$Latitude),]
 
-data <- read.table("/Users/guoyafei/Documents/01_Migration/02_Environment/04_bayenv/225env.txt", header=F,stringsAsFactors = F)
+data <- read.table("/Users/guoyafei/Documents/01_Migration/02_Environment/04_bayenv/V1/225env.txt", header=F,stringsAsFactors = F)
 colname <- c("elevation","temp1","temp2","temp3","temp4","temp5","temp6","temp7","temp8","temp9","temp10","temp11","prec1","prec2","prec3","prec4","prec5","prec6","prec7","prec8","Latitude","Logititude")
 rownames(data) <- data[,1]
 data2 <- data[!is.na(data$V6),-1]
@@ -15,7 +15,6 @@ df = scale(data2,center = T,scale = T)
 colnames(df) <- colname
 #按列进行标准化
 #先求样本之间两两相似性
-
 result <- dist(df, method = "euclidean")
 #使用指定距离来计算数据矩阵行之间的距离
 #euclidean：欧几里得距离

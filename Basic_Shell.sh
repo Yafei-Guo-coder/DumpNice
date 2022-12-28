@@ -50,6 +50,7 @@ do
     fi
 done
 vcf-concat AB_noMiss_0.05.vcf.gz D_noMiss_0.05.vcf.gz | bgzip -c > noSort_noMiss_0.05.vcf.gz 
+
 #bedtools
 #提取vcf的特定区域
 for chr in {1,2,7,8,13,14,19,20,25,26,31,32,37,38}
@@ -64,6 +65,7 @@ for chr in {5,6,11,12,17,18,23,24,29,30,35,36,41,42}
 do
 bedtools intersect -a /data2/xuebo/Projects/Speciation/tree/withBarley_segregate/chr${chr}.withBarley.vcf.gz -b merge_D.bed -header > chr${chr}.withBarley.vcf &
 done
+
 #删除行首空格
 sed 's/^[ \t]*//g'
 #删除行尾空格
@@ -286,8 +288,6 @@ done
 wait
 exec 6>&-
 
-
-
 awk 'FNR==NR{a[$1]=$9;next}($1 in a){print $0"\t"a[$1]}' sample_20_1.infor.txt sample_20_1_nor.txt|awk '{split($22,a,",");{printf $1" ";for(i=1;i<=length(a);i)printf("%s ",$a[i])} {print ""}}'| awk '{ A=0; V=0; for(N=2; N<=NF; N) A+=$N ; A/=(NF-1) ; for(N=2; N<=NF; N++) V+=(($N-A)*($N-A))/(NF-1); print A" "sqrt(V) }' | head
 awk '{for(i=10;i<NF;i++) {split($i,a,":");printf a[1]"\t"};print}' test.vcf | less -LS
 awk '{print substr($0, index($0,$10))}' test.vcf 
@@ -317,7 +317,7 @@ do
 plink --bfile /data4/home/yafei/plink_VCF/chr024 --keep 105XD.txt --maf 0.01 --geno 0.1 --make-bed --out 105XD_chr024 --autosome-num 42 &
 done
 
-plink --freq --counts --noweb --bfile file --make-bed --out file
+plink --freq --counts --noweb --bfile file --make-bed --out file --autosome-num 42
 
 #--ref-allele ['force'] <filename> [REF col. number] [variant ID col.] [skip]
 #--alt1-allele ['force'] <filename> [ALT1 col. number] [variant ID col.] [skip]
@@ -330,3 +330,46 @@ sed '{N;s/\n//}' filename
 awk '{ A=0; V=0; for(N=1; N<=NF; N++) A+=$N ; A/=(NF-0) ; for(N=1; N<=NF; N++) V+=(($N-A)*($N-A))/(NF-0); print A" "sqrt(V) }'
 awk '{ A=0; for(N=2; N<=NF; N++) A+=$N ; A/=(NF-0) ; print $1"\t"A }'
 
+统计各个用户下的存储使用情况
+######################### 203 HPC ############
+login 159.226.116.203
+cd /data1/home/
+nohup du -d1 -h > /root/203HPC_data1_UserSize.txt 2>&1 &
+
+cd /data2/
+nohup du -d1 -h > /root/203HPC_data2_UserSize.txt 2>&1 &
+
+######################### 204 HPC ############
+login 159.226.116.204
+cd /data1/home/
+nohup du -d1 -h > /root/204HPC_data1_UserSize.txt 2>&1 &
+
+cd /data2/
+nohup du -d1 -h > /root/204HPC_data2_UserSize.txt 2>&1 &
+
+cd /data3/
+nohup du -d1 -h > /root/204HPC_data3_UserSize.txt 2>&1 &
+
+cd /data4/
+nohup du -d2 -h > /root/204HPC_data4_UserSize.txt 2>&1 &
+
+cd /data4/home/aoyue/vmap2
+nohup du -d1 -h > /root/204HPC_data4_aoyue_UserSize.txt 2>&1 &
+
+######################### 66 HPC ############
+login 159.226.116.66
+cd /data1/home/
+nohup du -d1 -h > /root/66HPC_data1_UserSize.txt 2>&1 &
+
+######################### 115 HPC ############
+login 159.226.116.115
+cd /data/home/
+nohup du -d1 -h > /root/115HPC_data1_UserSize.txt 2>&1 &
+
+datamash perc:95 5 perc:95 7 perc:5 7
+
+#204服务器密码
+admin@2134%
+#挂载命令
+blkid
+mount /***/***  /mnt/usb

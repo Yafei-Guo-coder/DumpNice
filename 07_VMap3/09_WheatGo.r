@@ -8,6 +8,27 @@ col <- brewer.pal(n = 8, name = "Greens")[c(4,7)]
 col <- brewer.pal(n = 8, name = "Red")[c(4,7)]
 
 setwd("/Users/guoyafei/Documents/02_VmapIII/08_Network/shufgene")
+setwd("/Users/guoyafei/Documents/02_VmapIII/08_Network/PPI")
+data <- read.table("go.txt",header=T,stringsAsFactors = F,sep="\t")
+colnames(data)[c(3,4,6)] <- c("Description", "Count", "p.adjust")
+ggplot(data=data)+
+  geom_bar(aes(x= Description, y=Count, fill=(-log10(p.adjust))), stat='identity') +
+  coord_flip() +
+  scale_fill_gradient(expression(-log(p.adjust)),low="#FDAE6B", high = "#D94801") +
+  ylab("Gene number") +
+  xlab("GO term description") +
+  theme(
+    axis.text.x=element_text(color="black",size=rel(0.3)),
+    axis.text.y=element_text(color="black", size=rel(0.3)),
+    axis.title.x = element_text(color="black", size=rel(5)),
+    axis.title.y = element_blank(),
+    legend.text=element_text(color="black",size=rel(0.2)),
+    legend.title = element_text(color="black",size=rel(0.7))
+  )+
+  ylim(0,130)+
+  theme_bw()+
+  theme(panel.grid=element_blank(),panel.border=element_blank(),axis.line=element_line(size=1,colour="black"))
+
 
 #画整体的Go富集图----
 path <- "/Users/guoyafei/Documents/02_VmapIII/08_Network/shufgene/Go"
@@ -41,11 +62,9 @@ for(i in 1:length(data)){
       axis.title.y = element_blank(),
       legend.text=element_text(color="black",size=rel(0.2)),
       legend.title = element_text(color="black",size=rel(0.7))
-      #legend.position=c(0,1),legend.justification=c(-1,0)
-      #legend.position="top",
     )+
-    #  scale_x_discrete(limits= c("Domesticated_einkorn", "Domesticated_emmer","Durum","EA","EU","Indian_dwarf","Khorasan_wheat","Landrace","Macha","Persian_wheat","Polish_wheat","Rivet_wheat","SCA","Spelt","Tibetan_semi_wild","Urartu","Vavilovii","WA","Wild_Einkorn","Wild_emmer","Xinjiang_wheat"))+
-    theme_bw()+theme(panel.grid=element_blank(),panel.border=element_blank(),axis.line=element_line(size=1,colour="black"))
+    theme_bw()+
+    theme(panel.grid=element_blank(),panel.border=element_blank(),axis.line=element_line(size=1,colour="black"))
   
   plot_list[[i]] = p
 }

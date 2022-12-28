@@ -1,4 +1,5 @@
 #yafei204: /data4/home/yafei/plink_VCF/
+###########
 #过滤: maf0.01, R2: 0.9 (/data4/home/yafei/plink_VCF/maf001r209)
 for i in {001..042}
 do
@@ -36,7 +37,7 @@ vcf-concat freethresh.chr001.vcf.gz freethresh.chr002.vcf.gz freethresh.chr003.v
 vcf-concat wildemmer.chr001.vcf.gz wildemmer.chr002.vcf.gz wildemmer.chr003.vcf.gz wildemmer.chr004.vcf.gz wildemmer.chr007.vcf.gz wildemmer.chr008.vcf.gz wildemmer.chr009.vcf.gz wildemmer.chr010.vcf.gz wildemmer.chr013.vcf.gz wildemmer.chr014.vcf.gz wildemmer.chr015.vcf.gz wildemmer.chr016.vcf.gz wildemmer.chr019.vcf.gz wildemmer.chr020.vcf.gz wildemmer.chr021.vcf.gz wildemmer.chr022.vcf.gz wildemmer.chr025.vcf.gz wildemmer.chr026.vcf.gz wildemmer.chr027.vcf.gz wildemmer.chr028.vcf.gz wildemmer.chr031.vcf.gz wildemmer.chr032.vcf.gz wildemmer.chr033.vcf.gz wildemmer.chr034.vcf.gz wildemmer.chr037.vcf.gz wildemmer.chr038.vcf.gz wildemmer.chr039.vcf.gz wildemmer.chr040.vcf.gz | bgzip -c > wildemmer.vcf.gz
 vcf-concat strangulata.chr005.vcf.gz strangulata.chr006.vcf.gz strangulata.chr011.vcf.gz strangulata.chr012.vcf.gz strangulata.chr017.vcf.gz strangulata.chr018.vcf.gz strangulata.chr023.vcf.gz strangulata.chr024.vcf.gz strangulata.chr029.vcf.gz strangulata.chr030.vcf.gz strangulata.chr035.vcf.gz strangulata.chr036.vcf.gz strangulata.chr041.vcf.gz strangulata.chr042.vcf.gz | bgzip -c > strangulata.vcf.gz
 
-#sitePI
+#sitePI------
 for i in {"cultivar","landrace","domemmer","freethresh","wildemmer"}
 do
 vcftools --gzvcf ${i}.A.vcf.gz --site-pi --out ${i}.A &
@@ -63,7 +64,7 @@ do
   admixture --cv ${i}.admix.ped 7 >> ${i}.log.txt &
 done
   
-#画图
+#画图-----
   wildemmer k=7; domemmer k=5; freethresh k=4;
   #统一设置：注释内容及颜色
   library(pheatmap)
@@ -86,7 +87,7 @@ done
               sortind="all",showindlab=T,showyaxis=T,showticks=T,sharedindlab=T,clustercol=brewer.pal(7, "Set2"))
   grid.arrange(p1$plot[[3]],p1$plot[[1]],p1$plot[[2]],nrow=3)
   dev.off()
-#fst
+#fst-------
 #/data2/yafei/004_Vmap3/Group/type_8/subGroup/wildemmer_sub7.txt;domemmer_sub5.txt;freethresh_sub4.txt;
 #/data4/home/yafei/plink_VCF/maf001r209/group/lineage/wildemmer.vcf.gz;domemmer.vcf.gz;freethresh.vcf.gz;landrace.vcf.gz;cultivar.vcf.gz;
   for i in {"sub1","sub2","sub3","sub4"}
@@ -142,10 +143,98 @@ ggplot(all, aes(x=V1, y=V2, color=type)) +
   #scale_color_manual(values = c("#66C2A5","#FC8D62","#8DA0CB","#E78AC3","#FFD92F")) +
   #geom_jitter(shape=16, position=position_jitter(0.2)) +
   xlab("")+ylab("")+theme_bw()+
-  
-  3.376
-
   theme(plot.title = element_text(color="red", size=10, face="bold.italic"),legend.text = element_text(size=12),legend.title=element_blank(),axis.text.x = element_text(size = 10), axis.title.x = element_text(size = 10),axis.text.y = element_text(size = 10),axis.title.y = element_text(size = 10))
+
+################################################ hard versus soft figure 4 #############################################
+library(ggplot2)
+#library(gridExtra)
+library(RColorBrewer)
+#library(fitdistrplus)
+
+setwd("/Users/guoyafei/Documents/02_VmapIII/11_piratio")
+name <- read.table("pi-ratio/gene.txt", header=F, stringsAsFactors = F)
+rownames(name) <- name$V1
+
+all <- read.table("pi-ratio/all.gene.AB.shuf5k", header=F,stringsAsFactors = F)
+all2 <- read.table("pi-ratio/all.gene.D.shuf5k", header=F,stringsAsFactors = F)
+
+gene <- read.table("pi-ratio/gene.AB.pi",header=F,stringsAsFactors = F)
+gene$name <- name[gene$V1,2]
+gene2 <- read.table("pi-ratio/gene.D.pi",header=F,stringsAsFactors = F)
+
+#thresh
+wd_t <- 6.52
+df_t <- 10.37
+fl_t <- 11.11
+lc_t <- 2.99
+wf_t <- 18.76
+
+### wildemmer-domemmer
+wd <- all$V2/all$V3
+subgene_wd <- as.data.frame(gene$V2/gene$V3)
+subgene_wd$type <- "NA"
+subgene_wd[which(subgene_wd$`gene$V2/gene$V3` > wd_t),2] <- "yes"
+
+### domemmer-freethresh
+df <- all$V3/all$V4
+subgene_df <- as.data.frame(gene$V3/gene$V4)
+subgene_df$type <- "NA"
+subgene_df[which(subgene_df$`gene$V3/gene$V4` > df_t),2] <- "yes"
+
+### wildemmer-freethresh
+wf <- all$V2/all$V4
+subgene_wf <- as.data.frame(gene$V2/gene$V4)
+subgene_wf$type <- "NA"
+subgene_wf[which(subgene_wf$`gene$V2/gene$V4` > wf_t),2] <- "yes"
+
+### freethresh-landrace
+fl <- all$V4/all$V5
+subgene_fl <- as.data.frame(gene$V4/gene$V5)
+subgene_fl$type <- "NA"
+subgene_fl[which(subgene_fl$`gene$V4/gene$V5` > fl_t),2] <- "yes"
+
+### landrace-cultivar
+lc <- all$V5/all$V6
+subgene_lc <- as.data.frame(gene$V5/gene$V6)
+subgene_lc$type <- "NA"
+subgene_lc[which(subgene_lc$`gene$V5/gene$V6` > lc_t),2] <- "yes"
+
+### landrace-stranglulata
+ls <- all2$V2/all3$V3
+subgene_ls <- as.data.frame(gene3$V2/gene3$V3)
+subgene_ls$type <- "NA"
+subgene_ls[which(subgene_ls$`gene$V2/gene$V3` > ls_t),2] <- "yes"
+### cultivar-stranglulata
+cs <- all2$V2/all3$V4
+subgene_cs <- as.data.frame(gene3$V2/gene3$V4)
+subgene_cs$type <- "NA"
+subgene_cs[which(subgene_cs$`gene$V2/gene$V4` > cs_t),2] <- "yes"
+
+
+alldata <- as.data.frame(cbind(wd, df, fl, lc))
+allgene <- as.data.frame(cbind(subgene_wd, subgene_df, subgene_fl, subgene_lc))
+allgene$name <- gene$name
+colnames(allgene) <- c("subgene_wd","type1","subgene_df","type2","subgene_fl","type3","subgene_lc","type4","name")
+subgene <- allgene[which(allgene$type3 == "yes" | allgene$type4 == "yes"),]
+
+
+genename <- c("TaBtr1-like-D","TaBtr2-like-D","Btr1-A","Btr1-B","Btr1-D")
+subgene2 <- allgene[which(allgene$name %in% genename),]
+library(ggrepel)
+ggplot(alldata, aes(log(fl), log(lc))) +
+  geom_point(size=2, alpha = 0.5,colour = "grey",shape = 20) +
+  geom_point(data = subgene, aes(log(subgene_fl), log(subgene_lc)), size=2, alpha = 0.5,colour = "red",shape = 20) +
+  geom_vline(xintercept=log(fl_t),color='red',linetype = "dotted")+
+  geom_hline(yintercept=log(lc_t),color='red',linetype = "dotted")+
+  geom_text_repel(data = subgene,aes(log(subgene_fl), log(subgene_lc), label = name),max.overlaps = 100) +
+  xlab("log(pi_freethresh/pi_landrace)")+
+  ylab("log(pi_landrace/pi_cultivar)")+
+  theme_bw()+
+  theme(legend.text = element_text(size=20),legend.title=element_blank(),axis.text.x = element_text(size = 20), axis.title.x = element_text(size = 20),axis.text.y = element_text(size = 20),axis.title.y = element_text(size = 20))
+
+
+
+
 
 
 

@@ -25,7 +25,6 @@ for i in `ls *bed`; do bedtools intersect -a ../Related_gene.gff3 -b $i -wb; don
 for i in `ls *bed`; do bedtools intersect -a ../Related_gene_1M.gff3 -b $i -wb; done| awk '{print $10"\t"$12}'|sed 's/\t/-/' > 1M.snp
 for i in `ls *bed`; do bedtools intersect -a ../Fu_gene_1M.gff3 -b $i -wb; done| awk '{print $10"\t"$12}'|sed 's/\t/-/' > Fu.1M.snp
 
-
 #基因上下游5M的位点
 snp <- read.table("5M.snp",header=F,stringsAsFactors = F)
 highsnp <- snp[,1]

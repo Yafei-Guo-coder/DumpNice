@@ -179,7 +179,7 @@ p[[17]] <- ggscatter(data, x = "longitude", y = "prec5", add = "reg.line", color
 p[[18]] <- ggscatter(data, x = "longitude", y = "prec6", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
 p[[19]] <- ggscatter(data, x = "longitude", y = "prec7", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
 p[[20]] <- ggscatter(data, x = "longitude", y = "prec8", add = "reg.line", color = "population") + stat_cor(label.x = 10, aes(color = population,label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))) + theme( legend.position="none")
-
+library(gridExtra)
 pdf("longidute3.pdf",width = 22,height = 22)
 grid.arrange(p[[1]],p[[2]],p[[3]],p[[4]],p[[5]],p[[6]],p[[7]],p[[8]],p[[9]],p[[10]],p[[11]],p[[12]],p[[13]],p[[14]],p[[15]],p[[16]],p[[17]],p[[18]],p[[19]],p[[20]],nrow=4)
 dev.off()

@@ -105,7 +105,11 @@ ggplot(all1, aes(V2, V3)) +
   theme(legend.position="none",legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y = element_text(size = 15))
 
 ################################# consensus haplotype frequency ##################################
-
+library(fitdistrplus)
+library(ggplot2)
+library(RColorBrewer)
+library(ggrepel)
+library(gridExtra)
 setwd("/Users/guoyafei/Documents/02_VmapIII/18_h12/")
 data <- read.table("haplotype.compare.txt", header=T, stringsAsFactors = F, sep="\t")
 all <- read.table("haplotype.compare.shuf5k.txt", header=T, stringsAsFactors = F, sep="\t")
@@ -122,6 +126,11 @@ for (i in c(1:length(data1))) {
   rownames(name) <- name$V1
   sub <- data[which(data$gene %in% name$V1),]
   out <- paste(names(data1)[i],"pdf",sep=".")
+  line <- all$landrace_num/sqrt(all$landrace_num+all$cultivar_num)
+  fit <- fitdist(line, "norm")
+  a <- summary(fit)
+  mean <- mean(sub$landrace_num/sqrt(sub$landrace_num+sub$cultivar_num))
+  z <- round(abs(mean-a$estimate[[1]])/a$estimate[[2]],2)
   pdf(out,width=6,height = 6)
   p <- ggplot(all, aes(landrace_num, cultivar_num)) +
     geom_point(size=2, alpha = 0.5,colour = "grey",shape = 20) +
@@ -135,6 +144,7 @@ for (i in c(1:length(data1))) {
     xlab("landrace_freq")+
     ylab("cultivar_freq")+
     theme_bw()+
+    ggtitle(paste("z-score =",z))+
     theme(legend.position="none",legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y = element_text(size = 15))
   print(p)
   dev.off()

@@ -22,15 +22,12 @@ rownames(shuf5k) <- shuf5k$gene
 all1 <- read.table("allgene/AB.year.7", header=T, stringsAsFactors = F)
 rownames(all1) <- all1$gene
 thresh <- c(3.32304533697249, 2.85365870779203, 2.86502700188772, 2.35072437470687, 2.82586032822358, 3.06320636816039, 2.67427291961055)
-for (i in c(1:length(data1))) {
+for (i in c(55)) {
   name <- as.data.frame(data1[[i]])
   rownames(name) <- name$V1
   sub <- all1[which(all1$gene %in% name$V1),]
   out <- paste(names(data1)[i],"year.AB.pdf",sep=".")
   p <- list()
-
-  
-  
   p[[1]] <- ggplot(shuf5k, aes(X1950, X1960)) +
     geom_point(size=2, alpha = 0.5,colour = "grey",shape = 20) +
     geom_point(data = sub, aes(X1950, X1960, size=1, alpha = 0.5,colour = "red")) +
@@ -40,8 +37,6 @@ for (i in c(1:length(data1))) {
     xlab("1950-1960")+
     ylab("1960-1970")+
     theme_bw()+
-
-    
     theme(legend.position="none",legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 15),axis.text.y = element_text(size = 15),axis.title.y = element_text(size = 15))
   p[[2]] <- ggplot(shuf5k, aes(X1960, X1970)) +
     geom_point(size=2, alpha = 0.5,colour = "grey",shape = 20) +
@@ -108,7 +103,7 @@ rownames(shuf5k) <- shuf5k$gene
 all1 <- read.table("allgene/AB.region.5", header=T, stringsAsFactors = F)
 rownames(all1) <- all1$gene
 thresh <- c(2.89502846023601, 2.16224947799078, 2.47694881306687, 2.01117096911165, 2.28196828145439)
-for (i in c(1:length(data1))) {
+for (i in c(55)) {
   name <- as.data.frame(data1[[i]])
   rownames(name) <- name$V1
   sub <- all1[which(all1$gene %in% name$V1),]
@@ -168,7 +163,7 @@ rownames(shuf5k) <- shuf5k$gene
 all1 <- read.table("allgene/D.year.7", header=T, stringsAsFactors = F)
 rownames(all1) <- all1$gene
 thresh <- c(2.91572659731368, 2.8903418869464, 2.89755603608904, 2.51492298054788, 3.17230587582881, 3.04380068663059, 2.63912099621883)
-for (i in c(1:length(data1))) {
+for (i in c(55)) {
   name <- as.data.frame(data1[[i]])
   rownames(name) <- name$V1
   sub <- all1[which(all1$gene %in% name$V1),]
@@ -249,7 +244,7 @@ rownames(shuf5k) <- shuf5k$gene
 all1 <- read.table("allgene/D.region.5", header=T, stringsAsFactors = F)
 rownames(all1) <- all1$gene
 thresh <- c(2.81978999736161, 2.42461298752664, 2.2807268299181, 2.31906477839178, 2.3057143939575)
-for (i in c(1:length(data1))) {
+for (i in c(55)) {
   name <- as.data.frame(data1[[i]])
   rownames(name) <- name$V1
   sub <- all1[which(all1$gene %in% name$V1),]

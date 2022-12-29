@@ -111,7 +111,7 @@ library(RColorBrewer)
 library(ggrepel)
 library(gridExtra)
 setwd("/Users/guoyafei/Documents/02_VmapIII/18_h12/")
-data <- read.table("haplotype.compare.txt", header=T, stringsAsFactors = F, sep="\t")
+data <- read.table("haplotype.compare.sort.common.txt", header=T, stringsAsFactors = F, sep="\t")
 all <- read.table("haplotype.compare.shuf5k.txt", header=T, stringsAsFactors = F, sep="\t")
 
 path <- "/Users/guoyafei/Documents/02_VmapIII/22_xpclr/module" ##文件目录
@@ -125,8 +125,8 @@ for (i in c(1:length(data1))) {
   name <- as.data.frame(data1[[i]])
   rownames(name) <- name$V1
   sub <- data[which(data$gene %in% name$V1),]
-  out <- paste(names(data1)[i],"pdf",sep=".")
-  line <- all$landrace_num/sqrt(all$landrace_num+all$cultivar_num)
+  out <- paste(names(data1)[i],"common.pdf",sep=".")
+  line <- data$landrace_num/sqrt(data$landrace_num+data$cultivar_num)
   fit <- fitdist(line, "norm")
   a <- summary(fit)
   mean <- mean(sub$landrace_num/sqrt(sub$landrace_num+sub$cultivar_num))
@@ -136,9 +136,6 @@ for (i in c(1:length(data1))) {
     geom_point(size=2, alpha = 0.5,colour = "grey",shape = 20) +
     geom_point(data = sub, aes(landrace_num, cultivar_num, size=2, alpha = 0.5,colour = "red")) +
     geom_abline(intercept=0,slope=1,color='red',linetype = "dotted")+
-    #geom_vline(xintercept=thresh[1],color='red',linetype = "dotted")+
-    #geom_hline(yintercept=thresh[2],color='red',linetype = "dotted")+
-    #geom_text_repel(data = sub,aes(V2, V3, label = name),max.overlaps = 100) +
     xlim(0,1)+
     ylim(0,1)+
     xlab("landrace_freq")+
@@ -149,15 +146,4 @@ for (i in c(1:length(data1))) {
   print(p)
   dev.off()
 }
-
-
-
-
-
-
-
-
-
-
-
 

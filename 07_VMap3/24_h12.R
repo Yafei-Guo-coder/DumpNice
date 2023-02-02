@@ -110,9 +110,11 @@ library(ggplot2)
 library(RColorBrewer)
 library(ggrepel)
 library(gridExtra)
-setwd("/Users/guoyafei/Documents/02_VmapIII/18_h12/")
-data <- read.table("haplotype.compare.sort.common.txt", header=T, stringsAsFactors = F, sep="\t")
-all <- read.table("haplotype.compare.shuf5k.txt", header=T, stringsAsFactors = F, sep="\t")
+setwd("/Users/guoyafei/Documents/02_VmapIII/22_xpclr/selection")
+data <- read.table("/Users/guoyafei/Documents/02_VmapIII/18_h12/haplotype.compare.txt", header=T, stringsAsFactors = F, sep="\t")
+selection_baypas <- read.table("/Users/guoyafei/Documents/02_VmapIII/07_Baypass/AB.genes",header=F,stringsAsFactors = F)
+selection <- read.table("/Users/guoyafei/Documents/02_VmapIII/22_xpclr/cultivar.AB.genes",header=F,stringsAsFactors = F)
+all <- read.table("/Users/guoyafei/Documents/02_VmapIII/18_h12/haplotype.compare.shuf5k.txt", header=T, stringsAsFactors = F, sep="\t")
 
 path <- "/Users/guoyafei/Documents/02_VmapIII/22_xpclr/module" ##文件目录
 fileNames <- dir(path)  ##获取该路径下的文件名
@@ -124,6 +126,7 @@ data1 <- lapply(filePath, function(x){
 for (i in c(1:length(data1))) {
   name <- as.data.frame(data1[[i]])
   rownames(name) <- name$V1
+  name <- name[which(name$V1 %in% selection$V1),1,drop=F]
   sub <- data[which(data$gene %in% name$V1),]
   out <- paste(names(data1)[i],"common.pdf",sep=".")
   line <- data$landrace_num/sqrt(data$landrace_num+data$cultivar_num)

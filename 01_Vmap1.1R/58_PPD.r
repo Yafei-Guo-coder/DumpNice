@@ -328,3 +328,35 @@ ggplot(data = test2,
   theme(axis.text.x = element_text(angle = 90, size = 8))
   #scale_color_gradient(low = "cyan",high = "red")
 
+
+
+#PPD 
+setwd("/Users/guoyafei/Desktop")
+library(gdata)
+data <- read.xls("ppd.xlsx",sheet=1,na.strings=c("NA","#DIV/0!"))
+
+library(cowplot) 
+library(ggExtra)
+library(forcats)
+library(ggplot2)
+library(RColorBrewer)
+library(aplot)
+
+colB <- c('#ffd702','#fc6e6e',"#87cef9")
+
+data$photo <- NA
+data[which(data$days.delay.under.short.days < 60),7] <- "insensitive"
+data[which(data$days.delay.under.short.days >= 100),7] <- "sensitive"
+data[which(data$days.delay.under.short.days > 60 & data$days.delay.under.short.days < 100),7] <- "intermediate"
+
+funss <- function(x) 1/sqrt(2*pi)*exp(-1/2*x^2)
+
+ggplot(data,aes(days.delay.under.short.days,fill=photo))+
+  geom_histogram( alpha=1,binwidth=5)+
+  scale_fill_manual(values = brewer.pal(2, "Set2")) +
+  stat_function(fun=funss,geom="line",colour=”red”)+
+  theme_classic()
+
+
+
+

@@ -304,7 +304,9 @@ nohup raxmlHPC-PTHREADS-SSE3 -f a -m GTRGAMMA -p 12345 -x 12345 -# 100 -s ../AA_
 
 for i in {001..042}
 do
-plink --bfile /data4/home/yafei/plink_VCF/chr${i} --keep /data2/yafei/004_Vmap3/Group/type_8/plink_group/AABB.txt --maf 0.0001 --geno 0.1 --make-bed --out bfile_AABB/chr${i} --autosome-num 42 &
+plink --bfile /data4/home/yafei/plink_VCF/chr${i} --keep /data2/yafei/004_Vmap3/Group/type_8/plink_group/AABB.txt --maf 0.0001 --geno 0.1 --make-bed --out bfile_AABB/chr${i} 
+
+&
 done
 
 for i in {001..042}

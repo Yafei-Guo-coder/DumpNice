@@ -25,7 +25,7 @@ done  | awk '{print $1"\t"$'"$i"'}' | sed "1i <Trait>\tenv$a" > env${a}.txt
 done
 
 1.按MAF>0.05和缺失率<0.1过滤
-plink --vcf Alineage_Landrace_225_noAM_220_maf001_LD.vcf --maf 0.05 --geno 0.1 --recode vcf-iid --out Alineage_Landrace_220_maf005 --allow-extra-chr --double-id --autosome-num 42 &
+plink --vcf /data1/publicData/wheat/genotype/VMap/VMap3.2/VMap3.2/chr001_VMap3.2.vcf.gz --keep group.txt --maf 0.05 --geno 0.1 --recode vcf-iid --out Alineage_Landrace_220_maf005 --allow-extra-chr --double-id --autosome-num 42 &
 plink --vcf Blineage_Landrace_225_noAM_220_maf001_LD.vcf --maf 0.05 --geno 0.1 --recode vcf-iid --out Blineage_Landrace_220_maf005 --allow-extra-chr --double-id --autosome-num 42 &
 plink --vcf Dlineage_Landrace_225_noAM_220_maf001_LD.vcf --maf 0.05 --geno 0.1 --recode vcf-iid --out Dlineage_Landrace_220_maf005 --allow-extra-chr --double-id --autosome-num 42 &
 

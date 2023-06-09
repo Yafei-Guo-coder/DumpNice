@@ -74,7 +74,7 @@ result_hc <- hclust(d = result, method = "ward.D2")
 #median和centroid在不导致单调的距离测量，或者等效产生的树状图可以具有所谓的倒置或颠倒。
 data2$type <- cutree(result_hc, k=11)
 
-------------------------计算类群环境变量---------
+------------------------计算类群环境变量-----------------------
   lat_mean <- tapply(data2[,21],data2$type,mean,na.rm = TRUE)
 lon_mean <- tapply(data2[,22],data2$type,mean,na.rm = TRUE)
 data2$cluster1 <- NA
@@ -91,19 +91,83 @@ write.table(data2,"13_cluster.txt",sep="\t",row.names = T,quote=F)
 
 ----------------------------------------地图上展示聚类结果---------------------------------
 #删减样本后，还剩471个样本。
-  data <- read.table("471_baypass_10PC_edited.txt",header=T,stringsAsFactors = F)
+data <- read.table("471_baypass_10PC_edited.txt",header=T,stringsAsFactors = F)
+data <- read.table("/Users/guoyafei/Desktop/baypass/471_baypass_10PC_edited.txt", header=T, stringsAsFactors = F)
 library(maps)
 library(ggplot2)
 mp<-NULL
 mapworld<-borders("world",colour = "gray80",fill="gray80") 
 mp<-ggplot()+mapworld+ylim(-50,80)
 
-mp+geom_point(aes(x=data$Longitude, y=data$Latitude,color = as.factor(data$type)),alpha = 0.7)+
+sub <- data[which(data$type == 25),]
+mp+geom_point(aes(x=sub$Longitude, y=sub$Latitude,color = as.factor(sub$type)),alpha = 0.7)+
   scale_size(range=c(1,1))+ 
   theme_classic()
 
+pop1:WA:1
+pop2:EA:3
+pop3:IA:2
+pop4:SH:5
+pop5:IA:2
+pop6:EA:3
+pop7:EA:3
+pop8:IA:2
+pop9:EU:4
+pop10:SH:5
+pop11:IA:2
+pop12:IA:2
+pop13:EA:3
+pop14:AF:6
+pop15:EU:4
+pop16:WA:1
+pop17:WA:1
+pop18:WA:1
+pop19:SH:5
+pop20:EA:3
+pop21:SAM:7
+pop22:EU:4
+pop23:EU:4
+pop24:SAM:7
+pop25:IA:2
 
+#25个群体的数据分布
+library(ggplot2)
+setwd("/Users/guoyafei/Desktop/baypass")
+data <- read.table("471_baypass_taxa.Info", header=T,stringsAsFactors = F)
+M <- aggregate(data, by=list(data$type),FUN=mean)
+a <- colnames(M)[c(3,4,5,8:42)]
+pdf("相关性.pdf", width=7, height=3.5)
+for(i in c(3,4,5,8:42)){
+  #data <- read.table("471_baypass_taxa.Info", header=T,stringsAsFactors = F)
+  data$type <- factor(data$type, levels=rownames(M[order(M[,i]),]),ordered = TRUE)
+  p <- ggplot(data, aes(x=data$type, y = data[,i-1])) +
+    geom_boxplot(color="blue",
+                 fill="blue",
+                 alpha=0.2) +
+    ylab(colnames(data[,i-1,drop=F])) +
+    xlab("Group")+
+    theme_bw()
+  print(p)
+}
+dev.off()
 
-
-
-
+#25个群体的数据分布
+library(ggplot2)
+setwd("/Users/guoyafei/Desktop/baypass")
+data <- read.table("471_baypass_taxa.Info", header=T,stringsAsFactors = F)
+M <- aggregate(data, by=list(data$type),FUN=mean)
+a <- colnames(M)[c(3,4,5,8:42)]
+pdf("相关性.pdf", width=7, height=3.5)
+for(i in c(3,4,5,8:42)){
+  #data <- read.table("471_baypass_taxa.Info", header=T,stringsAsFactors = F)
+  data$type <- factor(data$type, levels=rownames(M[order(M[,i]),]),ordered = TRUE)
+  p <- ggplot(data, aes(x=data$type, y = data[,i-1])) +
+    geom_boxplot(color="blue",
+                 fill="blue",
+                 alpha=0.2) +
+    ylab(colnames(data[,i-1,drop=F])) +
+    xlab("Group")+
+    theme_bw()
+  print(p)
+}
+dev.off()

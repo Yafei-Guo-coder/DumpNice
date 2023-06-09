@@ -1,4 +1,4 @@
-setwd("/Users/guoyafei/Documents/02_VmapIII/02_DataSource/05_WEGA/")
+setwd("/Users/guoyafei/Documents/02_Vmap3/before0219/02_DataSource/05_WEGA")
 library(ncdf4) # package for netcdf manipulation
 library(raster) # package for raster manipulation
 library(rgdal) # package for geospatial analysis

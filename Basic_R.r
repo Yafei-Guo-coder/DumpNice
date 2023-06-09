@@ -1,3 +1,8 @@
+#palette using black
+cbbPalette <- c(
+  
+branch: 乌拉尔图: "#999999"（灰色）, 野生一粒:"#E69F00"(橘黄色), 栽培一粒:"#56B4E9"(明兰色), AABBDD:"#009E73"(橄榄绿), AABB:"#F0E442"（明黄）
+label: WA: "#000000"（黑色）, EU："#0072B2"(天蓝), EA："#D55E00"(橘红色), SCA："#CC79A7"(皮粉色)),AF: "#E78AC3"(粉色) AM:"#66C2A5"(浅绿)
 #循环：for
 v <- LETTERS[1:6]
 for ( i in v) {
@@ -34,7 +39,7 @@ c1 <- c1[c(3:5)] #与上面的方式相反，保留想要的元素
 #展示调色板
 library(RColorBrewer)
 display.brewer.all()
-brewer.pal(8, "Set1")
+brewer.pal(9, "Set1")
 scale_fill_brewer(palette = "RdYiBu")
 scale_fill_manual(values = c("#FDC086","#BEAED4")) 
 scale_color_manual(values = color) 
@@ -123,9 +128,16 @@ result <- substring("Extract", 5, 7)
 print(result)
 
 #画直方图
+data <- read.table("~/Desktop/all.ibs",header=F,stringsAsFactors = F)
 ggplot(dataD, aes(x = V2)) +
   geom_histogram(binwidth = 1, fill = "lightblue", colour = "black")+
   theme_classic()
+N <- data[which(data$V6 == "Wild_emmer_N"),]
+S <- data[which(data$V6 == "Wild_emmer_S"),]
+ggplot(N, aes(x = V2,group = V6)) +
+  geom_histogram(binwidth = 0.001, fill = "lightblue", colour = "black")+
+  theme_classic()
+
 #箱线图
 ggplot(Bdata, aes(x = B))+
     geom_boxplot(fill = '#f8766d', notch = TRUE)+theme_classic()+  theme(
@@ -178,7 +190,6 @@ ggplot() +
            ylim = c(10, 60),
            expand = T)
 
-
 a <- vector()
 for ( i in c(1:30)) {
   a <- append(a,as.numeric(dpois(0, i, log = FALSE)))
@@ -197,7 +208,7 @@ colnames(psmc) <- c("coverage","missing")
 psmc$type <- "psmc"
 all <- rbind(data,vmap,psmc)
 
-brewer.pal(8, "Set12")[1,2,3]
+brewer.pal(9, "Set11")
 scale_fill_brewer(palette = "RdYiBu")
 scale_fill_manual(values = c("#FDC086","#BEAED4")) 
 scale_color_manual(values = color) 
@@ -252,7 +263,8 @@ ggplot(data, aes(x=V2, y=V4)) +
   xlab("Position") + ylab("XP-CLR") +
   geom_hline(yintercept=3.63,color='#E69F00',linetype = "dashed")+
   geom_vline(xintercept=759451668,color='red')
-
+防止列名改变
+check.names=F,
 
 setwd("/Users/guoyafei/Desktop/")
 data <- read.table("/Users/guoyafei/Desktop/AB.k10.cultivar.salti.lassip.mlg.txt.shuf",header=F,stringsAsFactors = F)
@@ -282,3 +294,65 @@ ggplot(data2,aes(T))+
   geom_density(fill="grey",alpha=0.5)+
   #scale_y_continuous(expand = c(0,0))+
   theme_bw()
+
+data <- read.table("/Users/guoyafei/Desktop/adapgene/prec7.alt.raw.out", header=F,stringsAsFactors = F)
+data$maf <- NA
+data[which(data$V4 < 0.5),5] <- data[which(data$V4 < 0.5),4]
+data[which(data$V4 >= 0.5),5] <- 1-data[which(data$V4 >= 0.5),4]
+data$effect <- NA
+data[,6] <- abs(data[,3])
+ggplot(data, aes(maf,effect)) +
+  geom_point( size=3,alpha=0.3,color="blue") +
+  theme_classic()
+
+ggplot(data, aes(V7,V8)) +
+  geom_point( size=3,alpha=0.3,color="#A65628") +
+  ylim(-150,150)+
+  theme_classic()
+
+data <- read.table("/Users/guoyafei/Desktop/adapgene/shuf1k.gcta.out", header=F,stringsAsFactors = F)
+data <- read.table("/Users/guoyafei/Desktop/adapgene/sig.shuf1k.gcta.out", header=F,stringsAsFactors = F)
+data <- read.table("/Users/guoyafei/Desktop/adapgene/prec7.sig.gcta.out", header=F,stringsAsFactors = F)
+
+#一页多图
+library(ggplot2)
+library(gplots)
+library(RColorBrewer)
+library("corrplot")
+library("cowplot")
+library("gridExtra")
+library(ggpubr)
+setwd("/Users/guoyafei/Desktop/coFu/effect")
+data <- read.table("/Users/guoyafei/Desktop/coFu/effect/TraesCS5A02G391300.5k.all.txt",header=T,stringsAsFactors = F)
+all <- read.table("/Users/guoyafei/Desktop/coFu/effect/TraesCS5A02G391300.5k.crosstab.txt",check.names=F,header=T,row.names=1, stringsAsFactors = F)
+ld <- as.matrix(all)
+p <- list()
+p[[1]]<-ggplot(data = data, aes(x = pos, y = -log10(gwasp), color = snpeff)) +
+  geom_point() +
+  theme_bw()
+p[[2]]<-ggplot(data = data, aes(x = pos, y = r2, color = -log10(p))) +
+  geom_point() +
+  theme_bw()
+pdf("test.pdf",width=10,height=5)
+ggarrange(p[[1]], p[[2]], heights = c(1, 1),
+          ncol = 1, nrow = 2, align = "v")
+corrplot(ld,method = "color",tl.col="black",tl.srt = 45, addrect = 2,addCoef.col= NULL, type = "upper")
+dev.off()
+
+setwd("~/Desktop/maf/")
+library(ggplot2)
+data <- read.table("shuf800k_1A.frq.all.txt",header=F,stringsAsFactors = F)
+ggplot(data,aes(V2,fill=V3))+
+     geom_histogram(bins=30,aes(x=V2, y=..density..),position="identity",alpha = 0.5)
+
+#数据整合
+M <- aggregate(data, by=list(type),FUN=mean)
+#长格式变宽格式
+cats <- cast(all,id1~variable,value.var="value",fun.aggregate = mean)
+#相关性分析
+corrgram(cats, order=F, lower.panel=panel.shade, upper.panel=NULL, text.panel=panel.txt, main="Car Milage Data in PC2/PC1 Order")
+heatmap(cats, Colv = NA, Rowv = NA, scale="column")
+pheatmap(data3, show_rownames=FALSE, show_colnames=FALSE, cluster_col = F, legend_breaks = -1:2, legend_labels = c("./.", "0/0", "0/1", "1/1"),cluster_row = FALSE, annotation_col = anno2, annotation_names_col = F)
+
+corrplot(cats,method = "color",col.lim = c(20, 30),type = 'lower',tl.col="black",tl.srt = 45,addrect=1,addCoef.col = "grey",number.cex=0.5,number.digits=2,tl.cex=1,cl.cex=1,cl.lim = c(0, 1))
+

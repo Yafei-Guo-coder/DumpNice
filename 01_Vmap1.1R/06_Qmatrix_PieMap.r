@@ -20,7 +20,7 @@ for(i in 1:225) {
                         out[i,4] <- as.numeric(lat_mean[j])
                         out[i,5] <- as.numeric(lon_mean[j])
                 } 
-        }
+          }
 }
 mode <- as.data.frame(cbind(annotation_col[,2],as.numeric(out[,4]),as.numeric(out[,5])),stringsAsFactors = F)
 mode$V2 <- as.numeric(mode$V2)
@@ -52,3 +52,4 @@ for (i in c(1:82)){
                 zColours=brewer.pal(8, "Set2"),barOrient='vert',oceanCol="#D1EEEE",landCol="#FFDAB9",main=i)
 }
 dev.off()
+

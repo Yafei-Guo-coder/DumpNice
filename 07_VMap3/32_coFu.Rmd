@@ -1,0 +1,197 @@
+---
+title: "coFu"
+author: "Yafei"
+date: "4/3/2023"
+output: html_document
+---
+---
+title: "HN-LN GWAS coFu"
+output: manhuttan and qqplot
+---
+```{r}
+setwd("/Users/guoyafei/Desktop/coFu")
+library(tidyverse)
+AB_H <- read.table("/Users/guoyafei/Desktop/coFu/plot/HN_AB_shuf12k.txt", header=T,stringsAsFactors = F)
+D_H <- read.table("/Users/guoyafei/Desktop/coFu/plot/HN_D_shuf6k.txt", header=T, stringsAsFactors = F)
+AB_L <- read.table("/Users/guoyafei/Desktop/coFu/plot/LN_AB_shuf12k.txt", header=T,stringsAsFactors = F)
+D_L <- read.table("/Users/guoyafei/Desktop/coFu/plot/LN_D_shuf6k.txt", header=T, stringsAsFactors = F)
+
+#QQ plot
+qq_dat <- data.frame(obs=-log10(sort(AB_H$P,decreasing=FALSE)),
+                     exp=-log10( ppoints(length(AB_H$P))))
+qq_dat <- data.frame(obs=-log10(sort(D_H$P,decreasing=FALSE)),
+                     exp=-log10( ppoints(length(D_H$P))))
+qq_dat <- data.frame(obs=-log10(sort(AB_L$P,decreasing=FALSE)),
+                     exp=-log10( ppoints(length(AB_L$P))))
+qq_dat <- data.frame(obs=-log10(sort(D_L$P,decreasing=FALSE)),
+                     exp=-log10( ppoints(length(D_L$P))))
+qq_dat1 <- data.frame(obs=-log10(sort(AB_H$P,decreasing=FALSE)),
+                      exp=-log10( ppoints(length(AB_H$P))))
+qq_dat <- data.frame(obs=-log10(sort(all$P,decreasing=FALSE)),
+                     exp=-log10( ppoints(length(all$P))))
+
+Q_AB_H <- ggplot(data=qq_dat,aes(exp,obs))+
+  geom_point(alpha=0.7,color="#7F7F7FFF")+
+  geom_abline(color="#D62728FF")+
+  xlab("Expected -log10(P-value)")+
+  ylab("Observed -log10(P-value)")+
+  scale_x_continuous(limits = c(0,7))+
+  scale_y_continuous(limits = c(0,7))+
+  theme(
+    plot.title = element_text(color="red", size=20, face="bold.italic"),
+    axis.title = element_text(size=12,face="bold"),
+    axis.text = element_text(face="bold",size=8,color = "black"),
+    axis.ticks= element_line(size=0.8,colour = "black"),
+    panel.grid =element_blank(),
+    panel.border = element_rect(fill=NA,size = 0.8),
+    panel.background = element_blank())
+pdf(name1,width = 6,height = 3)
+grid.arrange(p[[1]],p[[2]],nrow=1)
+dev.off()
+
+#threshold
+library(gdata)
+library(RColorBrewer)
+point_A  <- read.table("/Users/guoyafei/Desktop/coFu/gene/gene.p_A.txt", header=F,stringsAsFactors = F)
+cand_A <- point_A[,c(5,4,1,3,6)]
+colnames(cand_A) <- c("Trait","SNP","CHR","BP","P")
+
+point_B  <- read.table("/Users/guoyafei/Desktop/coFu/gene/gene.p_B.txt", header=F,stringsAsFactors = F)
+cand_B <- point_B[,c(5,4,1,3,6)]
+colnames(cand_B) <- c("Trait","SNP","CHR","BP","P")
+
+point_D  <- read.table("/Users/guoyafei/Desktop/coFu/gene/gene.p_D.txt", header=F,stringsAsFactors = F)
+cand_D <- point_D[,c(5,4,1,3,6)]
+colnames(cand_D) <- c("Trait","SNP","CHR","BP","P")
+
+AB_H <- read.table("/Users/guoyafei/Desktop/coFu/plot/HN_AB_shuf12k.txt", header=T,stringsAsFactors = F)
+D_H <- read.table("/Users/guoyafei/Desktop/coFu/plot/HN_D_shuf6k.txt", header=T, stringsAsFactors = F)
+AB_L <- read.table("/Users/guoyafei/Desktop/coFu/plot/LN_AB_shuf12k.txt", header=T,stringsAsFactors = F)
+D_L <- read.table("/Users/guoyafei/Desktop/coFu/plot/LN_D_shuf6k.txt", header=T, stringsAsFactors = F)
+chrA <- c(1,2,7,8,13,14,19,20,25,26,31,32,37,38)
+chrB <- c(3,4,9,10,15,16,21,22,27,28,33,34,39,40)
+chrD <- c(5,6,11,12,17,18,23,24,29,30,35,36,41,42)
+H1 <- AB_H[which(AB_H$CHR %in% chrA),c(1,2,3,4,7)]
+all_H1 <- rbind(H1,cand_A)
+H2 <- AB_H[which(AB_H$CHR %in% chrB),c(1,2,3,4,7)]
+all_H2 <- rbind(H2,cand_B)
+H3 <- D_H[,c(1,2,3,4,7)]
+all_H3 <- rbind(H3,cand_D)
+L1 <- AB_L[which(AB_L$CHR %in% chrA),c(1,2,3,4,7)]
+L2 <- AB_L[which(AB_L$CHR %in% chrB),c(1,2,3,4,7)]
+L3 <- D_L[,c(1,2,3,4,7)]
+gwasResults <- all_H3
+don <- gwasResults %>% 
+  group_by(CHR) %>% 
+  summarise(chr_len=max(BP)) %>% 
+  mutate(tot=cumsum(as.numeric(chr_len))-chr_len) %>%
+  select(-chr_len) %>%
+  left_join(gwasResults, ., by=c("CHR"="CHR")) %>%
+  arrange(CHR, BP) %>%
+  mutate( BPcum=BP+tot) 
+axisdf <- don %>% group_by(CHR) %>% summarize(center=(max(BPcum) + min(BPcum))/ 2)
+sub <- don[grep("^Tra", don[,2]),] 
+p_L1 <- ggplot(don, aes(x=BPcum, y=-log10(P))) +
+  geom_point( aes(color=as.factor(CHR)), alpha=0.8, size=1.3) +
+  scale_color_manual(values = rep(c("grey","grey", "skyblue", "skyblue"), 7)) +
+  scale_x_continuous( label = axisdf$CHR, breaks= axisdf$center ) +
+  scale_y_continuous(expand = c(0, 0) ) +
+  geom_point(data=sub,aes(x=BPcum, y=-log10(P)), size=1,color="orange") +
+  theme_bw() +
+  theme( 
+    legend.position="none",
+    panel.border = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.x=element_text(size=15),
+    axis.text.y=element_text(size=15),
+    axis.title.y=element_text(size = 15),
+    axis.title.x=element_text(size = 15),
+  )+
+  scale_y_continuous(limits = c(0,7))+
+  geom_hline(yintercept = -log10(0.0193), colour="red",linetype=2, size=1)
+#geom_point(data=point,aes(x=BPcum,y=-log10(P)),color="red")
+pdf(paste(filename,".pdf",sep=""),height = 9,width = 9)
+grid.arrange(p[[1]],p[[2]],nrow=2)
+dev.off()
+
+#Alineage
+data <- read.table("A_mean.fst",header=T,stringsAsFactors=F,sep="\t")
+rownames(data) <- data$Alineage
+data<- data[,-1]
+data<- as.matrix(data)
+pdf("mean_A_fst.pdf",width=30,height=30)
+corrplot(data,method = "color",tl.col="black",tl.srt = 45,addrect=4,addCoef.col = "grey",number.cex=4,number.digits=3,tl.cex=2.5,cl.cex=3,cl.lim = c(0, 1))
+dev.off()
+```
+
+---
+title: "snpeff and ld coFu"
+output: effect
+---
+```{r}
+library(ggplot2)
+library(gplots)
+library(RColorBrewer)
+library("corrplot")
+library("cowplot")
+library("gridExtra")
+library(ggpubr)
+setwd("/Users/guoyafei/Desktop/coFu/effect")
+file <- c("TraesCS2A02G540400.5k","TraesCS2D02G042700.5k","TraesCS3B02G190300.5k","TraesCS4D02G350200.5k","TraesCS5A02G210100.5k","TraesCS5A02G251000.5k","TraesCS5A02G317200.5k","TraesCS5A02G318500.5k","TraesCS5A02G391300.5k","TraesCS7D02G449900.5k")
+input1 <- paste(file,".all.txt",sep="")
+input2 <- paste(file,".crosstab.txt",sep="")
+output <- paste(file,".pdf",sep="")
+color <- brewer.pal(8, "Set1")
+for(i in c(1:6)){
+  data <- read.table(input1[i],header=T,stringsAsFactors = F)
+  data$color <- as.factor(data$snpeff)
+  data[which(data$snpeff == "non-coding"),23] <- "NA"
+  all <- read.table(input2[i],check.names=F,header=T,row.names=1, stringsAsFactors = F)
+  ld <- as.matrix(all)
+  p <- list()
+  p[[1]]<-ggplot(data = data, aes(x = pos, y = -log10(gwasp), color = color)) +
+    geom_point() +
+    theme_bw()
+  p[[2]]<-ggplot(data = data, aes(x = pos, y = r2, color = -log10(p))) +
+    geom_point() +
+    theme_bw()
+  pdf(output[i],width=10,height=5)
+  ggarrange(p[[1]], p[[2]], heights = c(1, 1),
+          ncol = 1, nrow = 2, align = "v")
+  corrplot(ld, method = "color", tl.col="black", col.lim=c(0,1), tl.pos="n",  tl.srt = 45, addrect = 2,addCoef.col= NULL, type = "upper")
+  dev.off()
+}
+
+
+```
+
+---
+title: "haplotype"
+output: haplotype.pdf
+---
+```{r}
+library(pheatmap)
+require (rworldmap)
+require(rworldxtra)
+library(RColorBrewer)
+#display.brewer.all()
+setwd("/Users/guoyafei/Desktop/coFu/haplotype/V2")
+annotation_col <- read.table("/Users/guoyafei/Desktop/coFu/haplotype/grplab2.txt",header=F, stringsAsFactors = F,sep="\t")
+rownames(annotation_col) <- annotation_col$V2
+
+all <- read.table("/Users/guoyafei/Desktop/coFu/haplotype/V2/TraesCS7D02G449900.pos-geno.txt", header=T, stringsAsFactors = F)
+anno <- annotation_col[colnames(all)[4:343],c(3),drop=FALSE]
+
+anno$V3 <- factor(anno$V3,levels = c("pop_2.5", "pop_2.75", "pop_3", "pop_3.25", "pop_3.5", "pop_3.75", "pop_4", "pop_4.25", "pop_4.5", "pop_4.75", "pop_5"))
+anno2 <- anno[order(anno$V3),,drop=F]
+all2 <- all[,which(colnames(all) %in% rownames(anno2))]
+all3 <- all2[,rownames(anno2)]
+cols <- c(brewer.pal(11, "Set3")[c(5)],"#DEEBF7","#FEB24C","#BD0026")
+pdf(output[i],width=12,height = 3 )
+pheatmap(all3, show_rownames=FALSE, show_colnames=FALSE, color = cols, legend_breaks = -1:2, legend_labels = c("./.", "0/0", "0/1", "1/1"), cluster_col = F, cluster_row = FALSE, annotation_col = anno2, annotation_names_col = F)
+dev.off()
+}
+
+```
+

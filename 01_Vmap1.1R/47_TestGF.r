@@ -2,18 +2,17 @@ library(gradientForest)
 library(RColorBrewer)
 library(rasterVis)
 library(LEA)
+library(raster)
 library(adegenet)
 library(maps)
-display.brewer.all()
 library(dismo)
 library(gplots)
-library(raster)
 library(gdistance)
-library(raster)
+
 gfData <- read.csv("/data1/home/yafei/003_Project3/Structure/gradientForest/Climate-Change-Genomics-main/datasets/input/gradient_forest_input.csv",sep="\t",row.names=1) 
 dim(gfData) #这个文件一共使用了13个群体，X指的是经度，Y指的是纬度，bio_1-bio19指的是环境因子，之后是555-19-2=534个SNP
 #也就是说，这个文件一共使用了500个SNP，在小麦里面的话，可以每个亚基因挑200或者300个SNP进行计算
-#可以对SNP进行分类，但是在这里是不需要的，因为这边没有需要分类的必要
+#可以对SNP进行分类，但是在这里是不需要的，因为这边没有需要分类的必要，有需要
 candidate <- gfData
 #把文件中的经度，纬度和环境变量提取出来
 present <- gfData[,c(1,2,grep("bio",names(gfData)))]

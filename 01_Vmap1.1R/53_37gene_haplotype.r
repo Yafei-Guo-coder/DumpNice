@@ -5,19 +5,20 @@ require (rworldmap)
 require(rworldxtra)
 library(RColorBrewer)
 cols <- c("#225EA8","#DEEBF7","#FEB24C","#BD0026")
-setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/08_snpEff/VCF_withAn/225_TXT")
+setwd("/Users/guoyafei/Documents/01_VMap1.1/02_Environment/08_snpEff/VCF_withAn/225_TXT")
 #annotation_col <- read.table("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/XP-CLR/E6_Landrace_locate_225.txt",header=T,stringsAsFactors = T)
 #rownames(annotation_col) = c(1:225)
-annotation <- read.table("/Users/guoyafei/Documents/01_Migration/02_Environment/01_RDA_plot/select_taxa4.txt", header=T, row.names=1,  stringsAsFactors = F, sep="\t")
-anno <- annotation[,7,drop=FALSE]
-
+annotation <- read.table("/Users/guoyafei/Documents/01_VMap1.1/02_Environment/01_RDA_plot/select_taxa4.txt", header=T,  stringsAsFactors = F, sep="\t")
+sub <- annotation[!is.na(annotation$ID),]
+rownames(sub) <- sub$ID
+anno <- sub[,7,drop=FALSE]
 #--------------------------------------------------------------------------------------------------------------------------------------
 #AB
-AB_name <- read.table("/Users/guoyafei/Documents/01_Migration/02_Environment/08_snpEff/VCF_withAn/225_TXT/AB_name.txt",header=F,stringsAsFactors = F)
+AB_name <- read.table("/Users/guoyafei/Documents/01_VMap1.1/02_Environment/08_snpEff/VCF_withAn/225_TXT/AB_name.txt",header=F,stringsAsFactors = F)
 AB_anno <- anno[which(rownames(anno) %in% AB_name[,1]),1,drop=F]
 ann_color = list(
   heatmap = c(Wild_emmer = "#8C510A", Domesticated_emmer = "#DFC27D", Freethreshing = "#F6E8C3", EU="#66C2A5", WA= "#FC8D62",CA="#8DA0CB", EA ="#E78AC3",SA="#A6D854",Tibet="#FFD92F"))
-path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/08_snpEff/VCF_withAn/225_TXT/AB" ##文件目录
+path <- "/Users/guoyafei/Documents/01_VMap1.1/02_Environment/08_snpEff/VCF_withAn/225_TXT/AB" ##文件目录
 fileNames <- dir(path)  ##获取该路径下的文件名
 filePath <- sapply(fileNames, function(x){ 
   paste(path,x,sep='/')})   ##生成读取文件路径
@@ -25,12 +26,12 @@ data <- lapply(filePath, function(x){
   read.table(x, header=F,stringsAsFactors = F)})
 AB_file <-read.table("AB_file_name.txt",header=F,stringsAsFactors = F)
 AB_tit <- AB_file[,1]
-pdf("AB.pdf")
+pdf("test.pdf")
 for (i in c(1:length(data))){
   all <- as.data.frame(data[[i]])
   colnames(all) <- AB_name[,1]
-  all <- all[, rownames(AB_anno)]
-  pheatmap(all, show_rownames=FALSE, show_colnames=FALSE,color = cols, legend_breaks = -1:2, legend_labels = c("./.", "0/0", "0/1", "1/1"), cluster_col = F, cluster_row = FALSE, annotation = AB_anno, annotation_colors = ann_color,annotation_names_col = F,main=AB_tit[i])
+  all2 <- all[, rownames(AB_anno)]
+  pheatmap(all2, show_rownames=FALSE, show_colnames=FALSE,color = cols, legend_breaks = -1:2, legend_labels = c("./.", "0/0", "0/1", "1/1"), cluster_col = F, cluster_row = FALSE, annotation = AB_anno, annotation_colors = ann_color,annotation_names_col = F,main=AB_tit[i])
 }
 dev.off()
 

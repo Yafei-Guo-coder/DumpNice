@@ -61,7 +61,7 @@ colnames(ibs) <- names
 
 #A:0.5 B:0.5 D:0.7
 pdf("IBS_A_CS_heat.pdf",width=10,height=10)
-corrplot(ibs,method = "color",col=color,tl.col="black",tl.srt = 45, addrect=4,addCoef.col = "grey", type = "lower",number.cex=0.6,number.digits=3,tl.cex=1,cl.cex=1.2,cl.lim = c(0, 0.5))
+corrplot(ibs,method = "color",tl.col="black",tl.srt = 45, addrect = 2,addCoef.col= NULL, type = "upper")
 dev.off()
 
 #B lineage

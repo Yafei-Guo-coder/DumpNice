@@ -30,7 +30,6 @@ run_pipeline.pl -Xmx200g -SortGenotypeFilePlugin -inputFile Dlineage.hmp.txt  -o
 6.广义线性回归
 run_pipeline.pl -fork1 -h ABlineage_sort.hmp.txt -fork2 -r env1.txt -fork3 -q ABlineage_pca.qmatrix -excludeLastTrait -fork4 -k ABlineage_kinship.txt -combine5  -input1 -input2 -input3 -intersect -combine6 -input5 -input4 -mlm -mlmVarCompEst P3D -mlmCompressionLevel None -export env${i}_A_mlm -runfork1 -runfork2 -runfork3
 
-
 7.结果处理
 for i in `ls *mlm2.txt`; do sed '1d' $i | grep -v "NaN" | awk '{print $2"\t"$3"\t"$4"\t"$7}' | sed '1i SNP\tCHR\tBP\tP'> Result/${i::-9}.txt ; done
 for i in *txt
@@ -39,22 +38,26 @@ sed '1d' $i | shuf -n 5000 | sed '1i SNP\tCHR\tBP\tP' > ${i::-4}.qq.txt
 done
 
 8.本地画图
-setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/09_GWAS/LD01/QQ")
+#-----qq----
+library(ggplot2)
+setwd("/Users/guoyafei/Documents/02_Vmap3/23_gwas/pdf")
+path <- "/Users/guoyafei/Documents/02_Vmap3/23_gwas/plot"
+fileNames <- dir(path)
+filePath <- sapply(fileNames, function(x){ 
+  paste(path,x,sep='/')})
+data_all <- lapply(filePath, function(x){
+  read.table(x, header=T,stringsAsFactors = F)})
 
-#QQ plot-----
-#pdf("qq2.pdf")
-v <- c("AB","D")
-for ( i in c(1:20)){
+for ( i in c(1:7)){
   p <- list()
-  name1 <- paste("env",i,".pdf",sep="")
-  for ( chr in c(1:2)){
-    name <- paste("env",i,": ",v[chr],sep="")
-    filename <- paste("env",i,"_",v[chr],".qq.txt",sep="")
-    data <- read.table(filename,header=T,stringsAsFactors = F)
-    colnames(data) <- c("SNP", "CHR", "BP","P")
+  n1 <- strsplit( names(data_all)[i], "_")[[1]][1]
+  n2 <- strsplit( names(data_all)[i], "_")[[1]][2]
+  filename <- paste(n1,n2,"qq",sep="_")
+    data <- data_all[[i]]
+    colnames(data) <- c("Trait", "SNP", "CHR", "BP", "df", "F", "P")
     qq_dat <- data.frame(obs=-log10(sort(data$P,decreasing=FALSE)),
                          exp=-log10( ppoints(length(data$P))))
-    p[[chr]] <- ggplot(data=qq_dat,aes(exp,obs))+
+    p[[i]] <- ggplot(data=qq_dat,aes(exp,obs))+
       geom_point(alpha=0.7,color="#7F7F7FFF")+
       geom_abline(color="#D62728FF")+
       xlab("Expected -log10(P-value)")+
@@ -71,85 +74,64 @@ for ( i in c(1:20)){
         panel.grid =element_blank(),
         panel.border = element_rect(fill=NA,size = 0.8),
         panel.background = element_blank())
+    pdf(paste(filename,".pdf",sep=""),height = 3,width = 3)
+    print(p[[i]])
+    dev.off()
   }
-  pdf(name1,width = 6,height = 3)
-  grid.arrange(p[[1]],p[[2]],nrow=1)
-  dev.off()
-}
 
-#--------------manhuttun-------------
+#--------------manhuttun-----
 library(qqman)
 library(tidyverse)
-setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/09_GWAS/LD01")
-path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/09_GWAS/LD01/Manhuttan" ##文件目录
-fileNames <- dir(path)  ##获取该路径下的文件名
+setwd("/Users/guoyafei/Documents/02_Vmap3/23_gwas/pdf")
+path <- "/Users/guoyafei/Documents/02_Vmap3/23_gwas/plot"
+fileNames <- dir(path)
 filePath <- sapply(fileNames, function(x){ 
-  paste(path,x,sep='/')})   ##生成读取文件路径
+  paste(path,x,sep='/')})
 data <- lapply(filePath, function(x){
   read.table(x, header=T,stringsAsFactors = F)})
-
 #threshold
-library(gdata)
-thresh <- read.xls("thresh.xlsx",sheet=1,row.name=1,na.strings=c("NA","#DIV/0!"))
-
-#for (i in c(1,4,7,10,13,16,19,22,25,28,31,34,37,40,43,46,49,52,55,58)){
-for (i in seq(1,40,by=2)){
-  filename <- strsplit( names(data)[i], "_")[[1]][1]
+#library(gdata)
+#thresh <- read.xls("thresh.xlsx",sheet=1,row.name=1,na.strings=c("NA","#DIV/0!"))
+for (i in seq(2)){
+  n1 <- strsplit( names(data)[i], "_")[[1]][1]
+  n2 <- strsplit( names(data)[i], "_")[[1]][2]
+  filename <- paste(n1,n2,sep="_")
   p<-list()
-  for (j in c(0,1)){
-    a <- i+j
-    gwasResults2 <- data[[a]]
-    colnames(gwasResults2) <- c("SNP", "CHR", "BP","P")
-    gwasResults3 <- gwasResults2[which(gwasResults2$P < 0.25),]
-    other <- gwasResults2[which(gwasResults2$P > 0.01 & gwasResults2$P <0.2),]
-    #other2 <- other[sample(nrow(other), 20000), ]
-    gwasResults <- rbind(gwasResults3,other)
+    gwasResults <- data[[i]]
+    colnames(gwasResults) <- c("Trait", "SNP", "CHR", "BP", "df", "F", "P")
     don <- gwasResults %>% 
-      # Compute chromosome size
       group_by(CHR) %>% 
       summarise(chr_len=max(BP)) %>% 
-      # Calculate cumulative position of each chromosome
       mutate(tot=cumsum(as.numeric(chr_len))-chr_len) %>%
       select(-chr_len) %>%
-      # Add this info to the initial dataset
       left_join(gwasResults, ., by=c("CHR"="CHR")) %>%
-      # Add a cumulative position of each SNP
       arrange(CHR, BP) %>%
       mutate( BPcum=BP+tot) 
     axisdf <- don %>% group_by(CHR) %>% summarize(center=( max(BPcum) + min(BPcum) )/ 2)
-    p[[j+1]] <- ggplot(don, aes(x=BPcum, y=-log10(P))) +
-      # Show all points
+    p[[i]] <- ggplot(don, aes(x=BPcum, y=-log10(P))) +
       geom_point( aes(color=as.factor(CHR)), alpha=0.8, size=1.3) +
       scale_color_manual(values = rep(c("grey","grey", "skyblue", "skyblue"), 7)) +
       # custom X axis:
       scale_x_continuous( label = axisdf$CHR, breaks= axisdf$center ) +
-      scale_y_continuous(expand = c(0, 0) ) +     # remove space between plot area and x axis
-      # Add highlighted points
-      #geom_point(data=subset(don, is_highlight=="yes"), color="orange", size=2) +
-      # Add label using ggrepel to avoid overlapping
-      #geom_label_repel( data=subset(don, is_annotate=="yes"), aes(label=SNP), size=2) +
-      # Custom the theme:
+      scale_y_continuous(expand = c(0, 0) ) +   
       theme_bw() +
       theme( 
         legend.position="none",
         panel.border = element_blank(),
         panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
-        axis.text.x=element_text(size=15),
-        axis.text.y=element_text(size=15),
-        axis.title.y=element_text(size = 15),
-        axis.title.x=element_text(size = 15),
+        axis.text.x=element_text(size=8),
+        axis.text.y=element_text(size=10),
+        axis.title.y=element_text(size = 10),
+        axis.title.x=element_text(size = 10),
       )+
       scale_y_continuous(limits = c(0,7))+
-      geom_point(data=point,aes(x=BPcum,y=-log10(P)),color="red")
-    #geom_vline(xintercept = 528377322, colour="red",linetype=2, size=1)
-    #geom_hline(yintercept = -log10(thresh[a,1]), colour="red",linetype=2, size=1)+
-    #geom_hline(yintercept = -log10(thresh[a,2]), colour="blue",linetype=2, size=1)
+      geom_hline(yintercept = -log10(0.0699), colour="red",linetype=2, size=1)
+    pdf(paste(filename,".pdf",sep=""),height = 3,width = 6.5)
+    print(p[[i]])
+    dev.off()
   }
-  pdf(paste(filename,".pdf",sep=""),height = 9,width = 9)
-  grid.arrange(p[[1]],p[[2]],nrow=2)
-  dev.off()
-}
+
 ----------------跑20个随机shuf的情况-----------
   for j in {51..100}
 do
@@ -351,9 +333,9 @@ for (i in seq(1,40,by=2)){
         axis.title.x=element_text(size = 15),
       )+
       scale_y_continuous(limits = c(0,7))+
-      geom_point(data=point,aes(x=BPcum,y=-log10(P)),color="red")
+      geom_point(data=point,aes(x=BPcum,y=-log10(P)),color="red")+
     #geom_vline(xintercept = 528377322, colour="red",linetype=2, size=1)
-    #geom_hline(yintercept = -log10(thresh[a,1]), colour="red",linetype=2, size=1)+
+    geom_hline(yintercept = -log10(0.07043), colour="red",linetype=2, size=1)
     #geom_hline(yintercept = -log10(thresh[a,2]), colour="blue",linetype=2, size=1)
   }
   pdf(paste(filename,".pdf",sep=""),height = 9,width = 9)

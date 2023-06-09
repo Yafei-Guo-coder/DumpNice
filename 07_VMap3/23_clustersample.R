@@ -1,10 +1,10 @@
 #分群
 #各地区的landrace: WA, EU, IA, SH, EA, AF, AM
-setwd("/Users/guoyafei/Documents/02_VmapIII/16_clustersample")
+setwd("/Users/guoyafei/Documents/02_Vmap3/16_clustersample")
 library(readxl)
 library(ggmap)
 library(RColorBrewer)
-Lulab_germplasm_Info <- read_excel("/Users/guoyafei/Documents/02_VmapIII/16_clustersample/Lulab_germplasm_Info.xlsx")
+Lulab_germplasm_Info <- read_excel("/Users/guoyafei/Documents/02_Vmap3/16_clustersample/Lulab_germplasm_Info.xlsx")
 landrace_WA <- Lulab_germplasm_Info[which(Lulab_germplasm_Info$`type(USDA_8)` == "Landrace" & Lulab_germplasm_Info$`Ctnt(9)` == "WA" & as.numeric(Lulab_germplasm_Info$Longitude) < 50 & as.numeric(Lulab_germplasm_Info$Longitude) > 35 & as.numeric(Lulab_germplasm_Info$Latitude) > 35 & as.numeric(Lulab_germplasm_Info$Latitude) < 40),]
 landrace_WA$xpclr <- "WA"
 dim(landrace_WA)

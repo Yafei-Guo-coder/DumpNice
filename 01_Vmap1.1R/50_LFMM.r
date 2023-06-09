@@ -2,6 +2,7 @@
 #除了用bayenv检测与环境相互关联的信号，也使用LFMM进行检测
 #Working directory: yafei@204:/data1/home/yafei/003_Project3/Structure/LFMM
 #原始文件是149个在xp-clr中使用的群体, (剔除了TW095,因为没有环境变量数据）的SNP文件(A_noMiss.vcf.gz  B_noMiss.vcf.gz  D_noMiss.vcf.gz)
+
 A:2593384 B:1629490 D:1483980
 #准备输入文件
 #genotype.lfmm(行是样本，列是位点，无行名列名，以空格分开)
@@ -43,6 +44,7 @@ barplot(t(Q(obj.snmf, K = 11)), col = 1:11)
 barplot(t(Q(obj.snmf, K = 12)), col = 1:12)
 barplot(t(Q(obj.snmf, K = 13)), col = 1:13)
 dev.off()
+
 genotype = lfmm2geno("D.LD.genotype.lfmm")
 obj.snmf = snmf(genotype, K = 1:15, entropy = T, ploidy = 2, project="new")
 pdf("D.structure.pdf")
@@ -59,6 +61,7 @@ barplot(t(Q(obj.snmf, K = 11)), col = 1:11)
 barplot(t(Q(obj.snmf, K = 12)), col = 1:12)
 barplot(t(Q(obj.snmf, K = 13)), col = 1:13)
 dev.off()
+
 genotype = lfmm2geno("B.LD.genotype.lfmm")
 obj.snmf = snmf(genotype, K = 1:15, entropy = T, ploidy = 2, project="new")
 pdf("B.structure.pdf")
@@ -86,6 +89,7 @@ zs = z.scores(obj.lfmm, K = 6)
 #Combine z-scores using the median
 zs.median = apply(zs, MARGIN = 1, median)
 lambda = median(zs.median^2)/qchisq(0.5, df = 1)
+
 pdf("adj.p.values.pdf")
 adj.p.values = pchisq(zs.median^2/lambda, df = 1, lower = FALSE)
 hist(adj.p.values, col = "red")
@@ -94,6 +98,9 @@ adj.p.values = pchisq(zs.median^2/.55, df = 1, lower = FALSE)
 #histogram of p-values
 hist(adj.p.values, col = "green")
 dev.off()
+
+
+
 ## FDR control: Benjamini-Hochberg at level q
 ## L = number of loci
 L = 500

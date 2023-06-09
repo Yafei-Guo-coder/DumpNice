@@ -19,7 +19,6 @@ p1 <- plotQ(slist[1:7],returnplot=T,exportplot=F,quiet=T,basesize=11,
 grid.arrange(p1$plot[[1]],p1$plot[[2]],p1$plot[[3]],p1$plot[[4]],p1$plot[[5]],nrow=5)
 dev.off()
 
-
 library(readxl)
 library(ggmap)
 library(RColorBrewer)
@@ -35,15 +34,16 @@ mapworld <- borders("world",colour = "gray70",fill="white")
 mp <- ggplot() + 
   mapworld + 
   #xlim(0,90) +
-  ylim(10,70) + 
+  #ylim(10,70) + 
   theme_classic()
-color <- brewer.pal(8, "Dark2")[c(1,2,3,4,6,)]
+color <- brewer.pal(8, "Dark2")[c(1,2,3,4,5,6,7)]
 color <- brewer.pal(8, "Dark2")[1:7]
 data <- c[which(c$V1=="domemmer"),]
 data <- c[which(c$V1=="freethresh"),]
 data <- c[which(c$V1=="wildemmer"),]
 #AABBDD
-mp+geom_point(aes(x=data$Logitude, y=data$Latitude, color=data$V2,alpha=0.3),size=1)+
+sub <- data[which(data$Region %in% c("EU","WA","EA2","SH","IA")),]
+mp+geom_point(aes(x=sub$Longitude, y=sub$Latitude, color=sub$Region,alpha=0.3),size=1)+
   scale_size(range=c(1,1)) + 
   scale_color_manual(values = color) +
   #theme_classic() +

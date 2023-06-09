@@ -3,6 +3,7 @@ library(rgdal)
 library(rasterVis)
 library(RColorBrewer)
 library(ggplot2)
+library(viridis) 
 data <- raster("/Users/guoyafei/Downloads/share/spatial03/worldclim/cmip6/7_fut/10m/BCC-CSM2-MR/ssp585/wc2.1_10m_bioc_BCC-CSM2-MR_ssp585_2021-2040.tif")
 setwd("/Volumes/HP x750w/wc2.1_30s_bio")
 setwd("/Volumes/HP x750w/wc2.1_2.5m_tmax_2010-2018")
@@ -84,7 +85,7 @@ all <- temp.data[,-c(1,2)]
 setwd("/Users/guoyafei/Documents/01_个人项目/02_Migration/02_数据表格/01_Vmap1-1/01_Add_ZNdata/05_Environment/")
 write.table(all, "select_bio2.txt", sep="\t", row.names = T,quote=F)
 
-temp6_2018 <- raster("wc2.1_2.5m_tmax_2018-06.tif")
+temp6_2018 <- raster("/Volumes/HP x750w/wc2.1_30s_bio/wc2.1_30s_bio_1.tif")
 temp6_2017 <- raster("wc2.1_2.5m_tmax_2017-06.tif")
 temp6_2016 <- raster("wc2.1_2.5m_tmax_2016-06.tif")
 temp6_2015 <- raster("wc2.1_2.5m_tmax_2015-06.tif")
@@ -93,7 +94,7 @@ temp6_2013 <- raster("wc2.1_2.5m_tmax_2013-06.tif")
 
 colr <- colorRampPalette(brewer.pal(11, 'RdYlBu'))
 oregon <- readOGR('.', 'Oregon_10N')
-levelplot(temp6_2015, 
+levelplot(temp6_2018, 
           margin=FALSE,# suppress marginal graphics
           ylim=c(-50,60),
           colorkey=list(

@@ -148,7 +148,6 @@ r2<-as.data.frame(t(data[c(1,3,62,16,20,17,51),61]))
 
 library(gridExtra)
 a <- ggplot(data2,aes(x=Altitude,y=pos_33953684))+geom_point()+stat_smooth(method=lm)+geom_text(x=1000, y=0.9, label="r2=0.778",size=3.5) +ggtitle("33953684")+ylab("Allele Frequency")+theme_classic()+theme(plot.title = element_text(colour = "red",size = 10,face = "bold"))
-
 b <- ggplot(data2,aes(x=Altitude,y=pos_34000377))+geom_point()+stat_smooth(method=lm)+geom_text(x=3000, y=0.015, label="r2=0.758",size=3.5)  +ggtitle("34000377")+ylab("Allele Frequency")+theme_classic()+theme(plot.title = element_text(colour = "red",size = 10,face = "bold"))
 c <- ggplot(data2,aes(x=Altitude,y=pos_33963940))+geom_point()+stat_smooth(method=lm)+geom_text(x=3000, y=0.018, label="r2=0.681",size=3.5)  +ggtitle("33963940")+ylab("Allele Frequency")+theme_classic()+theme(plot.title = element_text(colour = "red",size = 10,face = "bold"))
 d <- ggplot(data2,aes(x=Altitude,y=pos_33966039))+geom_point()+stat_smooth(method=lm)+geom_text(x=3000, y=0.012, label="r2=0.619",size=3.5)  +ggtitle("33966039")+ylab("Allele Frequency")+theme_classic()+theme(plot.title = element_text(colour = "red",size = 10,face = "bold"))
@@ -156,7 +155,6 @@ e <- ggplot(data2,aes(x=Altitude,y=pos_33964177))+geom_point()+stat_smooth(metho
 f <- ggplot(data2,aes(x=Altitude,y=pos_34000269))+geom_point()+stat_smooth(method=lm)+geom_text(x=3000, y=0.015, label="r2=0.593",size=3.5)  +ggtitle("34000269")+ylab("Allele Frequency")+theme_classic()+theme(plot.title = element_text(colour = "red",size = 10,face = "bold"))
 
 grid.arrange(a,b,c,d,e,f,nrow=2)
-
 
 ###snpEff
 library(ggplot2)
@@ -327,8 +325,6 @@ ggplot(data = test2,
   theme_classic()+
   theme(axis.text.x = element_text(angle = 90, size = 8))
   #scale_color_gradient(low = "cyan",high = "red")
-
-
 
 #PPD 
 setwd("/Users/guoyafei/Desktop")

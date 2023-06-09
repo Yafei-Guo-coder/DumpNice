@@ -1,5 +1,9 @@
 #awk
 awk 'NR==FNR{a[$2]=$0;}NR!=FNR{print $0,a[$2]}' b.txt a.txt
+awk '{split($2,a,","); print length(a)}' a.txt
+bedtools makewindows -g genome.chr.ln -w 200000 > 200K.genome.3col
+cd
+datamash -s -g 3 unique 1 unique 2| awk '{split($2,a,","); if(length(a)!=1 || (length(a)==1 && $3 < 0.001) )print $0}' 
 #内关联
 #方法1
 awk -F',' 'NR==FNR{a[$1]=$2;}NR!=FNR && a[$1] {print $0,a[$1]}' b.txt a.txt
@@ -8,7 +12,7 @@ awk -F',' 'NR==FNR{a[$1]=$2;}NR!=FNR && $1 in a {print $0,a[$1]}' b.txt a.txt
 awk 'FNR==NR{a[$1];next}($1 in a){next} {print}' a b 
 awk 'ORS=NR%2?" ":"\n"{print}'
 #shell
-ps aux | grep plink|awk '{print $2}' > id
+ps aux | grep crosstab|awk '{print $2}' > id
 for i in `cat id`; do kill -9 $i; done
 ## split by chromosome
 for chr in {0..42}
@@ -20,13 +24,14 @@ for chr in {0..42}
 do
 samtools index $out/$ID.chr$chr.bam
 done
-
 samtools view test.bam | awk '{print $5"\t"$9}'| sed '1i mapping-qulity\tmate-length' > test
 awk '{print $5"\t"$9}' standard.bam| sed '1i mapping-qulity\tmate-length' > standard
 cat 687_f1_test.fq | paste - - - - | sort -k1,1 -t " "  > 687_f1_test.sorte
 grep -v -f 687_uniqid 687_f1_test.sorted | tr "\t" "\n" > 687_f1_test.sorted.fq
 zcat CRR061687_r2.filtered.fq.gz |paste - - - - |sort -k1,1 -S 500G | tr '\t' '\n' |gzip > CRR061687_r2.filtered_sorted.fq.gz
 seqkit sort -n CRR061687_r2.filtered.fq.gz | gzip -c > CRR061687_r2.filtered_sorted.fq.gz
+
+awk '{split($2,a,","); if(length(a)!=1 || (length(a)==1 && $3 < 0.001) )print $0}' 
 #bedtools
 bedtools intersect -a /data2/xuebo/Projects/Speciation/tree/withBarley_segregate/chr${chr}.withBarley.vcf.gz -b merge_D.bed -header > chr${chr}.withBarley.vcf
 bedtools intersect -a /data1/home/yafei/009_GWAS/gene/gene_v1.1_Lulab.gff3 -b test -wb | awk 'split($9, array, ";") {print $1"\t"$4"\t"$5"\t"array[1]"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14}' 
@@ -50,7 +55,6 @@ do
     fi
 done
 vcf-concat AB_noMiss_0.05.vcf.gz D_noMiss_0.05.vcf.gz | bgzip -c > noSort_noMiss_0.05.vcf.gz 
-
 #bedtools
 #提取vcf的特定区域
 for chr in {1,2,7,8,13,14,19,20,25,26,31,32,37,38}
@@ -65,7 +69,6 @@ for chr in {5,6,11,12,17,18,23,24,29,30,35,36,41,42}
 do
 bedtools intersect -a /data2/xuebo/Projects/Speciation/tree/withBarley_segregate/chr${chr}.withBarley.vcf.gz -b merge_D.bed -header > chr${chr}.withBarley.vcf &
 done
-
 #删除行首空格
 sed 's/^[ \t]*//g'
 #删除行尾空格
@@ -74,6 +77,10 @@ sed 's/[ \t]*$//g'
 sed '/^$/d' 
 #替换多个空格为一个逗号
 sed 's/\s\+/,/g'
+#删除最后一列
+awk '{$NF = ""; print $0}' a.txt | sed 's/.$//' 
+#删除最后一行
+sed '$d'
 #计算bam的depth
 for i in `cat depth.txt`
 do
@@ -115,7 +122,7 @@ conda deactivate
 
 #计算bam文件的depth
 #bams.txt格式为 /data3/wgs/bam/ABD/ABD_0165.bam，一行一个bam文件
-for i in {5,6,11,12,17,18,23,24,29,30,35,36,41,42}
+for i in {005,006,011,012,017,018,023,024,029,030,035,036,041,042}
 do
 for j in `cat JIC_bam_D.txt`
 do
@@ -375,3 +382,10 @@ admin@2134%
 #挂载命令
 blkid
 mount /***/***  /mnt/usb
+
+
+run_pipeline.pl -Xms512m -Xmx5g -vcf btr1-B.1M.vcf -export btr1-B.1M -exportType Phylip_Inter
+raxml-ng --all --msa btr1-A.2k.phy --seed 12356 --model GTR+G --bs-trees 100 --threads 40
+
+
+

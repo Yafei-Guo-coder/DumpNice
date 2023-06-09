@@ -67,7 +67,7 @@ dev.off()
 #画图：UpSetR
 library(UpSetR)
 #sweed
-setwd("/Users/guoyafei/Documents/02_VmapIII/06_Selection/sweed/top5")
+setwd("/Users/guoyafei/Documents/02_Vmap3/before0219/17_sweed/top5")
 A_Name <- c("SweeD.wildemmer.A.gene.uniq","SweeD.domemmer.A.gene.uniq","SweeD.freethresh.A.gene.uniq","SweeD.landrace.A.gene.uniq","SweeD.cultivar.A.gene.uniq")
 B_Name <- c("SweeD.wildemmer.B.gene.uniq","SweeD.domemmer.B.gene.uniq","SweeD.freethresh.B.gene.uniq","SweeD.landrace.B.gene.uniq","SweeD.cultivar.B.gene.uniq")
 D_Name <- c("SweeD.strangulata.D.gene.uniq","SweeD.landrace.D.gene.uniq","SweeD.cultivar.D.gene.uniq")

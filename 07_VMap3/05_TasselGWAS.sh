@@ -21,6 +21,7 @@ admixture --cv test.filter.ped 2 >>log.txt
 admixture --cv test.filter.ped 13 >>log.txt
 wait
 grep "CV error" log.txt >k_1to13
+
 #取CV error最小时的k值=10,  其中test.filter.prune.in.10.Q结果文件作为关联分析的输入源文件（去掉最后一列 添加表头和ID）
 
 #亲缘关系/PCA

@@ -1,0 +1,385 @@
+---
+title: "admixture"
+output: landrace_admixture(structure3-8.pdf)
+---
+
+```{bash}
+#66:/data2/yafei/project/polygenic/admixture/landrace
+#extract the bfile from vcf
+for i in {001..042}
+do
+plink2 --vcf /data1/publicData/wheat/genotype/VMap/VMap3.2/VMap3.2/chr${i}_VMap3.2.vcf.gz --keep landrace.txt --maf 0.01 --geno 0.1 --make-bed --out chr${i} --autosome-num 42 &
+done
+
+#extract 8k snps
+for i in {001..042}
+do
+plink2 --vcf chr${i} --thin 0.0001 --make-bed --out structure/chr${i}_8k --autosome-num 42 &
+done
+plink2 --pmerge-list allfile.txt bfile --make-bed --out structure_8k --autosome-num 42
+
+#calculate structure
+plink2 --bfile structure_8k --recode ped --out structure_8k --autosome-num 42
+#plink1 --bfile structure_8k --recode structure --out structure_8k --autosome-num 42
+#plink1 --bfile structure_8k --recode 12 --out structure_8k --autosome-num 42
+admixture --cv structure_8k.ped 3 >>log.txt &
+admixture --cv structure_8k.ped 4 >>log.txt &
+admixture --cv structure_8k.ped 5 >>log.txt &
+admixture --cv structure_8k.ped 6 >>log.txt &
+admixture --cv structure_8k.ped 7 >>log.txt &
+admixture --cv structure_8k.ped 8 >>log.txt &
+admixture --cv structure_8k.ped 9 >>log.txt &
+admixture --cv structure_8k.ped 10 >>log.txt &
+```
+
+```{r}
+library(pophelper)
+library(RColorBrewer)
+library(gridExtra)
+sfiles <- list.files(path="/Users/guoyafei/Documents/02_Vmap3/admixture/landrace/qmatirx", full.names=T)
+slist <- readQ(files=sfiles)
+tabulateQ(qlist=readQ(sfiles))
+summariseQ(tabulateQ(qlist=readQ(sfiles)))
+grplab2 <- read.table("/Users/guoyafei/Documents/02_Vmap3/admixture/landrace/grplab.txt",header=T, colClasses = "character",stringsAsFactors = F)[,c(4)]
+grplab=data.frame(labs=grplab2, stringsAsFactors=FALSE)
+#structure3-8(标签未排序)
+pdf("/Users/guoyafei/Documents/02_Vmap3/admixture/landrace/structure3-8.pdf",width = 22,height = 12)
+p1 <- plotQ(slist[2:7],showindlab=F, grplab=grplab,ordergrp=TRUE, useindlab=FALSE,sortind="all",returnplot=T,basesize=20,clustercol=brewer.pal(8,"Set2"),exportplot=F,grplabsize=5,grplabheight = 0.8,subsetgrp=c("AM","EU","WA","AF","CA","SA","EA"))
+grid.arrange(p1$plot[[1]],p1$plot[[2]],p1$plot[[3]],p1$plot[[4]],p1$plot[[5]],p1$plot[[6]],nrow=3)
+dev.off()
+```
+
+---
+title: "qpgraph"
+output: landrace_qpgraph
+---
+
+```{bash}
+#66:/data2/yafei/project/polygenic/vcf/landrace/taxaWithSelect/qpgraph
+#for i in {001..042}
+#do
+#plink2 --bfile /data2/yafei/project/polygenic/vcf/landrace/chr${i} --keep taxa.txt --maf 0.05 --geno 0.1 --make-bed --out chr${i} --autosome-num 42 &
+#done
+for i in {001..042}
+do
+plink2 --bfile chr${i} --thin 0.01 --make-bed --out qpgraph/chr${i}_400k --autosome-num 42 &
+done
+ls *bim|xargs -n1| sed 's/.bim//'  > allfile.txt
+plink2 --pmerge-list allfile.txt bfile --make-bed --out qpgraph_400k --autosome-num 42
+plink2 --bfile qpgraph_400k --recode ped --out qpgraph_400k --autosome-num 42
+
+#66:/data2/yafei/project/polygenic/vcf/landrace/taxaWithSelect/qpgraph
+
+convertf -p transfer.conf 
+paste AB_qpgraph_200k.ind <(awk '{print $5}' grplab_AB.txt | sed '1d') | awk '{print $1"\t"$2"\t"$4}' > AB_qpgraph_200k.ind2
+mv AB_qpgraph_200k.ind AB_qpgraph_200k.ind_org
+mv AB_qpgraph_200k.ind2 AB_qpgraph_200k.ind
+#qpgraph
+#qpGraph -p parQpgraph.txt -g FigureA -o FigureA.ggg -d FigureA.dot > FigureA.out
+bash runQpgraph.sh
+dot -Tpng FigureA.dot -o FigureA.png
+#qpbrute
+bash qpbrute.sh > qpbrute.log
+```
+
+---
+title: "envgwas"
+output: gcta and tassel envgwas
+---
+
+```{r}
+library(qqman)
+library(tidyverse)
+data_tassel <- read.table("/Users/guoyafei/Desktop/gwas/tassel_prec8_ABlineage_6k.txt", header=T, stringsAsFactors = F)
+colnames(data_tassel) <- c("Trait","CHR","BP","SNP", "Allele","Effect", "Obs","F","P","MarkerR2")
+gwasResults <- data_tassel
+data_gcta <- read.table("/Users/guoyafei/Desktop/envgwas/plot/prec7_AB_shuf10k_gcta.txt", header=T, stringsAsFactors = F)
+colnames(data_gcta) <- c("CHR","SNP","BP","A1","A2","N","AF1","Effect","SE","P")
+gwasResults <- data_gcta
+
+don <- gwasResults %>% 
+      # Compute chromosome size
+      group_by(CHR) %>% 
+      summarise(chr_len=max(BP)) %>% 
+      # Calculate cumulative position of each chromosome
+      mutate(tot=cumsum(as.numeric(chr_len))-chr_len) %>%
+      select(-chr_len) %>%
+      # Add this info to the initial dataset
+      left_join(gwasResults, ., by=c("CHR"="CHR")) %>%
+      # Add a cumulative position of each SNP
+      arrange(CHR, BP) %>%
+      mutate( BPcum=BP+tot) 
+    axisdf <- don %>% group_by(CHR) %>% summarize(center=( max(BPcum) + min(BPcum) )/ 2)
+p1 <- ggplot(don, aes(x=BPcum, y=-log10(P))) +
+      geom_point( aes(color=as.factor(CHR)), alpha=0.8, size=1.3) +
+      scale_color_manual(values = rep(c("grey","grey", "skyblue", "skyblue"), 7)) +
+      scale_x_continuous( label = axisdf$CHR, breaks= axisdf$center ) +
+      scale_y_continuous(expand = c(0, 0) ) +     # remove space between plot area and x axis
+      theme_bw() +
+      theme( 
+        legend.position="none",
+        panel.border = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.text.x=element_text(size=15),
+        axis.text.y=element_text(size=15),
+        axis.title.y=element_text(size = 15),
+        axis.title.x=element_text(size = 15),
+      )+
+      scale_y_continuous(limits = c(0,6))
+qq_dat <- data.frame(obs=-log10(sort(gwasResults$P,decreasing=FALSE)),
+                         exp=-log10( ppoints(length(gwasResults$P))))
+qq <- ggplot(data=qq_dat,aes(exp,obs))+
+      geom_point(alpha=0.7,color="#7F7F7FFF")+
+      geom_abline(color="#D62728FF")+
+      xlab("Expected -log10(P-value)")+
+      ylab("Observed -log10(P-value)")+
+      scale_x_continuous(limits = c(0,7))+
+      scale_y_continuous(limits = c(0,7))+
+      #ggtitle(name)+
+      theme(
+        plot.title = element_text(color="red", size=20, face="bold.italic"),
+        axis.title = element_text(size=12,face="bold"),
+        axis.text = element_text(face="bold",size=8,color = "black"),
+        #axis.line = element_line(size=0.8,color="black"),
+        axis.ticks= element_line(size=0.8,colour = "black"),
+        panel.grid =element_blank(),
+        panel.border = element_rect(fill=NA,size = 0.8),
+        panel.background = element_blank())
+require(gridExtra)
+  pdf("envgwas_prec8_AB_gcta.pdf",height = 4,width = 9)
+  grid.arrange(p1,p3,nrow=2)
+  dev.off()
+```
+
+---
+title: "polygraph"
+output: qpgraph_6pop & gcta envgwas
+---
+
+```{bash}
+#gwas#66:/data2/yafei/polygenic/envgwas/gctagwas/prec8
+#freq#66:
+
+```
+
+
+---
+title: "sbayesR"
+output: all40k and chr20k
+---
+```{r}
+library(ggplot2)
+
+length <- read.table("/Users/guoyafei/Desktop/sbayesr/chrLength.txt",header=T,stringsAsFactors = F)
+data <- read.table("/Users/guoyafei/Desktop/sbayesr/all40k.out.txt",header=T,stringsAsFactors = F)
+all <- merge(length,data)
+A <- all[which(all$lineage =="A"),]
+B <- all[which(all$lineage =="B"),]
+D <- all[which(all$lineage =="D"),]
+summary(lm(A$Length~A$GenVarM))
+summary(lm(B$Length~B$GenVarM))
+summary(lm(D$Length~D$GenVarM))
+
+chr20k <- ggplot(all, aes(x = Length,y = GenVarM,color=lineage))+
+  geom_point()
+all40k <- ggplot(all, aes(x = Length,y = GenVarM,color=lineage))+
+  geom_point()
+```
+
+---
+title: "envgwas"
+output: envgwas
+---
+```{r}
+library(tidyverse)
+library(gridExtra)
+setwd("/Users/guoyafei/Desktop/envgwas/plot/")
+qq <- list()
+for ( i in c(7)) {
+  ABn <- paste("prec",i,"_AB_shuf10k_gcta.txt",sep="")
+  Dn <- paste("prec",i,"_D_shuf5k_gcta.txt",sep="")
+  AB <- read.table(ABn, header=T,stringsAsFactors = F)
+  D <- read.table(Dn, header=T, stringsAsFactors = F)
+  all <- rbind(AB,D)
+  qq_all <- data.frame(obs=-log10(sort(all$P,decreasing=FALSE)),
+                       exp=-log10( ppoints(length(all$P))))
+  qq[[i]] <- ggplot(data=qq_all,aes(exp,obs))+
+    geom_point(alpha=0.7,color="#7F7F7FFF")+
+    geom_abline(color="#D62728FF")+
+    xlab("Expected -log10(P-value)")+
+    ylab("Observed -log10(P-value)")+
+    scale_x_continuous(limits = c(0,7))+
+    scale_y_continuous(limits = c(0,7))+
+    theme(
+      plot.title = element_text(color="red", size=20, face="bold.italic"),
+      axis.title = element_text(size=12,face="bold"),
+      axis.text = element_text(face="bold",size=8,color = "black"),
+      axis.ticks= element_line(size=0.8,colour = "black"),
+      panel.grid =element_blank(),
+      panel.border = element_rect(fill=NA,size = 0.8),
+      panel.background = element_blank())
+}
+pdf("prec_qq.pdf",width = 12,height = 6)
+grid.arrange(qq[[1]],qq[[2]],qq[[3]],qq[[4]],qq[[5]],qq[[6]],qq[[7]],qq[[8]],nrow=2)
+dev.off()
+
+#threshold
+thresh <- read.table("~/Desktop/envgwas/thresh.txt",header=F,stringsAsFactors = F)
+chrA <- c(1,2,7,8,13,14,19,20,25,26,31,32,37,38)
+chrB <- c(3,4,9,10,15,16,21,22,27,28,33,34,39,40)
+chrD <- c(5,6,11,12,17,18,23,24,29,30,35,36,41,42)
+for ( i in c(1:8)) {
+  ABn <- paste("prec",i,"_AB_shuf10k_gcta.txt",sep="")
+  Dn <- paste("prec",i,"_D_shuf5k_gcta.txt",sep="")
+  AB <- read.table(ABn, header=T,stringsAsFactors = F)
+  colnames(AB) <- c("CHR","SNP","BP","A1","A2","N","AF1","Effect","SE","P")
+  D <- read.table(Dn, header=T, stringsAsFactors = F)
+  colnames(D) <- c("CHR","SNP","BP","A1","A2","N","AF1","Effect","SE","P")
+  A <- AB[which(AB$CHR %in% chrA),]
+  B <- AB[which(AB$CHR %in% chrB),]
+  all <- list(A,B,D)
+  man <- list()
+  for ( j in 1:length(all)){
+    #a <- paste("prec",i,sep="")
+    #if ( j == 3 ){
+    #  T <- thresh[which(thresh$V2 == a & thresh$V1 == "AB"),3]
+    #}else{
+    #  T <- thresh[which(thresh$V2 == a & thresh$V1 == "D"),3]
+    #}
+    gwasResults <- all[[j]]
+    don <- gwasResults %>% 
+      group_by(CHR) %>% 
+      summarise(chr_len=max(BP)) %>% 
+      mutate(tot=cumsum(as.numeric(chr_len))-chr_len) %>%
+      select(-chr_len) %>%
+      left_join(gwasResults, ., by=c("CHR"="CHR")) %>%
+      arrange(CHR, BP) %>%
+      mutate( BPcum=BP+tot) 
+    axisdf <- don %>% group_by(CHR) %>% summarize(center=(max(BPcum) + min(BPcum))/ 2)
+    man[[j]] <- ggplot(don, aes(x=BPcum, y=-log10(P))) +
+      geom_point( aes(color=as.factor(CHR)), alpha=0.8, size=1.3) +
+      scale_color_manual(values = rep(c("grey","grey", "skyblue", "skyblue"), 7)) +
+      scale_x_continuous( label = axisdf$CHR, breaks= axisdf$center ) +
+      scale_y_continuous(expand = c(0, 0) ) + 
+      theme_bw() +
+      theme( 
+        legend.position="none",
+        panel.border = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.text.x=element_text(size=15),
+        axis.text.y=element_text(size=15),
+        axis.title.y=element_text(size = 15),
+        axis.title.x=element_text(size = 15),
+      )+
+      scale_y_continuous(limits = c(0,7))+
+      geom_hline(yintercept = -log10(0.015), colour="red",linetype=2, size=1)
+  }
+  pdf(paste("prec",i,"gcta.pdf",sep=""),height = 9,width = 9)
+  grid.arrange(man[[1]],man[[2]],man[[3]],nrow=3)
+  dev.off()
+}
+```
+
+---
+title: "baypass"
+output: baypass demo plot
+---
+```{r}
+library(tidyverse)
+library(gridExtra)
+setwd("/Users/guoyafei/Desktop/baypass")
+qq <- list()
+for ( i in c(7)) {
+  ABn <- paste("prec",i,"_AB_shuf10k.txt",sep="")
+  Dn <- paste("prec",i,"_D_shuf5k.txt",sep="")
+  AB <- read.table(ABn, header=F,stringsAsFactors = F)
+  D <- read.table(Dn, header=F, stringsAsFactors = F)
+  all <- rbind(AB,D)
+  colnames(all) <- c("CHR","POS","BP","P")
+  qq_all <- data.frame(obs=-log10(sort(all$P,decreasing=FALSE)),
+                     exp=-log10( ppoints(length(all$P))))
+  qq[[i]] <- ggplot(data=qq_all,aes(exp,obs))+
+      geom_point(alpha=0.7,color="#7F7F7FFF")+
+      geom_abline(color="#D62728FF")+
+      xlab("Expected -log10(P-value)")+
+      ylab("Observed -log10(P-value)")+
+      scale_x_continuous(limits = c(0,7))+
+      scale_y_continuous(limits = c(0,7))+
+      theme(
+        plot.title = element_text(color="red", size=20, face="bold.italic"),
+        axis.title = element_text(size=12,face="bold"),
+        axis.text = element_text(face="bold",size=8,color = "black"),
+        axis.ticks= element_line(size=0.8,colour = "black"),
+        panel.grid =element_blank(),
+        panel.border = element_rect(fill=NA,size = 0.8),
+        panel.background = element_blank())
+}
+pdf("prec_qq.pdf",width = 12,height = 6)
+grid.arrange(qq[[1]],qq[[2]],qq[[3]],qq[[4]],qq[[5]],qq[[6]],qq[[7]],qq[[8]],nrow=2)
+dev.off()
+
+#threshold
+thresh <- read.table("~/Desktop/envgwas/thresh.txt",header=F,stringsAsFactors = F)
+chrA <- c(1,2,7,8,13,14,19,20,25,26,31,32,37,38)
+chrB <- c(3,4,9,10,15,16,21,22,27,28,33,34,39,40)
+chrD <- c(5,6,11,12,17,18,23,24,29,30,35,36,41,42)
+for ( i in c(1:8)) {
+  ABn <- paste("prec",i,"_AB_shuf10k.txt",sep="")
+  Dn <- paste("prec",i,"_D_shuf5k.txt",sep="")
+  AB <- read.table(ABn, header=F,stringsAsFactors = F)
+  colnames(AB) <- c("CHR","POS","BP","P")
+  D <- read.table(Dn, header=F, stringsAsFactors = F)
+  colnames(D) <- c("CHR","POS","BP","P")
+  A <- AB[which(AB$CHR %in% chrA),]
+  B <- AB[which(AB$CHR %in% chrB),]
+  all <- list(A,B,D)
+  man <- list()
+  for ( j in 1:length(all)){
+    #a <- paste("prec",i,sep="")
+    #if ( j == 3 ){
+    #  T <- thresh[which(thresh$V2 == a & thresh$V1 == "AB"),3]
+    #}else{
+    #  T <- thresh[which(thresh$V2 == a & thresh$V1 == "D"),3]
+    #}
+    gwasResults <- all[[j]]
+    don <- gwasResults %>% 
+      group_by(CHR) %>% 
+      summarise(chr_len=max(BP)) %>% 
+      mutate(tot=cumsum(as.numeric(chr_len))-chr_len) %>%
+      select(-chr_len) %>%
+      left_join(gwasResults, ., by=c("CHR"="CHR")) %>%
+      arrange(CHR, BP) %>%
+      mutate( BPcum=BP+tot) 
+    axisdf <- don %>% group_by(CHR) %>% summarize(center=(max(BPcum) + min(BPcum))/ 2)
+    man[[j]] <- ggplot(don, aes(x=BPcum, y=P)) +
+      geom_point( aes(color=as.factor(CHR)), alpha=0.8, size=1.3) +
+      scale_color_manual(values = rep(c("grey","grey", "skyblue", "skyblue"), 7)) +
+      scale_x_continuous( label = axisdf$CHR, breaks= axisdf$center ) +
+      scale_y_continuous(expand = c(0, 0) ) + 
+      theme_bw() +
+      theme( 
+        legend.position="none",
+        panel.border = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.text.x=element_text(size=15),
+        axis.text.y=element_text(size=15),
+        axis.title.y=element_text(size = 15),
+        axis.title.x=element_text(size = 15),
+      )+
+      #scale_y_continuous(limits = c(0,7))+
+      #9.61,9.23,9.38
+      geom_hline(yintercept = 9.38, colour="red",linetype=2, size=1)
+  }
+  pdf(paste("prec.",i,"baypass.pdf",sep=""),height = 9,width = 9)
+  grid.arrange(man[[1]],man[[2]],man[[3]],nrow=3)
+  dev.off()
+}
+
+```
+
+
+
+

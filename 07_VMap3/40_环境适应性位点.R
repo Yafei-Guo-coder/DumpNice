@@ -291,11 +291,11 @@ PC <- PC1[,c(1,4,5,2,3)]
 
 name <- c("all","prec","soil","solar","temp")
 file <- paste(name,"-R-V4_fst.txt",sep="")
-file_out <- paste(name,"-sub-R-PC2.pdf",sep="")
-
-#PC_file <- paste(name,"-PC.txt",sep="")
-PC_file <- paste(name,"-sub-PC.txt",sep="")
-
+file_out <- paste(name,"-all-R-PC2.pdf",sep="")
+#所有环境做PC,结果存储在*-all-R-PC*.pdf
+PC_file <- paste(name,"-PC.txt",sep="")
+#只有筛选过（有一定的遗传贡献以及R<0.3)的环境变量做PC）效果稍微好一点，结果存储在*-sub-R-PC*.pdf
+#PC_file <- paste(name,"-sub-PC.txt",sep="")
 for ( i in c(2:5)) {
   #环境距离
   #env2 <- PC[,i,drop=F]

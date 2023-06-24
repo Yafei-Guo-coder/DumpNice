@@ -44,3 +44,27 @@ cols <- c(brewer.pal(11, "Set3")[c(5)],"#DEEBF7","#FEB24C","#BD0026")
 pdf(output[i],width=12,height = 8 )
 pheatmap(data3, show_rownames=FALSE, show_colnames=FALSE, cluster_col = F, legend_breaks = -1:2, legend_labels = c("./.", "0/0", "0/1", "1/1"),cluster_row = FALSE, annotation_col = anno2, annotation_names_col = F)
 dev.off()
+
+#渗入分析
+library(ggplot2)
+setwd("/Users/guoyafei/Desktop/coXiao/渗入")
+data <- read.table("chr2A.withAnc-1.csv",header=T,stringsAsFactors = F, sep=",")
+data <- read.table("chr2A.withAnc-All.csv",header=T,stringsAsFactors = F, sep=",")
+
+data <- read.table("chr2A.withAnc-D-1.csv",header=T,stringsAsFactors = F, sep=",")
+data <- read.table("chr2A.withAnc-D-All.csv",header=T,stringsAsFactors = F, sep=",")
+
+data <- read.table("chr2A.withAnc-U-1.csv",header=T,stringsAsFactors = F, sep=",")
+data <- read.table("chr2A.withAnc-U-All.csv",header=T,stringsAsFactors = F, sep=",")
+
+data <- data[which(data$fd >= 0 & data$fd < 1 & data$D > 0),]
+#data[which(data$fd < 0 | data$fd > 1 | data$D <= 0),10] <- 0
+
+ggplot(data, aes(x=start, y=fd)) +
+  #geom_point(size=0.5)+
+  geom_line()+
+  theme_classic()+
+  #theme(axis.title.y = element_blank()) 
+  xlab("Position") + ylab("fd") +
+  #geom_hline(yintercept=0.5,color='#E69F00',linetype = "dashed")+
+  geom_vline(xintercept=759452125,color='red')

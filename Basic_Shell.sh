@@ -12,7 +12,7 @@ awk -F',' 'NR==FNR{a[$1]=$2;}NR!=FNR && $1 in a {print $0,a[$1]}' b.txt a.txt
 awk 'FNR==NR{a[$1];next}($1 in a){next} {print}' a b 
 awk 'ORS=NR%2?" ":"\n"{print}'
 #shell
-ps aux | grep crosstab|awk '{print $2}' > id
+ps aux | grep crosstab | awk '{print $2}' > id
 for i in `cat id`; do kill -9 $i; done
 ## split by chromosome
 for chr in {0..42}

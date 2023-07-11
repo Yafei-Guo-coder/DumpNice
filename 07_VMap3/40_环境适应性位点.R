@@ -381,25 +381,33 @@ for ( i in c(2:5)) {
 
 
 #适应性位点在全基因组上的物理分布
-require(RIdeogram)
-setwd("/Users/guoyafei/Desktop/环境适应性位点/位置分布/fst")
-
 library(CMplot)
-gene_density <- read.table("adap_fst.pos", header=T, stringsAsFactors = F)
-mydata<-read.table("/Users/guoyafei/Documents/01_个人项目/02_VmapIII/03_Fastcall2/测试数据/fastcall2_001_pos.txt",header=TRUE,sep="\t")
-head(mydata)
-# snp chr pos
-# snp1_1  1 2041
-CMplot(mydata,plot.type="d",bin.size=1e4,col=c("darkgreen","yellow", "red"),file="jpg",memo="snp_density",dpi=300) 
-mydata<-read.table("/Users/guoyafei/Documents/01_个人项目/02_VmapIII/03_Fastcall2/测试数据/fastcall_001_pos.txt",header=TRUE,sep="\t")
-head(mydata)
+setwd("/Users/guoyafei/Desktop/环境适应性位点/位置分布/fst")
+mydata <- read.table("adap_fst.pos.21chr.withend.txt", header=F, stringsAsFactors = F)
+colnames(mydata) <- c("chr","pos","snp")
+data <- mydata[,c(3,1,2)]
+head(data)
 # snp         chr       pos
 # snp1_1    1        2041
-CMplot(mydata,plot.type="d",bin.size=1e4,col=c("darkgreen","yellow", "red"),file="jpg",memo="snp_density",dpi=300) 
-#lineage density
-A <- read.table("Alineage.txt",header=F,stringsAsFactors = F)
-ggplot(A, mapping = aes(x = V4)) +
-  geom_density( alpha = 0.5, color = "#999999",fill="#999999") +
-  #geom_density(fill = "blue",alpha = 0.3,color="blue")+
-  theme_bw()
+CMplot(data,plot.type="d",bin.size=1e2,col=c("darkgreen","yellow", "red"),file="jpg",memo="snp_density",dpi=300)
+
+setwd("/Users/guoyafei/Desktop/环境适应性位点/位置分布/all")
+mydata <- read.table("soil_all.pos.21chr.withend.txt", header=F, stringsAsFactors = F)
+colnames(mydata) <- c("chr","pos","snp")
+data <- mydata[,c(3,1,2)]
+head(data)
+# snp         chr       pos
+# snp1_1    1        2041
+CMplot(data,plot.type="d",bin.size=1e4,col=c("darkgreen","yellow", "red"),file="jpg",memo="snp_density",dpi=300)
+
+
+setwd("/Users/guoyafei/Desktop/环境适应性位点/位置分布/fst_V2")
+mydata <- read.table("solar_fst_V2.pos.21chr.withend.txt", header=F, stringsAsFactors = F)
+colnames(mydata) <- c("chr","pos","snp")
+data <- mydata[,c(3,1,2)]
+head(data)
+# snp         chr       pos
+# snp1_1    1        2041
+CMplot(data,plot.type="d",bin.size=1e4,col=c("darkgreen","yellow", "red"),file="jpg",memo="snp_density",dpi=300)
+
 

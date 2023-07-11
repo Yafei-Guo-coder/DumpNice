@@ -43,8 +43,7 @@ awk '{for (i = 1; i <= NF; ++i) {split($i, array, ":"); print array[1]}}' All_no
 library(vegan)
 library(RColorBrewer)
 library(ggplot2)
-phylum <- read.delim('shuf_20k_noM.txt',  sep = '\t', stringsAsFactors = FALSE, check.names = FALSE)
-
+phylum <- read.delim('/Users/guoyafei/Documents/01_VMap1.1/02_Environment/01_RDA_plot/All_noMiss_0.05_2000.txt',  sep = '\t', stringsAsFactors = FALSE, check.names = FALSE)
 row.names(phylum) <- c(1:20000)
 phylum <- data.frame(t(phylum))
 colnames(phylum) <- c(1:20000)
@@ -579,6 +578,7 @@ for(i in c(1:length(all))){
 pdf("RDA_regions_prec.pdf",width=12,height=8)
 grid.arrange(p[[1]],p[[2]],p[[3]],p[[4]],p[[5]],nrow=2)
 dev.off()
+
 
 
 

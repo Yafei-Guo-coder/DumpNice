@@ -349,6 +349,8 @@ ggplot(data,aes(V2,fill=V3))+
 M <- aggregate(data, by=list(type),FUN=mean)
 #长格式变宽格式
 cats <- cast(all,id1~variable,value.var="value",fun.aggregate = mean)
+#宽格式变长格式
+cats <- melt(data,id="type")
 #相关性分析
 corrgram(cats, order=F, lower.panel=panel.shade, upper.panel=NULL, text.panel=panel.txt, main="Car Milage Data in PC2/PC1 Order")
 heatmap(cats, Colv = NA, Rowv = NA, scale="column")

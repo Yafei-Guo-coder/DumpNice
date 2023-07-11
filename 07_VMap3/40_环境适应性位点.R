@@ -39,7 +39,6 @@ t.test(shuf,soil)
 t.test(shuf,solar)
 t.test(all,prec)
 
-
 #群体间fst分布热图
 library(corrgram)
 library(reshape2)
@@ -64,7 +63,6 @@ order <- cats[row.names(present[order(present$bio_solar1),]),row.names(present[o
 #pdf("weight_A_fst.pdf",width=30,height=30)
 corrplot(order,method = "color",col.lim = c(0, 0.5),type = 'upper',tl.col="black",tl.srt = 45,addrect=1,addCoef.col = "grey",number.cex=0.5,number.digits=2,tl.cex=1,cl.cex=1,cl.lim = c(0, 1))
 #dev.off()
-
 
 #等位基因频率变化
 setwd("/Users/guoyafei/Desktop/GF/等位基因频率变化/")
@@ -98,9 +96,8 @@ ggplot(candidate, aes(y = candidate$both21.263538003,x = solar1)) +
               color="#0072B2", formula = y ~ x) 
 
 #环境距离和遗传距离的相关性
-#群体相关性：
+#群体相关性
 setwd("/Users/guoyafei/Desktop/GF/等位基因频率变化")
-
 
 方式一：根据环境PC选变量的问题：环境PC最相关的变量，在基因组上相应的位点很少，并不能很好的反应环境适应性。除了prec是PC2，其余都是PC1.
   temp11(0.98);temp1(0.96);temp6(0.96)(temp1鉴定的又多又好)

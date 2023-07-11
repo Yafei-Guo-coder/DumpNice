@@ -1,5 +1,5 @@
 setwd("/Users/guoyafei/Desktop/环境适应性位点")
-#整体fst分布箱线图
+#整体fst分布箱线图----
 library(ggplot2)
 library(tidyverse)
 library(viridis)
@@ -39,7 +39,7 @@ t.test(shuf,soil)
 t.test(shuf,solar)
 t.test(all,prec)
 
-#群体间fst分布热图
+#群体间fst分布热图----
 library(corrgram)
 library(reshape2)
 library(tidyr)
@@ -64,7 +64,7 @@ order <- cats[row.names(present[order(present$bio_solar1),]),row.names(present[o
 corrplot(order,method = "color",col.lim = c(0, 0.5),type = 'upper',tl.col="black",tl.srt = 45,addrect=1,addCoef.col = "grey",number.cex=0.5,number.digits=2,tl.cex=1,cl.cex=1,cl.lim = c(0, 1))
 #dev.off()
 
-#等位基因频率变化
+#等位基因频率变化----
 setwd("/Users/guoyafei/Desktop/GF/等位基因频率变化/")
 gfData <- read.table("GF.solar1_36bio.txt", row.names = "pop",header=T,stringsAsFactors = F)
 
@@ -95,7 +95,7 @@ ggplot(candidate, aes(y = candidate$both21.263538003,x = solar1)) +
   geom_smooth(method = "lm", se=TRUE, 
               color="#0072B2", formula = y ~ x) 
 
-#环境距离和遗传距离的相关性
+#环境距离和遗传距离的相关性-----
 #群体相关性
 setwd("/Users/guoyafei/Desktop/GF/等位基因频率变化")
 
@@ -379,3 +379,55 @@ for ( i in c(2:5)) {
   dev.off()
 }
 
+
+#适应性位点在全基因组上的物理分布
+#install.packages('RIdeogram')
+require(RIdeogram)
+setwd("/Users/guoyafei/Documents/01_Migration/01_BasicStatistic/13_Plots/01_Density")
+#gene_density <- read.table("ArinaLrFor_LTR_1.txt", header=T,stringsAsFactors = F)
+gene_density2 <- read.table("gene_density.txt", header=T, stringsAsFactors = F)
+gene_density <- read.table("21-1M_VMap3_SnpDensity.txt", header=T, stringsAsFactors = F)
+wheat_karyotype <- read.table("wheat_karyotype.txt", header=T, stringsAsFactors = F)
+ideogram(karyotype = wheat_karyotype, overlaid = gene_density2)
+convertSVG("chromosome.svg", device = "pdf")
+
+library(CMplot)
+setwd("/Users/guoyafei/Documents/01_个人项目/02_VmapIII/03_Fastcall2/测试数据")
+mydata<-read.table("/Users/guoyafei/Documents/01_个人项目/02_VmapIII/03_Fastcall2/测试数据/fastcall2_001_pos.txt",header=TRUE,sep="\t")
+head(mydata)
+# snp chr pos
+# snp1_1  1 2041
+# snp1_2  1 2062
+# snp1_3  1 2190
+CMplot(mydata,plot.type="d",bin.size=1e4,col=c("darkgreen","yellow", "red"),file="jpg",memo="snp_density",dpi=300) 
+mydata<-read.table("/Users/guoyafei/Documents/01_个人项目/02_VmapIII/03_Fastcall2/测试数据/fastcall_001_pos.txt",header=TRUE,sep="\t")
+head(mydata)
+# snp         chr       pos
+# snp1_1    1        2041
+# snp1_2    1        2062
+# snp1_3    1        2190
+CMplot(mydata,plot.type="d",bin.size=1e4,col=c("darkgreen","yellow", "red"),file="jpg",memo="snp_density",dpi=300) 
+
+
+#lineage density
+A <- read.table("Alineage.txt",header=F,stringsAsFactors = F)
+ggplot(A, mapping = aes(x = V4)) +
+  geom_density( alpha = 0.5, color = "#999999",fill="#999999") +
+  #geom_density(fill = "blue",alpha = 0.3,color="blue")+
+  theme_bw()
+
+
+B <- read.table("Blineage.txt",header=F,stringsAsFactors = F)
+ggplot(B, mapping = aes(x = V4)) +
+  geom_density( alpha = 0.5, color = "#377EB8",fill="#377EB8") +
+  #geom_density(fill = "blue",alpha = 0.3,color="blue")+
+  theme_bw()
+
+D <- read.table("Dlineage.txt",header=F,stringsAsFactors = F)
+ggplot(D, mapping = aes(x = V4)) +
+  geom_density( alpha = 0.5, color = "#FF7F00",fill="#FF7F00") +
+  #geom_density(fill = "blue",alpha = 0.3,color="blue")+
+  theme_bw()
+
+ggplot(D, mapping = aes(x = V4),color = "blue",fill="blue") +
+  geom_line(stat = "density")

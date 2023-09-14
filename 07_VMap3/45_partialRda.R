@@ -79,8 +79,8 @@ write.table(out, "random.r.txt", quote=F, row.names = F,sep="\t")
 #画图(individual的结果)----
 library(reshape2)
 library(ggplot2)
-setwd("/Users/guoyafei/Desktop/冗余分析/样本/结果")
-data <- read.table("plot.r.txt", header = T, stringsAsFactors = F)
+setwd("/Users/guoyafei/Desktop/冗余分析/样本/V9")
+data <- read.table("plot_V9.r.txt", header = T, stringsAsFactors = F)
 cats <- melt(data,id="type")
 sub <- cats[which(cats$type != "geog"),]
 sub$type <- factor(sub$type, levels = c("full","clim","struct"))

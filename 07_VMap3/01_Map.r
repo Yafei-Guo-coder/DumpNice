@@ -23,14 +23,18 @@ taxa <- taxa[which(taxa$`type(USDA_8)`=="Domesticated_emmer"),]
 
 #绘图:全部的
 mp <- NULL
-mapworld <- borders("world",colour = "gray70",fill="white") 
+mapworld <- borders("world",colour = "white",fill="gray90") 
 mp <- ggplot() + 
   mapworld + 
   #xlim(0,90) +
   ylim(-60,90) + 
   theme_classic()
+
+
 color <- brewer.pal(8, "Dark2")[c(1,2,3,4,6)]
 color <- brewer.pal(8, "Dark2")[c(6)]
+
+
 #AABBDD
 mp+geom_point(aes(x=taxa$Logitude, y=taxa$Latitude, color=taxa$Genome),size=1)+
   scale_size(range=c(1,1)) + 
@@ -59,3 +63,8 @@ mp+geom_point(aes(x=taxa$Logitude, y=taxa$Latitude,color = color), size=1.5)+
         axis.title = element_blank(),
         legend.position = "null",
         panel.border = element_blank())  
+
+
+mp+geom_point(aes(x=p$Longitude, y=p$Latitude,color = p$outcome), size=1)+
+  scale_size(range=c(1,1)) + 
+  scale_color_manual(values = c("#215085","#D53B3D")) 

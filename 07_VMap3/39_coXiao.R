@@ -47,24 +47,52 @@ dev.off()
 
 #渗入分析
 library(ggplot2)
-setwd("/Users/guoyafei/Desktop/coXiao/渗入")
-data <- read.table("chr2A.withAnc-1.csv",header=T,stringsAsFactors = F, sep=",")
+setwd("/Users/guoyafei/Desktop/coXiao/渗入/六倍体/")
+#data <- read.table("chr2A.withAnc-1.csv",header=T,stringsAsFactors = F, sep=",")
 data <- read.table("chr2A.withAnc-All.csv",header=T,stringsAsFactors = F, sep=",")
 
-data <- read.table("chr2A.withAnc-D-1.csv",header=T,stringsAsFactors = F, sep=",")
+#data <- read.table("chr2A.withAnc-D-1.csv",header=T,stringsAsFactors = F, sep=",")
 data <- read.table("chr2A.withAnc-D-All.csv",header=T,stringsAsFactors = F, sep=",")
 
-data <- read.table("chr2A.withAnc-U-1.csv",header=T,stringsAsFactors = F, sep=",")
-data <- read.table("chr2A.withAnc-U-All.csv",header=T,stringsAsFactors = F, sep=",")
+#data <- read.table("chr2A.withAnc-U-1.csv",header=T,stringsAsFactors = F, sep=",")
+#data <- read.table("chr2A.withAnc-U-All.csv",header=T,stringsAsFactors = F, sep=",")
+
+
+setwd("/Users/guoyafei/Desktop/coXiao/渗入/二倍体/")
+data <- read.table("chr2A.withAnc-All_D.csv",header=T,stringsAsFactors = F, sep=",")
+data <- read.table("chr2A.withAnc-All_F.csv",header=T,stringsAsFactors = F, sep=",")
+data <- read.table("chr2A.withAnc-All_W.csv",header=T,stringsAsFactors = F, sep=",")
+
+data <- read.table("chr2A.withAnc-D-All_D.csv",header=T,stringsAsFactors = F, sep=",")
+data <- read.table("chr2A.withAnc-D-All_F.csv",header=T,stringsAsFactors = F, sep=",")
+data <- read.table("chr2A.withAnc-D-All_W.csv",header=T,stringsAsFactors = F, sep=",")
+
+data <- read.table("chr2A.withAnc-All_W_P1D.csv",header=T,stringsAsFactors = F, sep=",")
+data <- read.table("chr2A.withAnc-All_D_P1D.csv",header=T,stringsAsFactors = F, sep=",")
+data <- read.table("chr2A.withAnc-All_F_P1D.csv",header=T,stringsAsFactors = F, sep=",")
+
 
 data <- data[which(data$fd >= 0 & data$fd < 1 & data$D > 0),]
 #data[which(data$fd < 0 | data$fd > 1 | data$D <= 0),10] <- 0
 
-ggplot(data, aes(x=start, y=fd)) +
-  #geom_point(size=0.5)+
+quantile(data$fd,0.95)
+
+#0.317498 # 2.41M
+sub <- data[which(data$start > 740000000),]
+ggplot(sub, aes(x=start, y=fd)) +
   geom_line()+
   theme_classic()+
   #theme(axis.title.y = element_blank()) 
   xlab("Position") + ylab("fd") +
-  #geom_hline(yintercept=0.5,color='#E69F00',linetype = "dashed")+
+  geom_hline(yintercept=0.0721 ,color='#E69F00',linetype = "dashed")+
+  geom_vline(xintercept=759452125,color='red')
+
+#0.3167 #2.36M
+sub <- data[which(data$start > 740000000),]
+ggplot(sub, aes(x=start, y=fd)) +
+  geom_line()+
+  theme_classic()+
+  #theme(axis.title.y = element_blank()) 
+  xlab("Position") + ylab("fd") +
+  geom_hline(yintercept=0.3167,color='#E69F00',linetype = "dashed")+
   geom_vline(xintercept=759452125,color='red')

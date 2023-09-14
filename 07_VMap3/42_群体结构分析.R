@@ -19,11 +19,10 @@ p1 <- plotQ(slist[2:6],returnplot=T,exportplot=F,basesize=11,
 grid.arrange(p1$plot[[1]],p1$plot[[2]],p1$plot[[3]],p1$plot[[4]],p1$plot[[5]],nrow=5)
 dev.off()
 
-#画PC散点图（随机位点和适应性位点）
+#画PC散点图（随机位点和适应性位点）----
 library(scatterpie)
 library(RColorBrewer)
 color <- brewer.pal(9, "Set1")
-
 setwd("/Users/guoyafei/Desktop/群体结构")
 for (i in c(3:7)) {
   infile <- paste("random.Q",i,".txt",sep="")
@@ -58,13 +57,17 @@ for (i in c(3:7)) {
 }
 #PC1:0.527 PC2:0.16
 
-setwd("/Users/guoyafei/Desktop/群体结构/adap_soil7/")
-for (i in c(3:7)) {
-  infile <- paste("adap.Q",i,".txt",sep="")
-  outfile <- paste("adap.Q",i,".pdf",sep="")
+#adapPC_fst_V3----
+library(scatterpie)
+library(RColorBrewer)
+color <- brewer.pal(9, "Set1")
+setwd("/Users/guoyafei/Desktop/群体结构/adapPC_fst_V3")
+for (i in c("all_struct.Q5","prec_struct.Q5","soil_struct.Q5","solar_struct.Q5","temp_struct.Q5")) {
+  infile <- paste(i,".txt",sep="")
+  outfile <- paste(i,".pdf",sep="")
   data <- read.table(infile, header=T, stringsAsFactors = F)
   data <- as.data.frame(data)
-  cols <- paste("Q",c(1:i),sep="")
+  cols <- paste("Q",c(1:5),sep="")
   pdf(outfile,height=4,width=5)
   p <- ggplot() + 
     geom_scatterpie(aes(x=PC1, y=PC2), data=data,cols = cols, color=NA) + 
@@ -74,7 +77,7 @@ for (i in c(3:7)) {
   print(p)
   dev.off()
 }
-#PC1:0.53 PC2:0.16
+#PC1: PC2:
 i=5
 sub <- data[which(data$PC1 > -0.025 & data$PC1 < 0.01),]
 sub2 <- sub[which(sub$PC2 > -0.01 & sub$PC2 < 0.03),]
@@ -89,8 +92,8 @@ p <- ggplot() +
 print(p)
 dev.off()
 
-
-setwd("/Users/guoyafei/Desktop/群体结构/adapPC_fst/")
+#adap_soil7----
+setwd("/Users/guoyafei/Desktop/群体结构/adap_soil7")
 for (i in c(3:7)) {
   infile <- paste("adap.Q",i,".txt",sep="")
   outfile <- paste("adap.Q",i,".pdf",sep="")
@@ -107,11 +110,10 @@ for (i in c(3:7)) {
     theme_classic()
   print(p)
   dev.off()
-  
 }
 #PC1:0.26 PC2:0.25
 
-#画所有样本地图上的25哥群体的群体结构组成
+#画所有样本地图上的25哥群体的群体结构组成----
 #准备输入文件
 setwd("/Users/guoyafei/Desktop/群体结构")
 library(tidyr)
@@ -158,3 +160,5 @@ p + geom_scatterpie(aes(x=Longitude, y=Latitude, r=log(r)),
 #  geom_scatterpie_legend(log(data$r), x=-160, y=-55)
 print(p)
 dev.off()
+
+

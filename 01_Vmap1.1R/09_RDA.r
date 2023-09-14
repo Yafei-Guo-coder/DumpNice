@@ -35,6 +35,7 @@ sed 's@0/0@0@g' all_noMiss_0.05_3000_D.txt | sed 's@0/1@1@g' |sed 's@1/1@2@g' |s
 awk '{for (i = 1; i <= NF; ++i) {split($i, array, ":"); print array[1]}}' All_noMiss_0.05_3000_A.txt | xargs -n225 > All_noMiss_0.05_3000_A2.txt
 awk '{for (i = 1; i <= NF; ++i) {split($i, array, ":"); print array[1]}}' All_noMiss_0.05_3000_B.txt | xargs -n225 > All_noMiss_0.05_3000_B2.txt
 awk '{for (i = 1; i <= NF; ++i) {split($i, array, ":"); print array[1]}}' All_noMiss_0.05_3000_D.txt | xargs -n225 > All_noMiss_0.05_3000_D2.txt
+
 #3. 样本分区：EU, WA, SCA, EA_North, EA_SouthWest
 #4. RDA analysis(bar plot)
 #input files:
@@ -49,14 +50,12 @@ phylum <- data.frame(t(phylum))
 colnames(phylum) <- c(1:20000)
 phylum <- phylum[which(rownames(phylum)!="TW095"),]
 env <- read.delim('select_bio2.txt', row.names = 1, header=T,sep = '\t', stringsAsFactors = FALSE, check.names = FALSE)
-
 env_all <- data.frame(env[,1:20])
 env_all <- env_all[which(rownames(env_all)!="TW095"),]
-
 env_ele <- env_all[,1,drop=F]
 env_temp <- env_all[,2:12]
 env_prec <- env_all[,13:20]
-#直接使用原始数据，不做转化。对于群落物种组成数据来讲（因为通常包含很多 0 值），不是很推荐
+#直接使用原始数据，不做转化，对于群落物种组成数据来讲（因为通常包含很多 0 值），不是很推荐
 #rda_result <- rda(phylum~., env, scale = FALSE)
 ##tb-RDA
 #物种数据 Hellinger 预转化（处理包含很多 0 值的群落物种数据时，推荐使用）
@@ -241,7 +240,6 @@ ggplot(AdjRsq, aes(x=Region, y=Adjusted.R.squared, group=Type,fill=Type)) +
   ylab("Proportion variance explained")+
   scale_fill_manual(values = color2) 
 
-
 ##整体点线图
 library(vegan)
 library(RColorBrewer)
@@ -305,7 +303,6 @@ phylum_hel <- decostand(phylum, method = 'hellinger')
 rda_tb_all <- rda(phylum_hel~., env_all, scale = FALSE)
 rda_tb.scaling1 <- summary(rda_tb_all, scaling = 2)
 
-
 data <- env_all$temp1
 temp1 <- rda(phylum_hel~data, scale = FALSE)
 data <- env_all$temp2
@@ -368,7 +365,6 @@ tempName2 <- c(as.numeric(RsquareAdj(elev)[2]),
                as.numeric(RsquareAdj(prec6)[2]),
                as.numeric(RsquareAdj(prec7)[2]),
                as.numeric(RsquareAdj(prec8)[2])
-               
 )
 name <- colnames(env_all)
 data <- data.frame(x=name,y=tempName2)
@@ -537,12 +533,10 @@ for(i in c(1:length(all))){
     theme(plot.title = element_text(color="black", size=20, face="bold"),legend.text = element_text(size=20),legend.title=element_blank(),axis.title.x = element_text(size = 20),axis.title.y = element_text(size = 20))+
     theme(axis.text = element_blank()) +   ## 删去刻度标签
     theme(axis.ticks = element_blank())   ## 删去刻度线
-  
 }
 pdf("RDA_regions_temp.pdf",width=12,height=8)
 grid.arrange(p[[1]],p[[2]],p[[3]],p[[4]],p[[5]],nrow=2)
 dev.off()
-
 
 tit <- c("EU_prec", "WA_prec", "CA_prec", "EA_prec", "SA_prec")
 all <- list(EU_prec_rda, WA_prec_rda, SCA_prec_rda, north_prec_rda, South_prec_rda)
@@ -573,14 +567,11 @@ for(i in c(1:length(all))){
     theme(plot.title = element_text(color="black", size=20, face="bold"),legend.text = element_text(size=20),legend.title=element_blank(),axis.title.x = element_text(size = 20),axis.title.y = element_text(size = 20))+
     theme(axis.text = element_blank()) +   ## 删去刻度标签
     theme(axis.ticks = element_blank())   ## 删去刻度线
-  
 }
+
 pdf("RDA_regions_prec.pdf",width=12,height=8)
 grid.arrange(p[[1]],p[[2]],p[[3]],p[[4]],p[[5]],nrow=2)
 dev.off()
-
-
-
 
 
 

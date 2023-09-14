@@ -2,7 +2,8 @@
 cbbPalette <- c(
   
 branch: 乌拉尔图: "#999999"（灰色）, 野生一粒:"#E69F00"(橘黄色), 栽培一粒:"#56B4E9"(明兰色), AABBDD:"#009E73"(橄榄绿), AABB:"#F0E442"（明黄）
-label: WA: "#000000"（黑色）, EU："#0072B2"(天蓝), EA："#D55E00"(橘红色), SCA："#CC79A7"(皮粉色)),AF: "#E78AC3"(粉色) AM:"#66C2A5"(浅绿)
+label: WA: "#000000"（黑色）, EU："#0072B2"(天蓝), EA："#D55E00"(橘红色), SCA："#CC79A7"(皮粉色)),AF: "#E78AC3"(粉色) AM:"#66C2A5"(浅绿) "#A07D35"(浅棕色)
+
 #循环：for
 v <- LETTERS[1:6]
 for ( i in v) {
@@ -357,4 +358,42 @@ heatmap(cats, Colv = NA, Rowv = NA, scale="column")
 pheatmap(data3, show_rownames=FALSE, show_colnames=FALSE, cluster_col = F, legend_breaks = -1:2, legend_labels = c("./.", "0/0", "0/1", "1/1"),cluster_row = FALSE, annotation_col = anno2, annotation_names_col = F)
 
 corrplot(cats,method = "color",col.lim = c(20, 30),type = 'lower',tl.col="black",tl.srt = 45,addrect=1,addCoef.col = "grey",number.cex=0.5,number.digits=2,tl.cex=1,cl.cex=1,cl.lim = c(0, 1))
+
+
+
+ggplot(data,aes(a,a))+
+  theme_bw()+
+  geom_point()
+
+ggplot(all,aes(beta))+
+  theme_bw()+
+  geom_histogram(binwidth = 50,aes(x=beta, y=..density..),position="identity",alpha = 0.5)
+
+a <- data[,4,drop=F]
+colnames(a) <- "beta"
+b <- data[,5,drop=F]
+colnames(b) <- "beta"
+
+all <- as.data.frame(cbind(pop,p005,p001))
+
+ggplot(data, aes(a, b)) +
+  geom_bar(stat="identity") +
+  theme_classic() + 
+  geom_text(aes(label=b)) +
+  labs(x = 'Number of groups in which a gene under selection', y = 'Number of genes')
+
+
+data <- read.table("~/Desktop/test3.txt", header=T,stringsAsFactors = F)
+sub <- data[which(data$RECEIVED.USDA. != "NA"),]
+  
+
+
+sub <- data[which(data$SOURCE_DATE.USDA. != "NA"),]
+ggplot(sub,aes(SOURCE_DATE.USDA.))+
+  theme_bw()+
+  geom_histogram(binwidth = 10)
+
+
+
+
 

@@ -99,18 +99,18 @@ ggplot(candidate, aes(y = candidate$both21.263538003,x = solar1)) +
 #群体相关性
 setwd("/Users/guoyafei/Desktop/GF/等位基因频率变化")
 
-方式一：根据环境PC选变量的问题：环境PC最相关的变量，在基因组上相应的位点很少，并不能很好的反应环境适应性。除了prec是PC2，其余都是PC1.
-  temp11(0.98);temp1(0.96);temp6(0.96)(temp1鉴定的又多又好)
-  solar3(0.99);solar1(0.94)(solar1鉴定的又多又好)
-  prec1(0.98);prec5(0.85);prec6(0.85);prec3(0.83)
-    更新成prec3 prec4 prec6上面prec1;prec5鉴定的位点都很少
-  soil9(0.94);soil12(0.94);soil13(0.93);soil11(-0.83);soil10(soil12鉴定的又多又好)
-    更新成soil12(0.94)上面soil9，soil13，soil11鉴定位点情况都不好,位点也比较少
-方式二：根据基因组贡献程度以及环境之间的相关性(小于0.3)，选择环境变量(V4)
-  temp8;temp9;temp4,temp5,temp2,elevation,temp7,temp3
-  solar1;solar2
-  prec7;prec8;prec4,prec3,prec6
-  soil8;soil7;soil10;soil9;soil6,soil12;soil3
+#方式一：(在计算环境距离/地理距离和遗传距离的相关性时使用），根据环境PC选变量的问题：环境PC最相关的变量，在基因组上相应的位点很少，并不能很好的反应环境适应性。除了prec是PC2，其余都是PC1.
+#  temp11(0.98);temp1(0.96);temp6(0.96)(temp1鉴定的又多又好)
+#  solar3(0.99);solar1(0.94)(solar1鉴定的又多又好)
+#  prec1(0.98);prec5(0.85);prec6(0.85);prec3(0.83)
+#    更新成prec3 prec4 prec6上面prec1;prec5鉴定的位点都很少
+#  soil9(0.94);soil12(0.94);soil13(0.93);soil11(-0.83);soil10(soil12鉴定的又多又好)
+#    更新成soil12(0.94)上面soil9，soil13，soil11鉴定位点情况都不好,位点也比较少
+#方式二：（计算群体结构，定义最终适应性位点的时候使用）根据基因组贡献程度以及环境之间的相关性(小于0.3)，选择环境变量(V4)
+#  temp8;temp9;temp4,temp5,temp2,elevation,temp7,temp3
+#  solar1;solar2
+#  prec7;prec8;prec4,prec3,prec6（剔除了prec8）
+#  soil8;soil7;soil10;soil9;soil6,soil12;soil3(因为生物学意义，去掉soil6;soil8;soil7)
 
 #环境变量的筛选
 library(ggplot2)
@@ -146,7 +146,6 @@ PC <- as.data.frame(PC)
 colnames(PC)[1:2] <- paste("PC",1:2,sep="")
 write.table(PC,"/Users/guoyafei/Desktop/GF/等位基因频率变化/prec-sub-PC.txt",quote=F,row.names = F)
 
-
 library(tidyr)
 library(reshape2)
 library ("geosphere")
@@ -167,7 +166,7 @@ geo_order <- c[order(c$seq),]
 #方式一：用多环境合并计算环境的距离（多环境根据PC最相关的环境来确定，
 #all
 #all <- c(4,6,8,10,11,15,16,17,18,26,27,29,30,32,37)
-#更新后：
+#更新后
 all <- c(4,8,9,11,17,27,29,30,32,37)
 #prec
 #prec <- c(4,6,8,10,11)
@@ -279,8 +278,6 @@ for ( i in c(1:5)) {
   dev.off()
 }
 
-
-
 #方式二：用环境PC1计算环境的距离(这种方法效果不好)
 setwd("/Users/guoyafei/Desktop/GF/等位基因频率变化")
 PC1 <- read.table("/Users/guoyafei/Desktop/baypass/群体变量.txt",header=T,stringsAsFactors = F)
@@ -379,7 +376,6 @@ for ( i in c(2:5)) {
   dev.off()
 }
 
-
 #适应性位点在全基因组上的物理分布
 library(CMplot)
 setwd("/Users/guoyafei/Desktop/环境适应性位点/位置分布/fst")
@@ -400,14 +396,189 @@ head(data)
 # snp1_1    1        2041
 CMplot(data,plot.type="d",bin.size=1e4,col=c("darkgreen","yellow", "red"),file="jpg",memo="snp_density",dpi=300)
 
-
 setwd("/Users/guoyafei/Desktop/环境适应性位点/位置分布/fst_V2")
-mydata <- read.table("solar_fst_V2.pos.21chr.withend.txt", header=F, stringsAsFactors = F)
+mydata <- read.table("soil_fst_V2.pos.21chr.withend.txt", header=F, stringsAsFactors = F)
 colnames(mydata) <- c("chr","pos","snp")
 data <- mydata[,c(3,1,2)]
 head(data)
 # snp         chr       pos
 # snp1_1    1        2041
-CMplot(data,plot.type="d",bin.size=1e4,col=c("darkgreen","yellow", "red"),file="jpg",memo="snp_density",dpi=300)
+CMplot(data,plot.type="d",bin.size=1e4,col=c("darkgreen","yellow", "red"),file="pdf",memo="snp_density",dpi=300)
 
+#曼哈顿图(lfmm & baypass)
+library(qqman)
+library(tidyverse)
+setwd("/Users/guoyafei/Desktop/环境适应性位点/曼哈顿/")
 
+input <- c("baypass.solar1_21chr.txt","lfmm.solar1_21chr.txt")
+output <- c("baypass.solar1_21chr.pdf","lfmm.solar1_21chr.pdf")
+
+for (i in 1){
+    gwasResults2 <- read.table(input[i], header=T, stringsAsFactors = F)
+    gwasResults <- gwasResults2[sample(nrow(gwasResults2), 200000), ]
+    don <- gwasResults %>% 
+      # Compute chromosome size
+      group_by(CHR) %>% 
+      summarise(chr_len=max(BP)) %>% 
+      # Calculate cumulative position of each chromosome
+      mutate(tot=cumsum(as.numeric(chr_len))-chr_len) %>%
+      select(-chr_len) %>%
+      # Add this info to the initial dataset
+      left_join(gwasResults, ., by=c("CHR"="CHR")) %>%
+      # Add a cumulative position of each SNP
+      arrange(CHR, BP) %>%
+      mutate( BPcum=BP+tot) 
+    axisdf <- don %>% group_by(CHR) %>% summarize(center=( max(BPcum) + min(BPcum) )/ 2)
+    p <- ggplot(don, aes(x=BPcum, y=P)) +
+      geom_point( aes(color=as.factor(CHR)), alpha=0.5, size=1.3) +
+      scale_color_manual(values = rep(c("grey","skyblue","#E69F00"), 7)) +
+      scale_x_continuous( label = axisdf$CHR, breaks= axisdf$center ) +
+      scale_y_continuous(expand = c(0, 0) ) +   
+      #Add highlighted points
+      #geom_point(data=subset(don, is_highlight=="yes"), color="orange", size=2) +
+      theme_bw() +
+      theme( 
+        legend.position="none",
+        panel.border = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.text.x=element_text(size=15),
+        axis.text.y=element_text(size=15),
+        axis.title.y=element_text(size = 15),
+        axis.title.x=element_text(size = 15),
+      )
+      #scale_y_continuous(limits = c(0,7))+
+      #geom_point(data=point,aes(x=BPcum,y=-log10(P)),color="red")
+    pdf(output[i],height = 2.5,width = 15)
+    print(p)
+    dev.off()
+}
+
+#受选择位点的鉴定(RAiSD)
+#方法一:去除着丝粒区后，取top千分之一作为阈值（小麦白粉病）
+library(UpSetR)
+#temp
+temp <- list(
+  CA <- c("pop8","pop12","pop11","pop5","pop25"),
+  EU <- c("pop22","pop9","pop15","pop23"),
+  SA <- c("pop4","pop10","pop19"),
+  EA <- c("pop2","pop7","pop13","pop20","pop6"),
+  WA <- c("pop3","pop17","pop1","pop16","pop18")
+)
+#prec
+prec <- list(
+  CA <- c("pop25","pop8","pop11","pop5","pop12"),
+  EU <- c("pop23","pop9","pop15","pop22"),
+  SA <- c("pop10","pop4","pop19"),
+  EA <- c("pop2","pop7","pop6","pop13","pop20"),
+  WA <- c("pop18","pop1","pop16","pop17","pop3")
+)
+#soil
+soil <- list(
+  CA <- c("pop25","pop5","pop8","pop11","pop12"),
+  EU <- c("pop23","pop9","pop15","pop22"),
+  SA <- c("pop10","pop4","pop19"),
+  EA <- c("pop6","pop2","pop7","pop13","pop20"),
+  WA <- c("pop1","pop17","pop16","pop18","pop3")
+)
+#solar
+solar <- list(
+  CA <- c("pop5","pop12","pop8","pop25","pop11"),
+  EU <- c("pop15","pop9","pop23","pop22"),
+  SA <- c("pop10","pop4","pop19"),
+  EA <- c("pop2","pop7","pop6","pop20","pop13"),
+  WA <- c("pop18","pop16","pop3","pop17","pop1")
+)
+all <- list(
+  temp <- temp,
+  prec <- prec,
+  soil <- soil,
+  solar <- solar
+)
+
+setwd("/Users/guoyafei/Desktop/选择/选择1")
+var1 <- c("temp","prec","soil","solar")
+var2 <- c("CA","EU","SA","EA","WA")
+for(i in c(1:4)){
+  for(j in c(1:5)){
+    tmp <- all[[i]][[j]]
+    infile <- paste(tmp, var1[i],"pos.bed", sep=".")
+    a <- list()
+    for(m in c(1:length(infile))){
+      data <- read.table(infile[m], header=F,stringsAsFactors = F)
+      a[[m]] <- paste(data[,1],data[,2],sep="-")
+    }
+    names(a) <- tmp
+    outfile <- paste(var1[i],"_",var2[j],".pdf",sep="")
+    pdf(outfile,height=6,width=10)
+    p <- upset(fromList(a), keep.order = TRUE,sets = tmp, text.scale = c(2),point.size = 2.5, line.size = 1.5)
+    print(p)
+    dev.off()
+  }
+}
+
+#画位点的分布：
+#TraesCS7A02G037700 
+#19:16835876-16837161
+library(ggplot2)
+library(gridExtra)
+setwd("/Users/guoyafei/Desktop/选择/选择1/位点/")
+file <- paste("pop",1:25,".bed3",sep="")
+p <- list() 
+for(i in c(2,6,7,13,20)){
+  data <- read.table(file[i], header=F,stringsAsFactors = F)
+  data$pos <- data$V2 - 13504417
+  p[[i]] <- ggplot(data,aes(pos,V4))+
+    theme_bw()+
+    geom_vline(xintercept = 16835876-13504417-100000, color = 'red', size = 0.5) + 
+    geom_vline(xintercept = 16836550-13504417, color = 'red', size = 0.5) + 
+    geom_hline(yintercept = 33, color = 'gray', size = 0.5, linetype="dashed") +
+    xlim(1,3500000)+
+    ylab("mu")+
+    ggtitle(paste("pop",i,sep=""))+
+    geom_point(alpha=0.6,size=0.5)
+}
+
+pdf("EA.pdf", width = 3, height = 9)
+grid.arrange(p[[2]],p[[6]],p[[7]],p[[13]],p[[20]],nrow=5)
+dev.off()
+
+pdf("pop.pdf", width = 15, height = 9)
+grid.arrange(p[[1]],p[[2]],p[[3]],p[[4]],p[[5]],p[[6]],p[[7]],p[[8]],p[[9]],p[[10]],p[[11]],p[[12]],p[[13]],p[[14]],p[[15]],p[[16]],p[[17]],p[[18]],p[[19]],p[[20]],p[[21]],p[[22]],p[[23]],p[[24]],p[[25]],nrow=5)
+dev.off()
+
+#画lassip的影扫描和软扫描
+#37:16835876-16837161
+#37:16435876-17237161（基因上下游400k）
+setwd("/Users/guoyafei/Desktop/选择/选择1/硬软扫描")
+library(ggplot2)
+library(gridExtra)
+data <- read.table("/Users/guoyafei/Desktop/选择/选择1/硬软扫描/pop1.lassip.bed", header=F,stringsAsFactors = F)
+file <- paste("pop",1:25,".lassip.bed",sep="")
+p <- list() 
+for(i in c(1:25)){
+  data <- read.table(file[i], header=F,stringsAsFactors = F)
+  data$pos <- data$V5 - 16450306
+  point <- data[which(data$V9 == max(data$V9)), 10]
+  point2 <- data[which(data$V9 == max(data$V9)), 8]
+  print(point2)
+  p[[i]] <- ggplot(data,aes(pos,V9))+
+    theme_bw()+
+    geom_vline(xintercept = 16835876-16450306-100000, color = 'red', size = 0.5) + 
+    geom_vline(xintercept = 16836550-16450306-100000, color = 'red', size = 0.5) +
+    geom_vline(xintercept = point, color = 'blue', size = 0.5) +
+    ylab("T")+
+    ggtitle(paste("pop",i,sep=""))+
+    geom_line()
+  p[[i+25]] <- ggplot(data,aes(pos,V8))+
+    theme_bw()+
+    geom_vline(xintercept = 16835876-16450306-100000, color = 'red', size = 0.5) + 
+    geom_vline(xintercept = 16836550-16450306+100000, color = 'red', size = 0.5) + 
+    geom_vline(xintercept = point, color = 'blue', size = 0.5) +
+    ylab("m")+
+    ggtitle(paste("pop",i,sep=""))+
+    geom_line()
+}
+pdf("lassip.pdf", width = 15, height = 18)
+grid.arrange(p[[1]],p[[2]],p[[3]],p[[4]],p[[5]],p[[26]],p[[27]],p[[28]],p[[29]],p[[30]],p[[6]],p[[7]],p[[8]],p[[9]],p[[10]],p[[31]],p[[32]],p[[33]],p[[34]],p[[35]],p[[11]],p[[12]],p[[13]],p[[14]],p[[15]],p[[36]],p[[37]],p[[38]],p[[39]],p[[40]],p[[16]],p[[17]],p[[18]],p[[19]],p[[20]],p[[41]],p[[42]],p[[43]],p[[44]],p[[45]],p[[21]],p[[22]],p[[23]],p[[24]],p[[25]],p[[46]],p[[47]],p[[48]],p[[49]],p[[50]],nrow=10)
+dev.off()

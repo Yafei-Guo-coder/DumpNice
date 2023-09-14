@@ -74,8 +74,8 @@ result_hc <- hclust(d = result, method = "ward.D2")
 #median和centroid在不导致单调的距离测量，或者等效产生的树状图可以具有所谓的倒置或颠倒。
 data2$type <- cutree(result_hc, k=11)
 
-------------------------计算类群环境变量-----------------------
-  lat_mean <- tapply(data2[,21],data2$type,mean,na.rm = TRUE)
+----------------------------------------计算类群环境变量-----------------------------------
+lat_mean <- tapply(data2[,21],data2$type,mean,na.rm = TRUE)
 lon_mean <- tapply(data2[,22],data2$type,mean,na.rm = TRUE)
 data2$cluster1 <- NA
 data2$cluster2 <- NA
@@ -96,13 +96,47 @@ data <- read.table("/Users/guoyafei/Desktop/baypass/471_baypass_10PC_edited.txt"
 library(maps)
 library(ggplot2)
 mp<-NULL
-mapworld<-borders("world",colour = "gray80",fill="gray80") 
-mp<-ggplot()+mapworld+ylim(-50,80)
+mapworld<-borders("world",colour = "#E7EBF1",fill="#E7EBF1") 
 
-sub <- data[which(data$type == 25),]
-mp+geom_point(aes(x=sub$Longitude, y=sub$Latitude,color = as.factor(sub$type)),alpha = 0.7)+
+p <- list()
+for ( i in 1:25) {
+  sub <- as.data.frame(data[which(data$type == i),])
+  p[[i]]  <- ggplot(sub, aes(x=Longitude, y=Latitude))+
+    mapworld+
+    ylim(-50,80)+
+    geom_point(data=sub,alpha = 0.7,color="#E69F00")+
+    scale_size(range=c(1,1))+ 
+    facet_grid(. ~ type)+
+    xlab("Longitude")+
+    ylab("Latitude")+
+    theme_bw()
+}
+
+EA <- c(2,6,7,13,20)
+CA <- c(5,8,11,12,25)
+WA <- c(1,3,16,17,18)
+SA <- c(4,10,19)
+EU <- c(9,15,22,23)
+Other <- c(14,21,24)
+
+
+test <- c(1,16,17)
+data$type <- as.factor(data$type)
+sub <- data[which(data$type %in% Other),]
+ggplot(sub, aes(x=Longitude, y=Latitude, fill=type,color = type))+
+  mapworld+
+  ylim(-50,80)+
+  geom_point(alpha = 0.7)+
   scale_size(range=c(1,1))+ 
-  theme_classic()
+  xlab("Longitude")+
+  ylab("Latitude")+
+  theme_bw()
+
+library(gridExtra)
+pdf("25群体地理分布.pdf",width = 15,height = 10)
+grid.arrange(p[[1]],p[[2]],p[[3]],p[[4]],p[[5]],p[[6]],p[[7]],p[[8]],p[[9]],p[[10]],p[[11]],p[[12]],p[[13]],p[[14]],p[[15]],p[[16]],p[[17]],p[[18]],p[[19]],p[[20]],p[[21]],p[[22]],p[[23]],p[[24]],p[[25]],nrow=5)
+dev.off()
+
 
 pop1:WA:1
 pop2:EA:3

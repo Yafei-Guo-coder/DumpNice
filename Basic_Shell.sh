@@ -9,7 +9,7 @@ datamash -s -g 3 unique 1 unique 2| awk '{split($2,a,","); if(length(a)!=1 || (l
 awk -F',' 'NR==FNR{a[$1]=$2;}NR!=FNR && a[$1] {print $0,a[$1]}' b.txt a.txt
 #方法2
 awk -F',' 'NR==FNR{a[$1]=$2;}NR!=FNR && $1 in a {print $0,a[$1]}' b.txt a.txt
-awk 'FNR==NR{a[$1];next}($1 in a){next} {print}' a b 
+awk 'FNR==NR{a[$1];next}($1 in a){next} {print}' a b
 awk 'ORS=NR%2?" ":"\n"{print}'
 #shell
 ps aux | grep crosstab | awk '{print $2}' > id
@@ -85,6 +85,7 @@ sed '$d'
 for i in `cat depth.txt`
 do
  tail -n1 *${i} | awk '{print $4}' | sed '/^$/d' |awk 'BEGIN{count=0} {count = count+$1} END{print count/NR}'
+ 
 done
 for i in `cat fqlist.txt`
 do
@@ -247,6 +248,7 @@ vcftools --vcf input.vcf --singletons --recode --recode-INFO-all --stdout | gzip
 
 bcftools view -S sample.txt chr001.vcf.gz -Ov > 1000Genomes.vcf
 vcftools --gzvcf A1.vcf.gz --012 --recode --out snp_matrix
+
 #不允许位点有缺失
 vcftools --gzvcf Alineage_bayenv_pop5.vcf.gz --max-missing 1.0 --out A_noMissing
 bcftools view -S sample_file.txt -q 0.001:minor /data4/home/yafei/vcf_AB1/Merge/Filter2/chr${i}.vcf.gz -Oz -o chr${i}.vcf.gz
@@ -309,12 +311,12 @@ vawk '{print $s*GT}' test.vcf
 
 nohup raxmlHPC-PTHREADS-SSE3 -f a -m GTRGAMMA -p 12345 -x 12345 -# 100 -s ../AA_0.2.phy -n AA_0.2.raxml -o A001 -T 30 > nohupAA_0.2 2>& 1 &
 
+
 for i in {001..042}
 do
 plink --bfile /data4/home/yafei/plink_VCF/chr${i} --keep /data2/yafei/004_Vmap3/Group/type_8/plink_group/AABB.txt --maf 0.0001 --geno 0.1 --make-bed --out bfile_AABB/chr${i} 
-
-&
 done
+
 
 for i in {001..042}
 do
@@ -383,9 +385,12 @@ admin@2134%
 blkid
 mount /***/***  /mnt/usb
 
-
 run_pipeline.pl -Xms512m -Xmx5g -vcf btr1-B.1M.vcf -export btr1-B.1M -exportType Phylip_Inter
 raxml-ng --all --msa btr1-A.2k.phy --seed 12356 --model GTR+G --bs-trees 100 --threads 40
 
 
+
+pop <- c(100,200,500,1000,5000,10000)
+p005 <- c(2560,2560,2435,2622,3087,3693)
+p001 <- c(516,504,522,558,718,937)
 

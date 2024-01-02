@@ -94,7 +94,7 @@ temp6_2013 <- raster("wc2.1_2.5m_tmax_2013-06.tif")
 
 colr <- colorRampPalette(brewer.pal(11, 'RdYlBu'))
 oregon <- readOGR('.', 'Oregon_10N')
-levelplot(temp6_2018, 
+levelplot(data, 
           margin=FALSE,# suppress marginal graphics
           ylim=c(-50,60),
           colorkey=list(
@@ -108,4 +108,23 @@ levelplot(temp6_2018,
           col.regions=colr,                   # colour ramp
           at=seq(-10, 50)) 
   #layer(sp.polygons(oregon, lwd=3))           # add oregon SPDF with latticeExtra::layer
+
+#####################################################
+library(elevatr)  # Get rasterlay from AWS by `get_elev_raster` fucntion
+library(raster)  # Manipulate RasterLayer object
+library(tidyverse)  # Tidy is everything.
+
+# Set the extent we want to plot
+ext_sample <- extent(70, 105, 25, 45)
+
+# Preparing for getting the elevation raster data, make a blank RasterLayer,
+# becasue the first parameter of get_elev_raster is a target Rasterlayer.
+bg_init <- raster(ext = ext_sample, resolution = 0.01)
+# Get elevation raster with zoom 5, then only keep the extend we want to plot
+# later.
+bg_rst <- get_elev_raster(bg_init, z = 5) %>% crop(ext_sample)
+
+
+
+
 

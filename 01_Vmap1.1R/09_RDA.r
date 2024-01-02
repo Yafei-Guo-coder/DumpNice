@@ -17,7 +17,7 @@ cat header.txt Select_gene_noHeader.vcf > gene_3000.vcf
 sed '/^##/d' gene_3000.vcf | awk '{$1=null;$2=null;$3=null;$4=null;$5=null;$6=null;$7=null;$8=null;$9=null;print $0'} | sed 's/^[ \t]*//g' > all_noMiss_0.05_3000.txt
 sed 's@0/0@0@g' all_noMiss_0.05_3000.txt | sed 's@0/1@1@g' |sed 's@1/1@2@g' |sed 's@1/0@1@g' > All_noMiss_0.05_3000.txt
 
-#分亚基因组提取基因区的VCF文件，并随机抽取3000个SNP
+#分亚基因组提取基因区的VCF文件，并随机抽取3000个SNP(实际运行多抽一些，可以设置30-50k)
 bedtools intersect -b gene_v1.1_Lulab.gff3 -a sorted_noMiss_0.05.vcf.gz -wa > sorted_noMiss_gene_noHeader.vcf 
 awk '{output="chr"$1".noheader.vcf"; print $0 > $output}' sorted_noMiss_gene_noHeader.vcf
 cat chr1.noheader.vcf chr2.noheader.vcf chr7.noheader.vcf chr8.noheader.vcf chr13.noheader.vcf chr14.noheader.vcf chr19.noheader.vcf chr20.noheader.vcf chr25.noheader.vcf chr26.noheader.vcf chr31.noheader.vcf chr32.noheader.vcf chr37.noheader.vcf chr38.noheader.vcf | shuf -n 3000 | sort -k1,1n -k2,2n > Select_gene_noHeader_A.vcf

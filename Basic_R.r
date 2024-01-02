@@ -361,9 +361,9 @@ corrplot(cats,method = "color",col.lim = c(20, 30),type = 'lower',tl.col="black"
 
 
 
-ggplot(data,aes(a,a))+
+ggplot(data,aes(a,b))+
   theme_bw()+
-  geom_point()
+  geom_bar()
 
 ggplot(all,aes(beta))+
   theme_bw()+
@@ -376,24 +376,45 @@ colnames(b) <- "beta"
 
 all <- as.data.frame(cbind(pop,p005,p001))
 
-ggplot(data, aes(a, b)) +
+pdf("sites.pdf")
+
+p <- ggplot(data, aes(a,b)) +
   geom_bar(stat="identity") +
   theme_classic() + 
   geom_text(aes(label=b)) +
-  labs(x = 'Number of groups in which a gene under selection', y = 'Number of genes')
-
+  labs(x = 'Number of groups in which a site under selection', y = 'Number of sites')
 
 data <- read.table("~/Desktop/test3.txt", header=T,stringsAsFactors = F)
 sub <- data[which(data$RECEIVED.USDA. != "NA"),]
-  
-
 
 sub <- data[which(data$SOURCE_DATE.USDA. != "NA"),]
-ggplot(sub,aes(SOURCE_DATE.USDA.))+
+
+ggplot(data,aes(y=V2,group=V1))+
   theme_bw()+
-  geom_histogram(binwidth = 10)
+  geom_histogram()
 
 
+data <- read.table("/Users/guoyafei/Desktop/type1.mode.salti.out", header=F, stringsAsFactors = F)
+data$V1 <- as.factor(data$V1)
+data[which(data$V2 > 1),2 ] <- 2
+data$type<- 0
+data[which(data$V1 > 1 & data$V1 < 7 ),4] <- 1
+data[which(data$V1 > 6 & data$V1 < 14 ),4 ] <- 2
+data[which(data$V1 > 13 & data$V1 < 21 ),4 ] <- 3
+data$V1 <- data$type
 
-
+setwd("/Users/guoyafei/Desktop/3type/选择/")
+library(ggplot2)
+library(reshape)
+data <- read.table("pop1.type1.mode.salti.out", header = F, stringsAsFactors = F)
+data2 <- cast(data,V2~V3)
+data3 <- melt(data2,id="V1")
+data4 <- data3[which(data3$V2 != 0),]
+data5 <- data4[which(data3$V1 != 0),]
+pdf("test.pdf")
+p <- ggplot(data=data5, mapping=aes(x = V1, y = value,fill=V2))+
+  geom_bar(stat="identity",position=position_dodge(0.75))+
+  theme_classic()
+print(p)
+dev.off()
 

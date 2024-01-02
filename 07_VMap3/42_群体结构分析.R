@@ -35,7 +35,7 @@ for (i in c(3:7)) {
     geom_scatterpie(aes(x=PC1, y=PC2), data=data,cols = cols, color=NA) + 
     coord_equal()+
     scale_fill_brewer(palette = "Set2")+
-    theme_classic()
+                  theme_classic()
   print(p)
   dev.off()
 }
@@ -113,7 +113,7 @@ for (i in c(3:7)) {
 }
 #PC1:0.26 PC2:0.25
 
-#画所有样本地图上的25哥群体的群体结构组成----
+#画所有样本地图上的25个群体的群体结构组成----
 #准备输入文件
 setwd("/Users/guoyafei/Desktop/群体结构")
 library(tidyr)

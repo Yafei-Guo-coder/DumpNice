@@ -155,6 +155,8 @@ samtools mpileup -A -B -q 30 -Q 20 -f test_1M.fa.gz sample2.rmdup.bam -r 1:48986
 make install DESTDIR=/data1/home/yafei/008_Software/gsl-2.7
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/data1/home/yafei/008_Software/gsl-2.7/usr/local/lib
 
+#FST
+plink2 --bfile vmap2.1 --fst CATPHENO report-variants method=hudson  --out x --within CL_AT.pheno --mac 1 --double-id --autosome-num 42
 #PCA
 plink --vcf ABlineage.maf0.05.5k.vcf --pca header tabs -out ABlineage.maf0.05.5k --double-id --autosome-num 42
 #MDS
@@ -387,8 +389,6 @@ mount /***/***  /mnt/usb
 
 run_pipeline.pl -Xms512m -Xmx5g -vcf btr1-B.1M.vcf -export btr1-B.1M -exportType Phylip_Inter
 raxml-ng --all --msa btr1-A.2k.phy --seed 12356 --model GTR+G --bs-trees 100 --threads 40
-
-
 
 pop <- c(100,200,500,1000,5000,10000)
 p005 <- c(2560,2560,2435,2622,3087,3693)

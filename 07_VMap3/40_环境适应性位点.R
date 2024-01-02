@@ -560,6 +560,7 @@ for(i in c(1:25)){
   data <- read.table(file[i], header=F,stringsAsFactors = F)
   data$pos <- data$V5 - 16450306
   point <- data[which(data$V9 == max(data$V9)), 10]
+  
   point2 <- data[which(data$V9 == max(data$V9)), 8]
   print(point2)
   p[[i]] <- ggplot(data,aes(pos,V9))+

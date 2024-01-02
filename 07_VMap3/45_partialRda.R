@@ -72,10 +72,6 @@ out <- cbind(r,adjr)
 colnames(out) <- c("r","adjr")
 write.table(out, "random.r.txt", quote=F, row.names = F,sep="\t")
 
-
-
-
-
 #画图(individual的结果)----
 library(reshape2)
 library(ggplot2)

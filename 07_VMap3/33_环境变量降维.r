@@ -3,6 +3,7 @@ data <- read.table("/Users/guoyafei/Desktop/bio-RDA/471_baypass_taxa.Info", head
 sub <- data[,c(3,6:40)]
 sub2 <- sub[,c(1:9,11:14,22:36)]
 sub3 <-  sub2[!duplicated(sub2, fromLast=TRUE), ] 
+
 pheatmap(scale(sub3),cluster_rows = F,clustering_distance_cols  = "correlation",border_color = "white",cutree_cols  = 6)
 
 df = scale(t(sub3),center = T,scale = T)
@@ -34,7 +35,6 @@ library(usdm)
 vif(sub3)
 v1 <- vifcor(sub3,th=0.3)
 
-v1
 #环境变量的筛选
 library(ggplot2)
 setwd("/Users/guoyafei/Desktop/baypass")
@@ -160,4 +160,3 @@ ylab<-paste0("PC2(",round(Proportion_of_Variance[2]*100,2),"%)")
 p1<-ggplot(data = PC,aes(x=PC1,y=PC2))+
   geom_point()+labs(x=xlab,y=ylab,color="")+
   theme_classic()
-

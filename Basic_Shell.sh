@@ -319,6 +319,7 @@ do
 plink --bfile /data4/home/yafei/plink_VCF/chr${i} --keep /data2/yafei/004_Vmap3/Group/type_8/plink_group/AABB.txt --maf 0.0001 --geno 0.1 --make-bed --out bfile_AABB/chr${i} 
 done
 
+plink2 --pmerge-list AB.bfile bfile --pmerge-list-dir /data2/yafei/polygenic/genotype/env/ld/gcta --thin-count 100000 --make-bed --out /data2/yafei/polygenic/genotype/env/ld/gcta/AB_100k --autosome-num 42
 
 for i in {001..042}
 do
@@ -385,12 +386,10 @@ datamash perc:95 5 perc:95 7 perc:5 7
 admin@2134%
 #挂载命令
 blkid
-mount /***/***  /mnt/usb
+mount  /mnt/usb
 
 run_pipeline.pl -Xms512m -Xmx5g -vcf btr1-B.1M.vcf -export btr1-B.1M -exportType Phylip_Inter
 raxml-ng --all --msa btr1-A.2k.phy --seed 12356 --model GTR+G --bs-trees 100 --threads 40
 
-pop <- c(100,200,500,1000,5000,10000)
-p005 <- c(2560,2560,2435,2622,3087,3693)
-p001 <- c(516,504,522,558,718,937)
-
+204:
+/data1/home/yafei/008_Software/vcf2phylip/vcf2phylip.py -i TraesCS1D02G308600-geno-hap.vcf -f --output-prefix 1D

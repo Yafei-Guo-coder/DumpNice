@@ -5,33 +5,29 @@ require(reshape)
 require (rworldmap)
 require(rworldxtra)
 library(RColorBrewer)
-
-
-########################################################## 单倍型分析 ####################################################
-
-data <- read.table("/Users/guoyafei/Desktop/coTong/7.177767585-460000000.shuf1k.txt", header=T, check.names=F, stringsAsFactors = F)
-
-#annotation_col <- read.table("/Users/guoyafei/Desktop/coXiao/单倍型/haploinfo.txt",header=T,check.names=F,stringsAsFactors = F,sep="\t")
-annotation_col <- read.table("/Users/guoyafei/Desktop/coTong/haploinfo_V3.txt",header=T,check.names=F,stringsAsFactors = F,sep="\t")
+########################################################## 单倍型热图分析 ####################################################
+#data <- read.table("/Users/guoyafei/Desktop/coTong/7.177767585-460000000.shuf1k.txt", header=T, check.names=F, stringsAsFactors = F)
+data <- read.table("gene.pos-geno.txt", header=T,stringsAsFactors = F)
+data <- read.table("taxa.pos-geno.txt", header=T, stringsAsFactors = F)
+#annotation_col <- read.table("/Users/guoyafei/Desktop/coXiao/单倍型/haploinfo2.txt",header=T,check.names=F,stringsAsFactors = F,sep="\t")
+annotation_col <- read.table("/Users/guoyafei/Desktop/coXiao/单倍型/haploinfo2_V3.txt",header=T,check.names=F,stringsAsFactors = F,sep="\t")
+#annotation_col <- read.table("/Users/guoyafei/Desktop/coTong/haploinfo_V3.txt",header=T,check.names=F,stringsAsFactors = F,sep="\t")
 rownames(annotation_col) <- annotation_col$ID
 #anno <- annotation_col[which(rownames(annotation_col) %in% colnames(data)),c(3,4,5),drop=FALSE]
-anno <- annotation_col[which(rownames(annotation_col) %in% colnames(data)),c(2,4,5),drop=FALSE]
+anno <- annotation_col[which(rownames(annotation_col) %in% colnames(data)),c(3,6),drop=FALSE]
 #anno2 <- anno[,3,drop=F]
 anno2 <- anno[,2,drop=F]
-#anno2$type <- factor(anno$`Common name`,levels = c("Wild einkorn","Domesticated einkorn","Urartu","Wild emmer","Domesticated emmer","Georgian wheat","Ispahanicum","Polish wheat","Durum","Rivet wheat","Khorasan wheat","Persian wheat","Spelt","Indian dwarf wheat","Tibetan semi wild","Macha","Club wheat","Vavilovii","Yunan wheat","Xinjiang wheat","Landrace","Cultivar"))
-anno2$type <- factor(anno$type_final,levels = c("Wild_emmer","Domesticated_emmer","Free_threshing_tetraploids","Landrace","Cultivar"))
-anno2$Ctnt <- factor(anno$`Ctnt(9)`,levels = c("WA","EU","SA","CA","EA","AF","OA","Nth_AM","Sth_AM","-"))
-
+anno2$type <- factor(anno$`Common name`,levels = c("Wild einkorn","Domesticated einkorn","Urartu","Wild emmer","Domesticated emmer","Georgian wheat","Ispahanicum","Polish wheat","Durum","Rivet wheat","Khorasan wheat","Persian wheat","Spelt","Indian dwarf wheat","Tibetan semi wild","Macha","Club wheat","Vavilovii","Yunan wheat","Xinjiang wheat","Landrace","Cultivar"))
+#anno2$type <- factor(anno$type_final,levels = c("Wild_emmer","Domesticated_emmer","Free_threshing_tetraploids","Landrace","Cultivar"))
+#anno2$Ctnt <- factor(anno$`Ctnt(9)`,levels = c("WA","EU","SA","CA","EA","AF","OA","Nth_AM","Sth_AM","-"))
 #anno2$Ctnt <- factor(anno$Region,levels = c("WA","EU","SA","CA","EA","AF","OA","Nth_AM","Sth_AM"))
-
-#anno4 <- anno3[order(anno3$type,anno3$Ctnt),]
-
+#anno4 <- anno2[order(anno2$seq),]
 ### extract data & plot ------>
-data2 <- data[,which(colnames(data) %in% rownames(anno))]
-data3 <- data2[,rownames(anno)]
+data2 <- data[,which(colnames(data) %in% rownames(anno2))]
+data3 <- data2[,rownames(anno2)]
 cols <- c(brewer.pal(11, "Set3")[c(5)],"#DEEBF7","#FEB24C","#BD0026")
 pdf("/Users/guoyafei/Desktop/coTong/test_tong_region2_all.pdf",width=12,height = 8 )
-pheatmap(data3, show_rownames=FALSE, show_colnames=FALSE, cluster_col = F, legend_breaks = -1:2, legend_labels = c("./.", "0/0", "0/1", "1/1"),cluster_row = FALSE, annotation_col = anno2[,c(2),drop=F], annotation_names_col = F)
+pheatmap(data3, show_rownames=FALSE, show_colnames=FALSE, cluster_col = F, legend_breaks = -1:2, legend_labels = c("./.", "0/0", "0/1", "1/1"),cluster_row = FALSE, annotation_col = anno2, annotation_names_col = F)
 dev.off()
 
 #haploinfo2
@@ -50,7 +46,7 @@ data2 <- data[,which(colnames(data) %in% rownames(anno))]
 data3 <- data2[,rownames(anno)]
 cols <- c(brewer.pal(11, "Set3")[c(5)],"#DEEBF7","#FEB24C","#BD0026")
 pdf("test3.pdf",width=60,height = 40)
-pheatmap(data3, show_rownames=FALSE, show_colnames=T, cluster_col = F, legend_breaks = -1:2, legend_labels = c("./.", "0/0", "0/1", "1/1"),cluster_row = FALSE, annotation_col = anno2, annotation_names_col = F)
+pheatmap(data3, show_rownames=FALSE, show_colnames=F, cluster_col = F, legend_breaks = -1:2, legend_labels = c("./.", "0/0", "0/1", "1/1"),cluster_row = FALSE, annotation_col = anno2, annotation_names_col = F)
 dev.off()
 
 ########################################################## 渗入分析 #################################################
@@ -107,24 +103,39 @@ setwd("/Users/guoyafei/Desktop/coXiao/选择")
 data <- read.table("prec4.chr2A.txt",header=F,stringsAsFactors = F, sep="\t")
 
 pdf("baypass.pdf",width=14,height = 6)
-ggplot(data, aes(x=V2, y=V5)) +
+sub <- data[which(data$V2 > 740000000),]
+ggplot(sub, aes(x=V3, y=V5)) +
   geom_point(alpha=0.5)+
   theme_classic()+
   #theme(axis.title.y = element_blank()) 
-  xlab("Position") + ylab("fd") +
+  xlab("Position") + ylab("Bayes Factor") +
   #geom_hline(yintercept=0.3167,color='#E69F00',linetype = "dashed")+
-  geom_vline(xintercept=759452125,color='red')
+  geom_vline(xintercept=759452125,color='red')+
+  geom_vline(xintercept=759457059,color='red')
 dev.off()
   
 data <- read.table("SH_IA.chr2A.21chr.txt",header=F,stringsAsFactors = F, sep="\t")
 pdf("xpclr.pdf",width=16,height = 6)
-ggplot(data, aes(x=V2, y=V4)) +
+sub <- data[which(data$V2 > 740000000),]
+ggplot(sub, aes(x=V3, y=V4)) +
   geom_line(linewidth=0.5)+
   theme_classic()+
   #theme(axis.title.y = element_blank()) 
-  xlab("Position") + ylab("fd") +
+  xlab("Position") + ylab("XP-CLR score") +
   geom_hline(yintercept=2.282,color='#E69F00',linetype = "dashed")+
-  geom_vline(xintercept=759452125,color='red')
+  geom_vline(xintercept=759452125,color='red')+
+  geom_vline(xintercept=759457059,color='red')
+
+sub <- data[which(data$V2 > 758452125 & data$V2 < 760457059),]
+ggplot(sub, aes(x=V3, y=V4)) +
+  geom_line(linewidth=0.5)+
+  theme_classic()+
+  #theme(axis.title.y = element_blank()) 
+  xlab("Position") + ylab("XP-CLR score") +
+  geom_hline(yintercept=2.282,color='#E69F00',linetype = "dashed")+
+  geom_vline(xintercept=759452125,color='red')+
+  geom_vline(xintercept=759457059,color='red')
+  
 dev.off()
 
 ############################################################### 地图分析 #####################################################
@@ -185,6 +196,68 @@ ggplot(data[[1]], aes(Logititude, Latitude))+
   theme(legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))+
   guides(fill=guide_legend(title=NULL))
 
+
+###################################################### 画单倍型地理分布图 ##########################################
+setwd("/Users/guoyafei/Desktop/coXiao/TraesCS2A02G554200")
+data <- read.table("单倍型分类_V1.0.txt", header=T, sep = "\t", stringsAsFactors = F)
+#data <- read.table("单倍型分类_V3.txt", header=T, sep = "\t", stringsAsFactors = F)
+#准备文件（target.pie.txt）
+library(cluster)
+library(factoextra)
+
+target <- data[which(data$Type != "Cultivar" & data$Latitude != "NA"),]
+
+#根据经纬度给样本聚类
+dataA <- target[,c(2,3)]
+#df = scale(dataA,center = T,scale = T)
+#colnames(df) <- colname
+#按列进行标准化
+#先求样本之间两两相似性
+result <- dist(dataA, method = "euclidean")
+#使用指定距离来计算数据矩阵行之间的距离
+#euclidean：欧几里得距离
+result_hc <- hclust(d = result, method = "ward.D2")
+dataA$type <- cutree(result_hc, k=20)
+lat_mean <- tapply(dataA[,1],dataA$type,mean,na.rm = TRUE)
+lon_mean <- tapply(dataA[,2],dataA$type,mean,na.rm = TRUE)
+dataA$cluster30_lat <- NA
+dataA$cluster30_lon <- NA
+for(i in 1:136) {
+  for(j in 1:20){
+    if(dataA[i,3] == j ){
+      dataA[i,4] <- as.numeric(lat_mean[j])
+      dataA[i,5] <- as.numeric(lon_mean[j])
+    }
+  }
+}
+target$lat_cluster <- dataA[rownames(target),4]
+target$lon_cluster <- dataA[rownames(target),5]
+write.table(target,"V1.0.pie_20.txt", quote=F, sep="\t",row.names = F)
+
+#画图
+target <- read.table("/Users/guoyafei/Desktop/coXiao/TraesCS2A02G554200/V1.0.pie_20.txt",header=T,row.names=1,sep="\t",stringsAsFactors = F)
+target <- read.table("/Users/guoyafei/Desktop/coXiao/TraesCS2A02G554200/V1.1.pie_16_newversion.txt",header=T,row.names=1,sep="\t",stringsAsFactors = F)
+
+library(reshape)
+library(ggplot2)
+library(RColorBrewer)
+require (rworldmap)
+
+pdf("单倍型地理分布V1.1_newversion2.pdf")
+#V1
+sample <- target[,c(5,6,4)]
+#V1.1
+sample <- target[,c(7,8,9)]
+sample$value <- 1
+#V1
+wheat_reshape <- cast(sample,lat_cluster+lon_cluster~Haplotype) 
+#V1.1
+wheat_reshape <- cast(sample,lat_cluster+lon_cluster~hap) 
+wheat_reshape2 <- as.data.frame(wheat_reshape)
+mapPies(wheat_reshape2,xlim=c(-10,150),ylim=c(20,60),nameX="lon_cluster",nameY="lat_cluster",symbolSize=1.5,
+        zColours=brewer.pal(8, "Set3")[c(2,3,4,5)],barOrient='vert',oceanCol="white",landCol=brewer.pal(9,"Pastel1")[9])
+legend(25,95,box.lty=0,bg="transparent","108 landrace GrowHabbit", col="black")
+dev.off()
 
 ############################################################ 重新画地图 ######################################3#############
 library(rgdal)
@@ -287,7 +360,104 @@ ggplot(sub, aes(x=type, y = ABD_0733, fill=type,group=type))+
     axis.title.x=element_text(size = 15),
   ) 
 
+###################################################### 画单倍型网络图 ################
+setwd("/Users/guoyafei/Desktop/coXiao/TraesCS2A02G554200/plot/")
+suppressMessages(library(dplyr))
+library(gdata)
+library (geosphere)
+library(reshape)
+library(ggplot2)
+suppressMessages(library(stringr))
+suppressMessages(library(pegas))
+#library(geneHapR)
+
+info <- read.table("/Users/guoyafei/Desktop/coXiao/单倍型/haploinfo2.txt",sep="\t", header=T,stringsAsFactors = F)
+samples <- info[,c(2,5)]
+alignment <- read.dna("V1.37exonPos.21chr-V2.beagle.min4.fasta",format = "fasta")
 
 
+library(ape)
+nbin<-read.FASTA("V1.37exonPos.21chr-V2.beagle.min4.fasta")
 
 
+pal_10 <- c( "#000000", "#FFFF00", "#1CE6FF", "#FF34FF", "#FF4A46", "#008941","#006FA6", "#A30059", "#FFDBE5", "#7A4900")
+
+samples <- samples %>% filter(ID %in% labels(alignment))
+samples <- droplevels(samples);
+
+# otherwise, the haplotype table will be screwy
+rownames(samples) <- 1:nrow(samples)
+
+# make the data table be in the same order as the aligment (or everything breaks)
+samples <- samples[match(labels(alignment),samples$ID),]
+hap <- haplotype(alignment,strict=F)
+
+# Calculate haplotype network
+rownames(hap) <-  paste0("H", seq(1, length(rownames(hap)), by=1) )
+hap.net <- haploNet(hap)
+#population
+hap.pies <- with(
+  stack(setNames(attr(hap,'index'),1:length(attr(hap,'index')))),
+  table(hap=as.numeric(as.character(ind)),pop=samples[values,"type_plot"])
+)
+#individual
+hap.pies <- with(
+  stack(setNames(attr(hap,'index'),1:length(attr(hap,'index')))),
+  table(hap=as.numeric(as.character(ind)),pop=samples[values,"ID"])
+)
+all <- as.data.frame(hap.pies)
+all2 <- all[which(all$Freq != 0),c(2,1)]
+#write.table(all2, "happie.ind.txt", quote=F, sep="\t",row.names = F)
+
+
+rownames(hap.pies) <-  paste0("H",seq(1, length(rownames(hap)), by=1) )
+#hap.pies <- hap.pies[,c("Wild einkorn","Domesticated einkorn","Wild emmer","Domesticated emmer","Landrace","Cultivar")]
+
+pal <- pal_10
+if (length(pal) > ncol(hap.pies)) {
+  pal <- pal[1:ncol(hap.pies)]
+}
+
+plot(hap.net, size=attr(hap.net, "freq"),
+     scale.ratio =10, cex = 0.7, labels=T, bg=pal,
+     pie=hap.pies, font=2, fast=F, legend =T, show.mutation=T, threshold=0)
+
+legend(x= 57,y=15, colnames(hap.pies), fill=pal_10, cex=0.52, ncol=6, x.intersp=10, text.width=11)
+
+########################################################## 单倍型热图2 分析 ####################################################
+setwd("/Users/guoyafei/Desktop/coXiao/TraesCS2A02G554200/plot")
+data <- read.table("V1.37pos.21chr-geno-V2.out.txt", header=T, check.names = F, stringsAsFactors = F)
+row.names(data) <- data[,1]
+annotation_col <- read.table("/Users/guoyafei/Desktop/coXiao/单倍型/haploinfo2.txt",header=T,check.names=F,stringsAsFactors = F,sep="\t")
+rownames(annotation_col) <- annotation_col$ID
+anno <- annotation_col[which(rownames(annotation_col) %in% colnames(data)),c(3,6),drop=FALSE]
+
+anno2 <- anno[,2,drop=F]
+anno2$type <- factor(anno$`Common name`,levels = c("Wild einkorn","Domesticated einkorn","Urartu","Wild emmer","Domesticated emmer","Georgian wheat","Ispahanicum","Polish wheat","Durum","Rivet wheat","Khorasan wheat","Persian wheat","Spelt","Indian dwarf wheat","Tibetan semi wild","Macha","Club wheat","Vavilovii","Yunan wheat","Xinjiang wheat","Landrace","Cultivar"))
+
+### extract data & plot ------>
+data2 <- data[,which(colnames(data) %in% rownames(anno2))]
+data3 <- data2[,rownames(anno2)]
+cols <- c(brewer.pal(11, "Set3")[c(5)],"#DEEBF7","#FEB24C","#BD0026")
+pdf("/Users/guoyafei/Desktop/coTong/test_tong_region2_all.pdf",width=12,height = 8 )
+pheatmap(data3, show_rownames=T, show_colnames=FALSE, cluster_col = F, legend_breaks = -1:2, legend_labels = c("./.", "0/0", "0/1", "1/1"),cluster_row = FALSE, annotation_col = anno2, annotation_names_col = F)
+dev.off()
+
+#haploinfo2
+annotation_col <- read.table("haploinfo2.txt",header=T,check.names=F,stringsAsFactors = F,sep="\t")
+rownames(annotation_col) <- annotation_col$ID
+anno <- annotation_col[which(rownames(annotation_col) %in% colnames(data)),c(4,5,6),drop=FALSE]
+
+anno2 <- anno[,3,drop=F]
+anno2$type <- factor(anno$type,levels = c("Wild einkorn","Domesticated einkorn","Urartu","Wild emmer","Domesticated emmer","Georgian wheat","Ispahanicum","free-threshing tetraploids","Spelt","Indian dwarf wheat","Tibetan semi wild","Macha","Club wheat","Vavilovii","Yunan wheat","Xinjiang wheat","Landrace","Cultivar"))
+anno2$Ctnt <- factor(anno$Region,levels = c("WA","EU","SA","CA","EA","AF","OA","Nth_AM","Sth_AM"))
+
+#anno4 <- anno3[order(anno3$type,anno3$Ctnt),]
+
+### extract data & plot ------>
+data2 <- data[,which(colnames(data) %in% rownames(anno))]
+data3 <- data2[,rownames(anno)]
+cols <- c(brewer.pal(11, "Set3")[c(5)],"#DEEBF7","#FEB24C","#BD0026")
+pdf("test3.pdf",width=60,height = 40)
+pheatmap(data3, show_rownames=FALSE, show_colnames=F, cluster_col = F, legend_breaks = -1:2, legend_labels = c("./.", "0/0", "0/1", "1/1"),cluster_row = FALSE, annotation_col = anno2, annotation_names_col = F)
+dev.off()

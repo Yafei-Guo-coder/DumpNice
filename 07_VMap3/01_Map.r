@@ -34,19 +34,25 @@ color <- brewer.pal(8, "Dark2")[c(1,2,3,4,6)]
 color <- brewer.pal(8, "Dark2")[c(6)]
 
 #AABBDD
-mp+geom_point(aes(x=taxa$Logitude, y=taxa$Latitude, color=taxa$Genome),size=1)+
-  scale_size(range=c(1,1)) + 
-  scale_color_manual(values = color) +
+sub <- data[which(data$V7 == "Landrace"),]
+sub2 <- sub[38,,drop=F]
+mp+geom_point(data=sub2,aes(x=V5, y=V4, color="lat"),size=1)+
+  geom_point(data=sub2,aes(x=V9, y=V8, color="ori"),size=1)+
+  scale_size(range=c(1,1)) 
+
+mp+geom_point(data=sub,aes(x=V9, y=V8, color=V1),size=1)+
+  scale_size(range=c(1,1)) 
+  Å#scale_color_manual(values = color) +
   #theme_classic() +
   #theme(axis.text.x = element_text(size = 20),axis.title.x = element_text(size = 20),axis.text.y = element_text(size = 20),axis.title.y = element_text(size = 20))+
   #scale_fill_manual(values=c("#97FFFF", "#FFD700", "#FF6347", "#8470FF","#D8BFD8"), 
   #                   breaks=c("AA", "SS", "DD", "AABB","AABBDD"),
   #                   labels=c("AA", "SS", "DD", "AABB","AABBDD"))+
-  theme(axis.text = element_blank(),
-        axis.ticks = element_blank(),
-        axis.title = element_blank(),
-        legend.position = "null",
-        panel.border = element_blank())
+  #theme(axis.text = element_blank(),
+        #axis.ticks = element_blank(),
+        #axis.title = element_blank(),
+        #legend.position = "null",
+        #panel.border = element_blank())
 
 mp+geom_point(aes(x=taxa$Logitude, y=taxa$Latitude,color = color), size=1.5)+
   scale_size(range=c(1,1)) + 

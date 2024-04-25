@@ -85,7 +85,7 @@ ggtitle("North1 VS North2")+
   theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=20),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
 
 out <- strsplit(sub('_',':', dist[,1]) , ":")
-
+data$tissue <- unlist(lapply(X = data$V6, FUN = function(x) {return(strsplit(x, split = "_")[[1]][2])}))
 R CMD INSTALL clusterProfiler_4.0.5.tar.gz 
 
 for(i in c(1:length(data))){
@@ -141,7 +141,9 @@ ggplot(N, aes(x = V2,group = V6)) +
 
 #箱线图
 ggplot(Bdata, aes(x = B))+
-    geom_boxplot(fill = '#f8766d', notch = TRUE)+theme_classic()+  theme(
+    geom_boxplot(fill = '#f8766d', notch = TRUE) +
+    theme_classic() +  
+    theme(
     legend.position="none",
     #panel.border = element_blank(),
     axis.line.y = element_line(),

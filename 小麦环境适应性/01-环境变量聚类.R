@@ -178,6 +178,7 @@ vars2 <- c("soil8","prec7","temp8","prec3","prec6","soil13",
 vars2 <- c("temp9","temp1","temp11","temp6","Elevation","temp10","temp5",
            "soil13","prec1","prec2","prec5","prec8","soil11","soil12","soil9","soil10","temp3","temp4","temp7",
            "soil8","solar2","prec7","temp8","temp2","solar1","solar3","prec4","prec3","prec6")
+
 #corrplot
 corrgram(sub3[,vars2], order = F,lower.panel = panel.shade,upper.panel=panel.pie,gap = 0.1,
          main="Correlogram of environment variables intercorrelations")
@@ -186,7 +187,7 @@ corrgram(sub3[,vars2], order = F,lower.panel = panel.shade,upper.panel=panel.pie
 #无法说明问题
 library(pheatmap)
 pheatmap(scale(sub3),cluster_rows = F,clustering_distance_cols  = "correlation", border_color = "white",cutree_cols  = 3)
-
+                        
 ######################################三种环境变量的主成分分析###################################################
 #library(FactoMineR)
 #library(factoextra)
@@ -1070,7 +1071,6 @@ pre_9 = raster("/data2/yafei/polygenic/worldclim/wc2.1_30s_prec/wc2.1_30s_prec_0
 
 bio12 <- raster("/data2/yafei/polygenic/worldclim/wc2.1_30s_bio/wc2.1_30s_bio_12.tif")
 #北美地区小麦主要收获季节是6-8月
-
 color_palette <- colorRampPalette(c("#e66101","#fdb863","#ffffbf","#b2abd2","#5e3c99","#c2a5cf","#bababa","#a6dba0","#92c5de","#ffffff","#abd9e9","#2c7bb6"))
 m1 <- addLayer(pre_6, pre_7,pre_8)
 r <- stackApply(m1, indices = 1, fun = sum)
@@ -1088,7 +1088,7 @@ plot(r_mask, col=color_palette(100), legend=TRUE)
 dev.off()
 
 #欧洲地区小麦主要收获季节是7-9月
-m1 <- addLayer(pre_7, pre_8,pre_9)
+m1 <- addLayer(pre_7, pre_8, pre_9)
 r <- stackApply(m1, indices = 1, fun = sum)
 shape <- read_sf("/data2/yafei/polygenic/worldclim/NUTS_RG_10M_2021_3035.shp/NUTS_RG_10M_2021_3035.shp")
 shp_proj <- st_transform(shape, crs=crs(r))
@@ -1117,7 +1117,7 @@ dev.off()
 #SPre = monthlyComposite(Pre_CHA, fun=sum, indices=SIndices, cores=4)
 
 ########################################### 确定landrace样本地图分布, kmeans聚类，划分欧亚大陆6个区域样本 #############################################
-library(readxl)
+library(gdata)
 library(ggmap)
 library(RColorBrewer)
 library(cluster)
@@ -1134,10 +1134,13 @@ color <- c(color,color2)
 data <- read.xls("/Users/guoyafei/RstudioProjects/GitHub/R_Code/07_VMap3/Lulab_germplasm_Info.xlsx",sheet=3)
 data <- as.data.frame(data)
 row.names(data) <- data$ID
+sub2 <- data[which(data$region != "Sth_AM" & data$region != "Nth_AM" & data$region != "AF" ),]
+sub <- data[which(data$region != "Sth_AM" & data$region != "Nth_AM" & data$region != "AF" ),c(2,3,89:96,263:264)]
 
-data <- read.table("/Users/guoyafei/RstudioProjects/GitHub/R_Code/07_VMap3/VMap3_523landrace_withBioclimate.txt", header=T, stringsAsFactors = F)
-row.names(data) <- data$ID
-data <- na.omit(data[which(data$region != "Sth_AM" & data$region != "Nth_AM" & data$region != "AF" ),])
+
+#data <- read.table("/Users/guoyafei/RstudioProjects/GitHub/R_Code/07_VMap3/VMap3_523landrace_withBioclimate.txt", header=T, stringsAsFactors = F)
+#row.names(data) <- data$ID
+#data <- na.omit(data[which(data$region != "Sth_AM" & data$region != "Nth_AM" & data$region != "AF" ),])
 
 #根据82个环境变量进行PCA，只需要做一次
 clim <- data[,c(4:85)]
@@ -1165,25 +1168,26 @@ PC <- as.data.frame(PC[,1:10])
 all <- cbind(data[,c(2:3)], PC[,1:10])
   
 #kmeans聚类看一下，手动调整
-df = scale(PC)
+df = scale(sub)
 #聚类数量 vs. 总体平方和
 fviz_nbclust(df, kmeans, method = "wss")
 #聚类数量 vs. 差距统计
-#gap_stat <- clusGap(df,FUN = kmeans,nstart = 25,K.max = 15,B = 50)
-#fviz_gap_stat(gap_stat)
+gap_stat <- clusGap(df,FUN = kmeans,nstart = 25,K.max = 25,B = 50)
+fviz_gap_stat(gap_stat)
 
 set.seed(1)
-km <- kmeans(df, centers = 7, nstart = 25)
+km <- kmeans(df, centers = 14, nstart = 25)
 fviz_cluster(km, data = df)
-#aggregate(USArrests, by=list(cluster=km$cluster), mean)
-final_data <- cbind(rownames(all),data[,c(2:3)], cluster = km$cluster)
+aggregate(USArrests, by=list(cluster=km$cluster), mean)
+final_data <- cbind(rownames(sub),sub, cluster = km$cluster)
 
 final_data$cluster <- as.factor(final_data$cluster)
-all$cluster <- as.factor(all$cluster)
-mp+geom_point(data =all, aes(x=lon, y=lat,color=cluster),size=1)+
-  scale_size(range=c(1,1)) + 
-  scale_color_manual(values = color) +
+
+mp+geom_point(data =final_data, aes(x=lon, y=lat,color=cluster),size=1)+
+  scale_size(range=c(1,1)) +
+  #scale_color_manual(values = color) +
   theme(panel.border = element_blank())
+
 
 data <- read.table("82clim.txt", header=T,stringsAsFactors = F)
 row.names(data) <- data$rownames.all.
@@ -1282,7 +1286,6 @@ ggplot(solar, aes(x=a, y=b))+
   #facet_grid(type~.)+
   theme_classic()+
   theme(axis.text.x=element_text(angle=90, hjust=1))
-
 
 
 

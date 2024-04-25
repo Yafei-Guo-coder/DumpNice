@@ -200,3 +200,397 @@ pdf("test2.pdf")
 ggarrange(ggarrange(p1, p2, ncol = 2, labels = c("A", "B")), ggarrange(p3,ncol = 1, labels = c("C")), nrow = 2)
 dev.off()
 
+
+################################################## IBD & IBE & PC ##################################
+library(gdata)
+library (geosphere)
+library(reshape)
+library(ggplot2)
+setwd("/Users/guoyafei/Desktop/baypass/fst")
+data <- read.table("/Users/guoyafei/Desktop/baypass/fst/sixRegion_fst.out.txt", header = T, stringsAsFactors = F)
+all <- read.xls("/Users/guoyafei/RstudioProjects/GitHub/R_Code/07_VMap3/Lulab_germplasm_Info.xlsx",sheet=3,na.strings=c("NA","#DIV/0!"))
+row.names(all) <- all$ID
+
+#地理距离
+sub <- all[!is.na(all$manual_conti),]
+M <- aggregate(sub, by=list(sub$manual_region), FUN=mean)
+sixRegion <- M[,c(1,3,4,90,91,92)]
+geo_sub <- sixRegion[,2:3,drop=F]
+result3 <- as.data.frame(as.matrix(distm(geo_sub, fun = distGeo)))
+row.names(result3) <- paste(1:6,sep="")
+colnames(result3) <- paste(1:6,sep="")
+result3$id <- rownames(result3)
+c <- melt(result3,id="id")[,c(2,1,3)]
+d <- c[which(as.numeric(c$variable) < as.numeric(c$id)),]
+adap <- cbind(data[which(data$type == "adap"),],d[,3])
+neutral <- cbind(data[which(data$type == "neutral"),],d[,3])
+alldata <- rbind(adap,neutral)
+colnames(alldata)[6] <- "Dis"
+ggplot(alldata, aes(Dis,weightedfst,color=type)) +
+  geom_point( size=3)+
+  theme_classic()
+  
+#环境距离
+geo_sub <- sixRegion[,4:6,drop=F]
+result3 <- as.data.frame(as.matrix(dist(geo_sub, method = "euclidean")))
+row.names(result3) <- paste(1:6,sep="")
+colnames(result3) <- paste(1:6,sep="")
+result3$id <- rownames(result3)
+c <- melt(result3,id="id")[,c(2,1,3)]
+d <- c[which(as.numeric(c$variable) < as.numeric(c$id)),]
+adap <- cbind(data[which(data$type == "adap"),],d[,3])
+neutral <- cbind(data[which(data$type == "neutral"),],d[,3])
+alldata <- rbind(adap,neutral)
+colnames(alldata)[6] <- "Dis"
+ggplot(alldata, aes(Dis,weightedfst,color=type)) +
+  geom_point( size=3)+
+  theme_classic()
+  
+#baypass
+data <- read.table("/Users/guoyafei/Desktop/baypass/fst/baypass_fst.out.txt", header = T, stringsAsFactors = F)
+
+sub <- all[which(all$baypass_cluster != "0"),]
+M <- aggregate(sub, by=list(sub$baypass_cluster), FUN=mean)
+sixRegion <- M[,c(267,3,4,172,173)]
+geo_sub <- sixRegion[,2:3,drop=F]
+result3 <- as.data.frame(as.matrix(distm(geo_sub, fun = distGeo)))
+row.names(result3) <- paste(1:14,sep="")
+colnames(result3) <- paste(1:14,sep="")
+result3$id <- rownames(result3)
+c <- melt(result3,id="id")[,c(2,1,3)]
+d <- c[which(as.numeric(c$variable) < as.numeric(c$id)),]
+adap <- cbind(data[which(data$type == "adap"),],d[,3])
+neutral <- cbind(data[which(data$type == "neutral"),],d[,3])
+alldata <- rbind(adap,neutral)
+colnames(alldata)[6] <- "Dis"
+ggplot(alldata, aes(Dis,weightedfst,color=type)) +
+  geom_point( size=3)+
+  theme_classic()
+
+#环境距离
+geo_sub <- sixRegion[,4:5,drop=F]
+result3 <- as.data.frame(as.matrix(dist(geo_sub, method = "euclidean")))
+row.names(result3) <- paste(1:14,sep="")
+colnames(result3) <- paste(1:14,sep="")
+result3$id <- rownames(result3)
+c <- melt(result3,id="id")[,c(2,1,3)]
+d <- c[which(as.numeric(c$variable) < as.numeric(c$id)),]
+adap <- cbind(data[which(data$type == "adap"),],d[,3])
+neutral <- cbind(data[which(data$type == "neutral"),],d[,3])
+alldata <- rbind(adap,neutral)
+colnames(alldata)[6] <- "Dis"
+ggplot(alldata, aes(Dis,weightedfst,color=type)) +
+  geom_point( size=3)+
+  theme_classic()
+
+PC <- read.table("neutral_ABD_pca.eigenvec", header=F,stringsAsFactors = F)
+rownames(PC) <- PC$V1
+PCdata <- cbind(sub[,c(1,5,6)], PC[sub$ID,3:7])
+ggplot(PCdata, aes(V3,V4,color=manual_conti)) +
+  geom_point( size=3)+
+  theme_classic()
+
+################################################## 经纬度和什么环境变量相关 ##################################
+
+library(ggplot2)
+setwd("/Users/guoyafei/Desktop/baypass")
+data <- read.table("latlon.txt",header=T, row.names = 1, stringsAsFactors = F)
+lat <- data[,1,drop=F]
+lon <- data[,2,drop=F]
+lat$type <- "lat"
+lon$type <- "lon"
+colnames(lat) <- c("value","type")
+colnames(lon) <- c("value","type")
+lat$climate <- row.names(lat)
+lon$climate <- row.names(lon)
+all <- rbind(lat, lon)
+
+all$climate <- factor(all$climate,levels = c("solar","temp","perc","soil"))
+
+ggplot(data=all, mapping=aes(x = type, y=value, fill=climate))+
+  #geom_bar(position="dodge")+
+  geom_bar(stat="identity",position="dodge")+
+  theme_classic()+
+  scale_fill_manual(values = c("#D55E00","#CC79A7","#56B4E9","#009E73","#F0E442","#0072B2", "#999999"))
+
+################################################## 基因的选择次数 ##################################
+setwd("/Users/guoyafei/Desktop/baypass")
+data <- read.table("selectTime_500b_top05.txt", header=T, stringsAsFactors = F)
+sub <- data[which(data$select_time != "1"),]
+
+sub$select_time <- factor(sub$select_time,levels = c("2","3","4",">4"))
+
+sub <- data
+sub$select_time <- factor(sub$select_time,levels = c("2","3","4"))
+sub$type <- factor(sub$type,levels = c("solar","temp","prec","soil"))
+ggplot(data=sub, mapping=aes(x = gene_num, y=type, fill=select_time))+
+  #geom_bar(position="dodge")+
+  geom_bar(stat="identity")+
+  theme_classic()+
+  scale_fill_manual(values = c("#dadaeb","#9e9ac8","#6a51a3","#3f007d"))
+
+################################################## 基因的适应性强度分类 ##################################
+setwd("/Users/guoyafei/Desktop/baypass")
+data <- read.table("class.txt", header=F, stringsAsFactors = F)
+library(ggplot2)
+sub <- data[which(data$V3 != "all" & data$V3 != "other"),]
+sub$fraction <- "NA"
+sub[which(sub$V2 == "all"),4] <- sub[which(sub$V2 == "all"),1] / sum(sub[which(sub$V2 == "all"),1])
+sub[which(sub$V2 == "lat"),4] <- sub[which(sub$V2 == "lat"),1] / sum(sub[which(sub$V2 == "lat"),1])
+sub[which(sub$V2 == "lon"),4] <- sub[which(sub$V2 == "lon"),1] / sum(sub[which(sub$V2 == "lon"),1])
+sub[which(sub$V2 == "type1"),4] <- sub[which(sub$V2 == "type1"),1] / sum(sub[which(sub$V2 == "type1"),1])
+sub[which(sub$V2 == "type2"),4] <- sub[which(sub$V2 == "type2"),1] / sum(sub[which(sub$V2 == "type2"),1])
+sub[which(sub$V2 == "type3"),4] <- sub[which(sub$V2 == "type3"),1] / sum(sub[which(sub$V2 == "type3"),1])
+sub[which(sub$V2 == "type4"),4] <- sub[which(sub$V2 == "type4"),1] / sum(sub[which(sub$V2 == "type4"),1])
+
+all <- sub[which(sub$V2 == "lat"),]
+
+all$ymax <- cumsum(all$fraction)
+all$ymin <- c(0, head(all$ymax, n=-1))
+all$labelPosition <- (all$ymax + all$ymin) / 2
+all$label <- paste0(all$V3, "\n value: ", all$V1)
+ggplot(all, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=V3)) +
+  geom_rect() +
+  geom_label( x=3.5, aes(y=labelPosition, label=label), size=6) +
+  scale_fill_brewer(palette=4) +
+  coord_polar(theta="y") +
+  xlim(c(2, 4)) +
+  theme_void() +
+  theme(legend.position = "none")
+
+
+sub$select_time <- factor(sub$select_time,levels = c("2","3","4"))
+sub$type <- factor(sub$type,levels = c("solar","temp","prec","soil"))
+ggplot(data=sub, mapping=aes(x = gene_num, y=type, fill=select_time))+
+  #geom_bar(position="dodge")+
+  geom_bar(stat="identity")+
+  theme_classic()+
+  scale_fill_manual(values = c("#dadaeb","#9e9ac8","#6a51a3","#3f007d"))
+
+################################################## 环境变量解释经纬度相关位点的遗传方差情况 ##################################
+setwd("~/Desktop/RDA")
+data <- read.table("RDA_lat_lon_inter.txt",header=T,stringsAsFactors = F)
+data <- data[which(data$climate != "all"),]
+data$type <- factor(data$type,levels = c("lat","lon"))
+data$climate <- factor(data$climate,levels = c("solar","temp","prec","soil"))
+ggplot(data=data, mapping=aes(x = type, y=RDA, fill=climate))+
+  #geom_bar(position="dodge")+
+  geom_bar(position="dodge", stat="identity")+
+  theme_classic()+
+  scale_fill_manual(values = c("#dadaeb","#9e9ac8","#6a51a3","#3f007d"))
+
+################################################## 经纬度效应值分布 ##################################
+setwd("/Users/guoyafei/Desktop/baypass")
+lat1 <- read.table("lat_type.bed", header=F, stringsAsFactors = F)
+lat <- lat1[sample(c(1:dim(lat1)[1]),size=5000),]
+pdf("lat_all_BF.pdf", height=4,width=8)
+ggplot(data=lat1, mapping=aes(x = V4, y=V5,color=V8))+
+  facet_grid(.~V8)+
+  #geom_bar(position="dodge")+
+  geom_point(alpha=0.5)+
+  theme_classic()+
+  #xlim(0,15)+
+  #ylim(0,0.06)+
+  #geom_vline(xintercept=3,color='#E69F00',linetype = "dashed")+
+  scale_fill_manual(values = c("#dadaeb","#9e9ac8","#6a51a3","#3f007d"))
+dev.off()
+
+pdf("lon_all_BF.pdf", height=4,width=8)
+lon1 <- read.table("lon_type.bed", header=F, stringsAsFactors = F)
+lon <- lon1[sample(c(1:dim(lon1)[1]),size=5000),]
+ggplot(data=lon1, mapping=aes(x = V4, y=V5, color = V8))+
+  #geom_bar(position="dodge")+
+  facet_grid(.~V8)+
+  geom_point(alpha=0.5)+
+  theme_classic()+
+  #xlim(0,15)+
+  #ylim(0,0.06)+
+  #geom_vline(xintercept=3,color='#E69F00',linetype = "dashed")+
+  scale_fill_manual(values = c("#dadaeb","#9e9ac8","#6a51a3","#3f007d"))
+dev.off()
+
+strong1 <- lat[which(lat$V4 >= 10 & lat$V4 < 15),]
+pdf("lat_strong1_BF.pdf", height=4,width=8)
+ggplot(data=strong1, mapping=aes(x = V4, y=V5, color = V8))+
+  #geom_bar(position="dodge")+
+  facet_grid(.~V8)+
+  geom_point(alpha=0.5)+
+  theme_classic()+
+  #xlim(0,15)+
+  #ylim(0,0.06)+
+  #geom_vline(xintercept=3,color='#E69F00',linetype = "dashed")+
+  scale_fill_manual(values = c("#dadaeb","#9e9ac8","#6a51a3","#3f007d"))
+dev.off()
+
+strong1 <- lon[which(lon$V4 >= 10 & lon$V4 < 15),]
+pdf("lon_strong1_BF.pdf", height=4,width=8)
+ggplot(data=strong1, mapping=aes(x = V4, y=V5, color = V8))+
+  #geom_bar(position="dodge")+
+  facet_grid(.~V8)+
+  geom_point(alpha=0.5)+
+  theme_classic()+
+  #xlim(0,15)+
+  #ylim(0,0.06)+
+  #geom_vline(xintercept=3,color='#E69F00',linetype = "dashed")+
+  scale_fill_manual(values = c("#dadaeb","#9e9ac8","#6a51a3","#3f007d"))
+dev.off()
+
+strong1 <- lat[which(lat$V4 >= 15 & lat$V4 < 20),]
+pdf("lat_strong2_BF.pdf", height=4,width=8)
+ggplot(data=strong1, mapping=aes(x = V4, y=V5, color = V8))+
+  #geom_bar(position="dodge")+
+  facet_grid(.~V8)+
+  geom_point(alpha=0.5)+
+  theme_classic()+
+  #xlim(0,15)+
+  #ylim(0,0.06)+
+  #geom_vline(xintercept=3,color='#E69F00',linetype = "dashed")+
+  scale_fill_manual(values = c("#dadaeb","#9e9ac8","#6a51a3","#3f007d"))
+dev.off()
+
+strong1 <- lon[which(lon$V4 >= 15 & lon$V4 < 20),]
+pdf("lon_strong2_BF.pdf", height=4,width=8)
+ggplot(data=strong1, mapping=aes(x = V4, y=V5, color = V8))+
+  #geom_bar(position="dodge")+
+  facet_grid(.~V8)+
+  geom_point(alpha=0.5)+
+  theme_classic()+
+  #xlim(0,15)+
+  #ylim(0,0.06)+
+  #geom_vline(xintercept=3,color='#E69F00',linetype = "dashed")+
+  scale_fill_manual(values = c("#dadaeb","#9e9ac8","#6a51a3","#3f007d"))
+dev.off()
+
+strong1 <- lat[which(lat$V4 >= 20),]
+pdf("lat_strong3_BF.pdf", height=4,width=8)
+ggplot(data=strong1, mapping=aes(x = V4, y=V5, color = V8))+
+  #geom_bar(position="dodge")+
+  facet_grid(.~V8)+
+  geom_point(alpha=0.5)+
+  theme_classic()+
+  #xlim(0,15)+
+  #ylim(0,0.06)+
+  #geom_vline(xintercept=3,color='#E69F00',linetype = "dashed")+
+  scale_fill_manual(values = c("#dadaeb","#9e9ac8","#6a51a3","#3f007d"))
+dev.off()
+
+strong1 <- lon[which(lon$V4 >= 20),]
+pdf("lon_strong3_BF.pdf", height=4,width=8)
+ggplot(data=strong1, mapping=aes(x = V4, y=V5, color = V8))+
+  #geom_bar(position="dodge")+
+  facet_grid(.~V8)+
+  geom_point(alpha=0.5)+
+  theme_classic()+
+  #xlim(0,15)+
+  #ylim(0,0.06)+
+  #geom_vline(xintercept=3,color='#E69F00',linetype = "dashed")+
+  scale_fill_manual(values = c("#dadaeb","#9e9ac8","#6a51a3","#3f007d"))
+dev.off()
+
+
+################################################## 经纬度效应值分布 + envGWAS ######################################
+library(ggExtra)
+setwd("/Users/guoyafei/Desktop/envgwas/fst")
+lat1 <- read.table("lon_type_fst_allele2.bed", header=F, stringsAsFactors = F)
+
+sub <- lat1[,14:28]
+max_values <- apply(sub, 1, max,na.rm = TRUE)
+min_values <- apply(sub, 1, min,na.rm = TRUE)
+mean_values <- apply(sub, 1, mean,na.rm = TRUE)
+median_values <- apply(sub, 1, median,na.rm = TRUE)
+all <- cbind(lat1, max_values, min_values, mean_values, median_values)
+
+strong1 <- all[sample(c(1:dim(all)[1]),size=8000),]
+strong1 <- all[which(all$V7 > 3),]
+
+strong1 <- all[which(all$V9 < 0.05),]
+strong1 <- strong1[sample(c(1:dim(strong1)[1]),size=8000),]
+
+type1 <- strong1[which(strong1$V10 == "type1"),]
+type2 <- strong1[which(strong1$V10 == "type2"),]
+type3 <- strong1[which(strong1$V10 == "type3"),]
+type4 <- strong1[which(strong1$V10 == "type4"),]
+
+strong1$x <- abs(strong1$V34)
+#strong1$x <- abs(strong1$V5)
+strong1$y <- abs(strong1$V8)
+
+p1 <- ggplot(data=strong1, mapping=aes(x = x, y = y))+
+  geom_point(alpha=0.1)+
+  theme_classic()+
+  #geom_density_2d(color = "blue", size = 1) + # 将散点图转换为密度图
+  geom_smooth(method = "lm", color = "#a50f15",se = TRUE,  fill = "lightgray") +
+  theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))+
+  xlab("Baypass Effect Size")+
+  ylab("envGWAS Effect Size")+
+  scale_fill_manual(values = c("#dadaeb","#9e9ac8","#6a51a3","#3f007d"))
+
+ggMarginal(p1, type = "histogram", fill = "#a50f15", color = "black")
+ggMarginal(p1, type = "histogram", fill = "#54278f", color = "black")
+
+data <- read.table("~/Desktop/test.txt3",header=F,stringsAsFactors = F)
+ggplot(data=data, mapping=aes(x = V1, y = V2))+
+  geom_point(alpha=0.1)+
+  theme_classic()+
+  xlab("Allele 1 Effect Size")+
+  ylab("Allele 2 Effect Size")+
+  theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 15),axis.title.y = element_text(size = 25))
+
+################################################## 经纬度效应值分布 + envGWAS + fst ######################################
+setwd("/Users/guoyafei/Desktop/envgwas/fst")
+lat1 <- read.table("lat_type_fst.bed", header=F, stringsAsFactors = F)
+
+sub <- lat1[,14:28]
+max_values <- apply(sub, 1, max,na.rm = TRUE)
+min_values <- apply(sub, 1, min,na.rm = TRUE)
+mean_values <- apply(sub, 1, mean,na.rm = TRUE)
+median_values <- apply(sub, 1, median,na.rm = TRUE)
+all <- as.data.frame(cbind(lat1, max_values, min_values, mean_values, median_values))
+all <- all[!is.na(all),]
+
+strong1 <- all[sample(c(1:dim(all)[1]),size=8000),]
+#strong1 <- lat1[which(lat1$V4 >= 10 & lat1$V4 < 15),]
+#strong1 <- lat1[which(lat1$V4 >= 15 & lat1$V4 < 20),]
+#strong1 <- lat1[which(lat1$V4 >= 20),]
+strong1 <- all[which(all$V7 > 3),]
+
+strong1 <- all[which(all$V9 < 0.05),]
+strong1 <- strong1[sample(c(1:dim(strong1)[1]),size=8000),]
+
+type1 <- strong1[which(strong1$V10 == "type1"),]
+#BF_beta: lat: Adjusted R-squared:  0.3492   p-value: < 2.2e-16
+#BF_beta: lon: Adjusted R-squared:  0.3284  
+#envGWAS_beta: lat: Adjusted R-squared:  0.1749  
+#envGWAS_beta: lon: Adjusted R-squared:  0.1208 
+type2 <- strong1[which(strong1$V10 == "type2"),]
+#BF_beta: lat: Adjusted R-squared:  0.3793  p-value: < 2.2e-16
+#BF_beta: lon: Adjusted R-squared:  0.1068 
+#envGWAS_beta: lat: Adjusted R-squared:  0.2014  
+#envGWAS_beta: lon: Adjusted R-squared:  0.01333 
+type3 <- strong1[which(strong1$V10 == "type3"),]
+#BF_beta: lat: Adjusted R-squared:  0.2805 
+#BF_beta: lon: Adjusted R-squared:  0.4471 
+#envGWAS_beta: lat: Adjusted R-squared:  0.2067
+#envGWAS_beta: lon: Adjusted R-squared:  0.1164 
+type4 <- strong1[which(strong1$V10 == "type4"),]
+#BF_beta: lat: Adjusted R-squared:  0.3528 
+#BF_beta: lon: Adjusted R-squared:  0.2037 
+#envGWAS_beta: lat: Adjusted R-squared:  0.403 
+#envGWAS_beta: lon: Adjusted R-squared:  0.09374 
+
+pdf("envGWAS_pop5-6.pdf", width=5, height=5)
+ggplot(data=strong1, mapping=aes(x = abs(V8), y=V28))+
+  #geom_bar(position="dodge")+
+  #facet_grid(.~V10)+
+  geom_point(alpha=0.3)+
+  theme_classic()+
+  #xlim(0,15)+
+  #ylim(0,0.06)+
+  xlab("envGWAS Effect Size")+
+  ylab("Fst")+
+  #geom_vline(xintercept=3,color='#E69F00',linetype = "dashed")+
+  geom_smooth(method = "lm", color = "black", fill = "lightgray") +
+  #geom_smooth(se = TRUE, method = "lm", formula = y ~ x)+
+  scale_fill_manual(values = c("#dadaeb","#9e9ac8","#6a51a3","#3f007d"))+
+  theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 15),axis.title.y = element_text(size = 25))
+dev.off()

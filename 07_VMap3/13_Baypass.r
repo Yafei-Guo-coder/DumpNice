@@ -119,7 +119,6 @@ SA <- c(4,10,19)
 EU <- c(9,15,22,23)
 Other <- c(14,21,24)
 
-
 test <- c(1,16,17)
 data$type <- as.factor(data$type)
 sub <- data[which(data$type %in% Other),]
@@ -205,3 +204,20 @@ for(i in c(3,4,5,8:42)){
   print(p)
 }
 dev.off()
+
+################ PC-相关性 ################
+library(corrgram)
+setwd("/Users/guoyafei/Desktop/envgwas/baypass")
+data <- read.table("baypass_uniq.txt", header = T, stringsAsFactors = F)
+sub <- data[,-c(1,2,3,4,5,18)]
+summary(lm(data$solar15_PC1~data$solar15_PC2))
+
+corrgram(sub, order = F,lower.panel = NULL,upper.panel=panel.pie,text.panel = panel.txt, gap = 0.1,
+         main="Correlogram of environment variables intercorrelations")
+
+
+
+
+
+
+

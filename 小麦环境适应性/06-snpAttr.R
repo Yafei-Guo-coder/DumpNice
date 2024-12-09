@@ -1,6 +1,6 @@
 #snpAttr
 #关联分析#############
-setwd("/Users/guoyafei/Desktop/snpAttr")
+#setwd("/Users/guoyafei/Desktop/snpAttr")
 data <- read.table("rand100k_max.txt", header=T, stringsAsFactors = F)
 library(ggplot2)
 # [1] "ID"                        "fst_pop01_pop02"           "fst_pop01_pop03"           "fst_pop01_pop04"           "fst_pop01_pop05"          
@@ -49,8 +49,6 @@ ggplot(data=sub, aes(x=abs(sub$baypass_type1_Beta), y=Max)) +
   theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
 dev.off()
 
-
-
 ggplot(sub, aes(y = abs(envGWAS_type4_Beta_absmax), group = as.factor(poppair05_3sstdev), fill = as.factor(poppair05_3sstdev)))+
   geom_boxplot(notch = FALSE) +
   theme_classic() +  
@@ -65,8 +63,6 @@ ggplot(sub, aes(y = abs(envGWAS_type4_Beta_absmax), group = as.factor(poppair05_
     axis.title.x=element_text(size = 15),
   ) 
 
-
-
 #画图baypass_Beta-----
 sub <- data[which(data$baypass_type1_Beta != "NA" & data$envGWAS_type1_P_min < 0.05),]
 a1 <- t.test(abs(sub[which(sub$poppair01_3sstdev == "1"), 18]), abs(sub[which(sub$poppair01_3sstdev == "0"), 18]))
@@ -75,14 +71,12 @@ c1 <- t.test(abs(sub[which(sub$poppair03_3sstdev == "1"), 18]), abs(sub[which(su
 d1 <- t.test(abs(sub[which(sub$poppair04_3sstdev == "1"), 18]), abs(sub[which(sub$poppair04_3sstdev == "0"), 18]))
 e1 <- t.test(abs(sub[which(sub$poppair05_3sstdev == "1"), 18]), abs(sub[which(sub$poppair05_3sstdev == "0"), 18]))
 
-
 sub <- data[which(data$baypass_type2_Beta != "NA" & data$envGWAS_type2_P_min < 0.05),]
 a2 <- t.test(abs(sub[which(sub$poppair01_3sstdev == "1"), 26]), abs(sub[which(sub$poppair01_3sstdev == "0"), 26]))
 b2 <- t.test(abs(sub[which(sub$poppair02_3sstdev == "1"), 26]), abs(sub[which(sub$poppair02_3sstdev == "0"), 26]))
 c2 <- t.test(abs(sub[which(sub$poppair03_3sstdev == "1"), 26]), abs(sub[which(sub$poppair03_3sstdev == "0"), 26]))
 d2 <- t.test(abs(sub[which(sub$poppair04_3sstdev == "1"), 26]), abs(sub[which(sub$poppair04_3sstdev == "0"), 26]))
 e2 <- t.test(abs(sub[which(sub$poppair05_3sstdev == "1"), 26]), abs(sub[which(sub$poppair05_3sstdev == "0"), 26]))
-
 
 sub <- data[which(data$baypass_type3_Beta != "NA" & data$envGWAS_type3_P_min < 0.05),]
 a3 <- t.test(abs(sub[which(sub$poppair01_3sstdev == "1"), 34]), abs(sub[which(sub$poppair01_3sstdev == "0"), 34]))
@@ -91,15 +85,12 @@ c3 <- t.test(abs(sub[which(sub$poppair03_3sstdev == "1"), 34]), abs(sub[which(su
 d3 <- t.test(abs(sub[which(sub$poppair04_3sstdev == "1"), 34]), abs(sub[which(sub$poppair04_3sstdev == "0"), 34]))
 e3 <- t.test(abs(sub[which(sub$poppair05_3sstdev == "1"), 34]), abs(sub[which(sub$poppair05_3sstdev == "0"), 34]))
 
-
 sub <- data[which(data$baypass_type4_Beta != "NA" & data$envGWAS_type4_P_min < 0.05),]
 a4 <- t.test(abs(sub[which(sub$poppair01_3sstdev == "1"), 42]), abs(sub[which(sub$poppair01_3sstdev == "0"), 42]))
 b4 <- t.test(abs(sub[which(sub$poppair02_3sstdev == "1"), 42]), abs(sub[which(sub$poppair02_3sstdev == "0"), 42]))
 c4 <- t.test(abs(sub[which(sub$poppair03_3sstdev == "1"), 42]), abs(sub[which(sub$poppair03_3sstdev == "0"), 42]))
 d4 <- t.test(abs(sub[which(sub$poppair04_3sstdev == "1"), 42]), abs(sub[which(sub$poppair04_3sstdev == "0"), 42]))
 e4 <- t.test(abs(sub[which(sub$poppair05_3sstdev == "1"), 42]), abs(sub[which(sub$poppair05_3sstdev == "0"), 42]))
-
-
 
 p <- c(a1$p.value, b1$p.value,c1$p.value,d1$p.value,e1$p.value,a2$p.value, b2$p.value,c2$p.value,d2$p.value,e2$p.value,a3$p.value, b3$p.value,c3$p.value,d3$p.value,e3$p.value,a4$p.value, b4$p.value,c4$p.value,d4$p.value,e4$p.value)
 select_mean <- c(a1$estimate[1], b1$estimate[1],c1$estimate[1],d1$estimate[1],e1$estimate[1],a2$estimate[1], b2$estimate[1],c2$estimate[1],d2$estimate[1],e2$estimate[1],a3$estimate[1], b3$estimate[1],c3$estimate[1],d3$estimate[1],e3$estimate[1],a4$estimate[1], b4$estimate[1],c4$estimate[1],d4$estimate[1],e4$estimate[1])
@@ -156,6 +147,7 @@ ggplot( data=all, aes(x=type, y=route, size = size, color = logP,shape=as.factor
   scale_size(range = c(2, 19), name="Population (M)") +
   theme_bw()
 dev.off()
+
 #画图envGWAS_Beta------
 library(reshape)
 library(ggplot2)
@@ -170,14 +162,12 @@ c1 <- t.test(abs(sub[which(sub$poppair03_3sstdev == "1"), 22]), abs(sub[which(su
 d1 <- t.test(abs(sub[which(sub$poppair04_3sstdev == "1"), 22]), abs(sub[which(sub$poppair04_3sstdev == "0"), 22]))
 e1 <- t.test(abs(sub[which(sub$poppair05_3sstdev == "1"), 22]), abs(sub[which(sub$poppair05_3sstdev == "0"), 22]))
 
-
 sub <- data[which(data$baypass_type2_Beta != "NA" & data$envGWAS_type2_P_min < 0.5),]
 a2 <- t.test(abs(sub[which(sub$poppair01_3sstdev == "1"), 30]), abs(sub[which(sub$poppair01_3sstdev == "0"), 30]))
 b2 <- t.test(abs(sub[which(sub$poppair02_3sstdev == "1"), 30]), abs(sub[which(sub$poppair02_3sstdev == "0"), 30]))
 c2 <- t.test(abs(sub[which(sub$poppair03_3sstdev == "1"), 30]), abs(sub[which(sub$poppair03_3sstdev == "0"), 30]))
 d2 <- t.test(abs(sub[which(sub$poppair04_3sstdev == "1"), 30]), abs(sub[which(sub$poppair04_3sstdev == "0"), 30]))
 e2 <- t.test(abs(sub[which(sub$poppair05_3sstdev == "1"), 30]), abs(sub[which(sub$poppair05_3sstdev == "0"), 30]))
-
 
 sub <- data[which(data$baypass_type3_Beta != "NA" & data$envGWAS_type3_P_min < 0.5),]
 a3 <- t.test(abs(sub[which(sub$poppair01_3sstdev == "1"), 38]), abs(sub[which(sub$poppair01_3sstdev == "0"), 38]))
@@ -186,15 +176,12 @@ c3 <- t.test(abs(sub[which(sub$poppair03_3sstdev == "1"), 38]), abs(sub[which(su
 d3 <- t.test(abs(sub[which(sub$poppair04_3sstdev == "1"), 38]), abs(sub[which(sub$poppair04_3sstdev == "0"), 38]))
 e3 <- t.test(abs(sub[which(sub$poppair05_3sstdev == "1"), 38]), abs(sub[which(sub$poppair05_3sstdev == "0"), 38]))
 
-
 sub <- data[which(data$baypass_type4_Beta != "NA" & data$envGWAS_type4_P_min < 0.5),]
 a4 <- t.test(abs(sub[which(sub$poppair01_3sstdev == "1"), 46]), abs(sub[which(sub$poppair01_3sstdev == "0"), 46]))
 b4 <- t.test(abs(sub[which(sub$poppair02_3sstdev == "1"), 46]), abs(sub[which(sub$poppair02_3sstdev == "0"), 46]))
 c4 <- t.test(abs(sub[which(sub$poppair03_3sstdev == "1"), 46]), abs(sub[which(sub$poppair03_3sstdev == "0"), 46]))
 d4 <- t.test(abs(sub[which(sub$poppair04_3sstdev == "1"), 46]), abs(sub[which(sub$poppair04_3sstdev == "0"), 46]))
 e4 <- t.test(abs(sub[which(sub$poppair05_3sstdev == "1"), 46]), abs(sub[which(sub$poppair05_3sstdev == "0"), 46]))
-
-
 
 p <- c(a1$p.value, b1$p.value,c1$p.value,d1$p.value,e1$p.value,a2$p.value, b2$p.value,c2$p.value,d2$p.value,e2$p.value,a3$p.value, b3$p.value,c3$p.value,d3$p.value,e3$p.value,a4$p.value, b4$p.value,c4$p.value,d4$p.value,e4$p.value)
 select_mean <- c(a1$estimate[1], b1$estimate[1],c1$estimate[1],d1$estimate[1],e1$estimate[1],a2$estimate[1], b2$estimate[1],c2$estimate[1],d2$estimate[1],e2$estimate[1],a3$estimate[1], b3$estimate[1],c3$estimate[1],d3$estimate[1],e3$estimate[1],a4$estimate[1], b4$estimate[1],c4$estimate[1],d4$estimate[1],e4$estimate[1])
@@ -210,7 +197,6 @@ all$color <- 1
 all[which(all$select_mean < all$noselect_mean),7] <- -1
 
 all$size <- all$noselect_mean/all$select_mean
-
 
 a <- all[,c(4,5,6)]
 cats <- cast(a,route~type)
@@ -286,11 +272,9 @@ ggplot(sub, aes(y = beta_max, group = as.factor(select), fill = as.factor(select
   ) 
 dev.off()
 
-##2018Science#############
+## 2018 Science #############
 setwd("/Users/guoyafei/Desktop/network/2018science")
 data <- read.table("selection_Uniq.txt", header=F,stringsAsFactors = F)
-
-
 data$logP <- -log(data$V3,10)
 data$color <- 1
 data[which(data$logP > 2),6] <- 0
@@ -310,11 +294,12 @@ dev.off()
 
 #不同类型基因的unique和shared情况####
 setwd("/Users/guoyafei/Desktop/network/2018science/gene")
+setwd("/Users/guoyafei/Desktop/network/shareUniq/")
 library(UpSetR)
-type1 <- read.table("type1.3k.gene", header=F, stringsAsFactors = F)[,1]
-type2 <- read.table("type2.3k.gene", header=F, stringsAsFactors = F)[,1]
-type3 <- read.table("type3.3k.gene", header=F, stringsAsFactors = F)[,1]
-type4 <- read.table("type4.3k.gene", header=F, stringsAsFactors = F)[,1]
+type1 <- read.table("type1_3k.gene", header=F, stringsAsFactors = F)[,1]
+type2 <- read.table("type2_3k.gene", header=F, stringsAsFactors = F)[,1]
+type3 <- read.table("type3_3k.gene", header=F, stringsAsFactors = F)[,1]
+type4 <- read.table("type4_3k.gene", header=F, stringsAsFactors = F)[,1]
 type1 <- read.table("type1.pos.bed", header=F, stringsAsFactors = F)
 type1_pos <- paste(type1$V1, type1$V3, sep="-")
 type2 <- read.table("type2.pos.bed", header=F, stringsAsFactors = F)
@@ -329,10 +314,10 @@ a <- list(solar<-type1,temperature<-type2,precipitation<-type3,soil<-type4)
 a <- list(solar<-type1_pos,temperature<-type2_pos,precipitation<-type3_pos,soil<-type4_pos)
 names(a) <- c("solar","temperature","precipitation","soil")
 tmp <- names(a)
-p <- upset(fromList(a), keep.order = TRUE, sets=tmp, text.scale = c(2),point.size = 2.5, line.size = 1.5)
-
+pdf("intersect.gene.pdf", height=4,width=10)
+upset(fromList(a), keep.order = TRUE, sets=tmp, text.scale = c(2),point.size = 2.5, line.size = 1.5)
+dev.off()
 #分析不同的位点unique和shared类型的效应值有什么差异####
-
 setwd("/Users/guoyafei/Desktop/network/2018science/gene")
 dataM <- read.table("/Users/guoyafei/Desktop/network/2018science/gene/all.pos.timeM.out.txt", header=F, stringsAsFactors = F)
 dataU <- read.table("/Users/guoyafei/Desktop/network/2018science/gene/all.pos.timeU.out.txt", header=F, stringsAsFactors = F)
@@ -353,7 +338,6 @@ colnames(M_type1) <- c("baypass_beta","envGWAS_beta","max","type")
 colnames(U_type1) <- c("baypass_beta","envGWAS_beta","max","type")
 all2 <- rbind(M_type1,U_type1)
 
-
 M_type1 <- dataM[which(dataM$V33 != "NA"),c(34,38,57)]
 U_type1 <- dataU[which(dataU$V33 != "NA"),c(34,38,57)]
 M_type1$type <- "M"
@@ -361,7 +345,6 @@ U_type1$type <- "U"
 colnames(M_type1) <- c("baypass_beta","envGWAS_beta","max","type")
 colnames(U_type1) <- c("baypass_beta","envGWAS_beta","max","type")
 all3 <- rbind(M_type1,U_type1)
-
 
 M_type1 <- dataM[which(dataM$V41 != "NA"),c(42,46,57)]
 U_type1 <- dataU[which(dataU$V41 != "NA"),c(42,46,57)]
@@ -410,6 +393,7 @@ ggplot(out, aes(y =abs(max), group=as.factor(type), fill=as.factor(type)))+
     axis.ticks.x = element_blank(),
     plot.title = element_text(color="Black", size=20, face="bold.italic")
   )
+
 ggplot(all_f, aes(x=abs(envGWAS_beta),y =abs(max), color=as.factor(type),group=as.factor(type), fill=as.factor(type)))+
   geom_point(alpha=0.5) +
   theme_classic() + 
@@ -429,7 +413,7 @@ ggplot(all_f, aes(x=abs(envGWAS_beta),y =abs(max), color=as.factor(type),group=a
     legend.title=element_blank(),
     axis.ticks.x = element_blank(),
     plot.title = element_text(color="Black", size=20, face="bold.italic")
-  )
+)
 
 
 #分析不同的位点unique和shared类型在网络连接度上有什么差异####
@@ -449,7 +433,6 @@ type3_U <- read.table("type3.3k.time1.txt", header=F, stringsAsFactors = F)
 type3_M <- read.table("type3.3k.timeM.txt", header=F, stringsAsFactors = F)
 type4_U <- read.table("type4.3k.time1.txt", header=F, stringsAsFactors = F)
 type4_M <- read.table("type4.3k.timeM.txt", header=F, stringsAsFactors = F)
-
 
 pdf("spread_r05_介数连接度.pdf")
 for(i in c(1:length(file))){
@@ -488,12 +471,9 @@ dev.off()
 t.test(network[which(network$type == "M"),3], network[which(network$type == "U"),3])
 
 wilcox.test(network[which(network$type == "M"),3], network[which(network$type == "U"),3])
-
-
 t.test(sub[which(sub$type == "M"),4], sub[which(sub$type == "U"),4])
 wilcox.test(sub[which(sub$type == "M"),4], sub[which(sub$type == "U"),4])
 table(sub$type)
-
 
 #分析不同的位点unique和shared类型在网络中表达强度上有什么差异#####
 expre <- read.table("/Users/guoyafei/Desktop/network/2018science/expression/grain.tpm.type2.expression", header=F,stringsAsFactors = F)
@@ -502,7 +482,6 @@ shuf_expre <- read.table("/Users/guoyafei/Desktop/network/2018science/expression
 shuf_expre <- shuf_expre[which(shuf_expre$V2 > 0.05),]
 network$gene <- NA
 rownames(ID) <- ID[,1]
-
 
 all <- merge(network, ID, by.x="V1", by.y="V1")
 all2 <- merge(all,expre,by.x="V2.y", by.y="V1")
@@ -542,11 +521,8 @@ ggplot(sub, aes(y =V8, group=as.factor(V5), fill=as.factor(V5)))+
 t.test(all3[which(all3$V5 == "U"),9], all3[which(all3$V5 == "M"),9])
 t.test(sub[which(sub$V5 == "Z"),9], sub[which(sub$V5 == "M"),9])
 
-
-
 wilcox.test(all3[which(all3$V5 == "M"),10], all3[which(all3$V5 == "U"),10])
 table(expre$type)
-
 
 setwd("/Users/guoyafei/Desktop/network/2018science/expression/")
 library(ggplot2)
@@ -589,8 +565,6 @@ ggplot(sub, aes(y =V2, group=as.factor(type), fill=as.factor(type)))+
 t.test(expre[which(expre$type == "M"),2], expre[which(expre$type == "U"),2])
 wilcox.test(expre[which(expre$type == "M"),2], expre[which(expre$type == "U"),2])
 table(expre$type)
-
-
 
 #分析不同的位点unique和shared类型在不同组织中表达量上有什么差异####
 setwd("/Users/guoyafei/Desktop/network/2018science/expression")
@@ -1066,7 +1040,6 @@ allCities %>%
   filter(city == "Houston") %>%
   add_lines(name = "Houston")
 
-
 ggplot(data, aes(x=root, y = abiotic))+
   #ggplot(data, aes(x = leaf, y=abs(envGWAS_Beta_absmax)))+
   geom_point() +
@@ -1096,7 +1069,6 @@ summary(lm(data$root ~ data$grain))
 [31] "fst_pop03_pop04"     "fst_pop03_pop05"     "fst_pop05_pop06"     "type"  
 
 all <- as.data.frame(rbind(data1[,c(9,17)],data2[,c(9,34)]))
-
 #看选择重复性和选择次数的相关性
 rep <- read.table("genome_selectTime_PicMin.txt", header=F, stringsAsFactors = F)
 ggplot(all, aes(y = xp_p, group=as.factor(type),color =as.factor(type)))+
@@ -1120,161 +1092,83 @@ ggplot(all, aes(y = xp_p, group=as.factor(type),color =as.factor(type)))+
   )
 
 #meta分析NEW#####
-setwd("/Users/guoyafei/Desktop/snpAttr/meta")
+setwd("/Users/guoyafei/Desktop/snpAttr/meta/NEW")
+lat <- read.table("lat_3k.out", header=T, stringsAsFactors = F)
+lon <- read.table("lon_3k.out", header=T, stringsAsFactors = F)
+type1 <- read.table("type1_3k.out", header=T, stringsAsFactors = F)
+type2 <- read.table("type2_3k.out", header=T, stringsAsFactors = F)
+type3 <- read.table("type3_3k.out", header=T, stringsAsFactors = F)
+type4 <- read.table("type4_3k.out", header=T, stringsAsFactors = F)
+shuf <- read.table("shuf8k.out", header=T, stringsAsFactors = F)
 
-data <- read.table("type1.3k.gene.out", header=T, stringsAsFactors = F)
-data <- read.table("all.adapt.txt", header=T, stringsAsFactors = F)
-#cons1
-sub <- t(scale(na.omit(data[,c(2,4)])))
-pheatmap(sub,cluster_rows = T,cluster_cols = T, clustering_distance_cols = "euclidean", clustering_method = "complete", border_color = "white",cutree_cols  = 4)
-hc <- hclust(dist(t(sub)), method = "complete")
-clusters <- cutree(hc, 4)
-group1 <- data[which(clusters == 1),c(1,2,4)]
-group1$type <- "group1"
-group2 <- data[which(clusters == 2),c(1,2,4)]
-group2$type <- "group2"
-group3 <- data[which(clusters == 3),c(1,2,4)]
-group3$type <- "group3"
-group4 <- data[which(clusters == 4),c(1,2,4)]
-group4$type <- "group4"
-all <- rbind(group1,group2,group3,group4)
-write.table(all, "cons1.4group.txt", row.names = F,quote=F, sep="\t")
-#tau
-sub <- t(scale(na.omit(data[,c(3,4)])))
-pheatmap(sub,cluster_rows = T,cluster_cols = T, clustering_distance_cols = "euclidean", clustering_method = "complete", border_color = "white",cutree_cols  = 4)
-hc <- hclust(dist(t(sub)), method = "complete")
-clusters <- cutree(hc, 4)
-group1 <- data[which(clusters == 1),c(1,3,4)]
-group1$type <- "group1"
-group2 <- data[which(clusters == 2),c(1,3,4)]
-group2$type <- "group2"
-group3 <- data[which(clusters == 3),c(1,3,4)]
-group3$type <- "group3"
-group4 <- data[which(clusters == 4),c(1,3,4)]
-group4$type <- "group4"
-all <- rbind(group1,group2,group3,group4)
-write.table(all, "tau.4group.txt", row.names = F,quote=F, sep="\t")
-#root
-sub <- t(scale(na.omit(data[,c(5,4)])))
-pheatmap(sub,cluster_rows = T,cluster_cols = T, clustering_distance_cols = "euclidean", clustering_method = "complete", border_color = "white",cutree_cols  = 4)
-hc <- hclust(dist(t(sub)), method = "complete")
-clusters <- cutree(hc, 4)
-group1 <- data[which(clusters == 1),c(1,5,4)]
-group1$type <- "group1"
-group2 <- data[which(clusters == 2),c(1,5,4)]
-group2$type <- "group2"
-group3 <- data[which(clusters == 3),c(1,5,4)]
-group3$type <- "group3"
-group4 <- data[which(clusters == 4),c(1,5,4)]
-group4$type <- "group4"
-all <- rbind(group1,group2,group3,group4)
-write.table(all, "rootdegree.4group.txt", row.names = F,quote=F, sep="\t")
+#先看一下不同类型的基因在不同的组织里面的表达差异情况
+lat$type <- "latitude"
+lon$type <- "longitude"
+type1$type <- "solar"
+type2$type <- "temperature"
+type3$type <- "precipitation"
+type4$type <- "soil"
+shuf$type <- "shuf"
+
+#度（不是表达量）####
+library(reshape2)
+library(ggplot2)
+all <- rbind(lat[,c(7,10,13,16,18,20,32)], lon[,c(7,10,13,16,18,20,32)], type1[,c(7,10,13,16,18,20,32)],type2[,c(7,10,13,16,18,20,32)],type3[,c(7,10,13,16,18,20,32)],type4[,c(7,10,13,16,18,20,32)],shuf[,c(7,10,13,16,18,20,57)])
+cats <- melt(all, id="type")
+cat <- cats[which(cats$value <0.5),]
+cat$type <- factor(cat$type, levels=c("solar","temperature","precipitation","soil","shuf"))
+cat$variable <- factor(cat$variable, levels=c("root","spike","leaf","grain","disease","abiotic"))
+
+ggplot(cat, aes(x=variable, y =value, fill=as.factor(type)))+
+  geom_boxplot( notch = F) +
+  theme_classic() +   
+  scale_fill_manual(values = c("#FDC086","#BEAED4","#ffffb3","#fccde5","blue","red","yellow")) +
+  theme(legend.title="")+
+  ylab("TPM")+
+  theme(
+    axis.line.y = element_line(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.y=element_text(size=15),
+    axis.text.x=element_text(size=15),
+    axis.title.y=element_text(size = 15),
+    axis.title.x=element_blank(),
+    legend.title=element_blank(),
+    plot.title = element_text(color="Black", size=20, face="bold.italic"))
 
 
-data <- read.table("shuf.5k.gene.out", header=T, stringsAsFactors = F)
-data1 <- read.table("type2.3k.time1.txt.out", header=T,strings=F)
-data1$cat <- "uniq"
-data2 <- read.table("type1.3k.timeM.txt.out", header=T,strings=F)
-data2$cat <- "share"
-data <- as.data.frame(rbind(data1,data2))
-data[which(data$root_cc == 0),10] <- NA
-sub <- na.omit(data[,c(2,4,8,5,21)])
+#保守性和组织特异性和网络链接度####
+#all <- rbind(lat[,c(2,4,5,32)], lon[,c(2,4,5,32)], type1[,c(2,4,5,32)],type2[,c(2,4,5,32)],type3[,c(2,4,5,32)],type4[,c(2,4,5,32)],shuf[,c(2,4,5,57)])
+all <- rbind( type1[,c(7,10,18,20,32)],type2[,c(7,10,18,20,32)],type3[,c(7,10,18,20,32)],type4[,c(7,10,18,20,32)],shuf[,c(7,10,18,20,57)])
+all <- rbind( type1[,c(8,11,19,21,32)],type2[,c(8,11,19,21,32)],type3[,c(8,11,19,21,32)],type4[,c(8,11,19,21,32)],shuf[,c(8,11,19,21,57)])
 
-sub2 <- na.omit(data[,c(2,4,8,5)])
-
-sub$envGWAS_Beta_absmax <- abs(sub$envGWAS_Beta_absmax)
-sub$baypass_Beta <- abs(sub$baypass_Beta)
-
-data1 <- read.table("shuf.5k.gene.out", header=T, stringsAsFactors = F)
-data1$type <- "shuf"
-
-data2 <- read.table("type1.3k.gene.out", header=T, stringsAsFactors = F)
-data2$type <- "adapt"
-
-all <- as.data.frame(rbind(data1[,c(2,17)],data2[,c(2,34)]))
-
-sub$envGWAS_Beta_absmax <- abs(sub$envGWAS_Beta_absmax)
-sub$baypass_Beta <- abs(sub$baypass_Beta)
-
-#colnames(data)
-[1] "Gene"                "cons1"               "cons2"               "tau"                 "xp_p"                "poppair"            
-[7] "popsingle"           "root"                "root_bc"             "root_cc"             "grain"               "grain_bc"           
-[13] "grain_cc"            "abiotic"             "abiotic_bc"          "abiotic_cc"          "ID"                  "fst_Average"        
-[19] "fst_Median"          "fst_Min"             "fst_Max"             "baypass_BF"          "baypass_Beta"        "baypass_eBPis"      
-[25] "envGWAS_Beta_median" "envGWAS_Beta_absmax" "envGWAS_P_median"    "envGWAS_P_min"       "fst_pop01_pop02"     "fst_pop02_pop03"    
-[31] "fst_pop03_pop04"     "fst_pop03_pop05"     "fst_pop05_pop06"
-
-#colnames(data)
-[1] "Gene"       "cons1"      "cons2"      "tau"        "xp_p"       "poppair"    "popsingle"  "root"       "root_bc"    "root_cc"    "grain"     
-[12] "grain_bc"   "grain_cc"   "abiotic"    "abiotic_bc" "abiotic_cc"
-
-library(corrgram)
-corrgram(sub, order = F,lower.panel = panel.shade,upper.panel=panel.pie,gap = 0.1,
-         main="Correlogram of environment variables intercorrelations")
-library(pheatmap)
-data <- read.table("test", header=F,stringsAsFactors = F)
-sub <- t(scale(na.omit(data[,c(2,4)])))
-
-pheatmap(sub,cluster_rows = T,cluster_cols = T, border_color = "white",cutree_cols  = 4)
-
-#相关性
-library(GGally)
-ggcorr(sub, method = c("everything","pearson"),  
-       geom = "circle", max_size = 15,  # 使用圆形表示相关系数
-       label = TRUE, label_size = 3,angle = 0,  # 设置圆形的角度
-       palette = "RdYlBu",  # 设置调色板为红黄蓝
-       hjust = 1, size = 4, color = "grey50",  # 设置相关系数标签的位置、大小和颜色
-       layout.exp = 0.5) +  # 设置相关系数标签的名称为ρ
-  #scale_alpha_manual(values = c("TRUE" = 0.25, "FALSE" = 0)) +  # 设置alpha值的映射关系，当系数满足条件时设置透明度为0.25，否则为0
-  guides(alpha = FALSE) +  # 不显示alpha的图例
-  theme(plot.margin = margin(0, 0, 0, 0, "pt"),  # 设置图的边距
-        legend.background = element_blank(),  # 不显示图例的背景
-        legend.spacing.x = unit(0, "cm"))  # 设置图例水平间距为0cm
-
-#3D散点图
-library(plotly)
-a <- as.data.frame(scale(sub))
-m <- plot_ly(a, x = ~root, y = ~tau, z = ~date,
-             #colors = c("#FF6DAE","#D4CA3A","#00BDFF"),
-             marker = list(size = 2)) %>%
-  add_markers()
-
-add_lines(
-  # plots one line per city since p knows city is a grouping variable
-  add_lines(m, alpha = 0.2, name = "Texan Cities", hoverinfo = "none"),
-  name = "Houston", data = filter(txhousing, city == "Houston")
-)
-
-layer_city <- function(plot, name) {
-  plot %>% filter(city == name) %>% add_lines(name = name)
-}
-
-layer_iqr <- function(plot) {
-  plot %>%
-    group_by(date) %>% 
-    summarise(
-      q1 = quantile(median, 0.25, na.rm = TRUE),
-      m = median(median, na.rm = TRUE),
-      q3 = quantile(median, 0.75, na.rm = TRUE)
-    ) %>%
-    add_lines(y = ~m, name = "median", color = I("black")) %>%
-    add_ribbons(ymin = ~q1, ymax = ~q3, name = "IQR", color = I("black"))
-}
-
-m %>%
-  add_fun(layer_iqr)
-
-allCities <- txhousing %>%
-  group_by(city) %>%
-  plot_ly(x = ~date, y = ~median) %>%
-  add_lines(alpha = 0.2, name = "Texan Cities", hoverinfo = "none")
-
-allCities %>%
-  filter(city == "Houston") %>%
-  add_lines(name = "Houston")
-
-
-ggplot(data, aes(x=root, y = abiotic))+
+cat <- melt(all, id="type")
+cat$type <- factor(cat$type, levels=c("solar","temperature","precipitation","soil","shuf"))
+#cat$variable <- factor(cat$variable, levels=c("cons1","tau","fst_repeat","root","spike","leaf","grain","abiotic","disease"))
+cat$variable <- factor(cat$variable, levels=c("root","spike","leaf","grain"))
+cat$variable <- factor(cat$variable, levels=c("root_bc","spike_bc","leaf_bc","grain_bc"))
+sub <- na.omit(cat)
+sub <- sub[which(sub$value < 0.5),]
+sub <- sub[which(sub$value < 1000000000),]
+pdf("BCDegree.pdf", width=8,height=4)
+ggplot(sub, aes(x=variable, y =value, fill=type))+
+  geom_boxplot( notch = F) +
+  theme_classic() +   
+  scale_fill_manual(values = c("#FDC086","#BEAED4","#ffffb3","#fccde5","blue","red","yellow")) +
+  theme(legend.title="")+
+  ylab("BC Degree")+
+  theme(
+    axis.line.y = element_line(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.y=element_text(size=15),
+    axis.text.x=element_text(size=15),
+    axis.title.y=element_text(size = 15),
+    axis.title.x=element_blank(),
+    legend.title=element_blank(),
+    plot.title = element_text(color="Black", size=20, face="bold.italic"))
+dev.off()
+ggplot(all, aes(x=cons1, y =tau))+
   #ggplot(data, aes(x = leaf, y=abs(envGWAS_Beta_absmax)))+
   geom_point() +
   theme_classic() +
@@ -1292,17 +1186,166 @@ ggplot(data, aes(x=root, y = abiotic))+
     axis.ticks.x = element_blank(),
     plot.title = element_text(color="Black", size=20, face="bold.italic")
   )
-summary(lm(data$root ~ data$grain))
 
-[1] "Gene"                "cons1"               "cons2"               "tau"                 "xp_p"               
-[6] "poppair"             "popsingle"           "root"                "root_bc"             "root_cc"            
-[11] "grain"               "grain_bc"            "grain_cc"            "abiotic"             "abiotic_bc"         
-[16] "abiotic_cc"          "ID"                  "fst_Average"         "fst_Median"          "fst_Min"            
-[21] "fst_Max"             "baypass_BF"          "baypass_Beta"        "baypass_eBPis"       "envGWAS_Beta_median"
-[26] "envGWAS_Beta_absmax" "envGWAS_P_median"    "envGWAS_P_min"       "fst_pop01_pop02"     "fst_pop02_pop03"    
-[31] "fst_pop03_pop04"     "fst_pop03_pop05"     "fst_pop05_pop06"     "type"  
+#pleiotropy & 效应值 & BF ####
+#[1] "cons1"        "tau"          "fst_repeat"   "root"         "grain"        "abiotic"      "disease"      "leaf"        
+#[9] "spike"        "baypass_BF"   "baypass_Beta" "envgwas_p"    "envgwas_Beta" "AF1"          "type" 
 
-all <- as.data.frame(rbind(data1[,c(9,17)],data2[,c(9,34)]))
+lat$max_fst <- apply(lat[,c(27:31)], 1, max)
+lon$max_fst <- apply(lon[,c(27:31)], 1, max)
+type1$max_fst <- apply(type1[,c(27:31)], 1, max)
+type2$max_fst <- apply(type2[,c(27:31)], 1, max)
+type3$max_fst <- apply(type3[,c(27:31)], 1, max)
+type4$max_fst <- apply(type4[,c(27:31)], 1, max)
+shuf$max_fst <- apply(shuf[,c(52:56)], 1, max)
+
+all <- rbind(lat[,c(2,4,5,7,10,13,16,18,20,22,23,24,25,26,32,33)], lon[,c(2,4,5,7,10,13,16,18,20,22,23,24,25,26,32,33)], type1[,c(2,4,5,7,10,13,16,18,20,22,23,24,25,26,32,33)],type2[,c(2,4,5,7,10,13,16,18,20,22,23,24,25,26,32,33)],type3[,c(2,4,5,7,10,13,16,18,20,22,23,24,25,26,32,33)],type4[,c(2,4,5,7,10,13,16,18,20,22,23,24,25,26,32,33)])
+all2 <- all[which(all$envgwas_p < 0.01),]
+
+all2$class <- NA
+all2[which(all2$baypass_BF >=10 & all2$baypass_BF < 15),17] <- "strong"
+all2[which(all2$baypass_BF >=15 & all2$baypass_BF < 20),17] <- "verystrong"
+all2[which(all2$baypass_BF >=20),17] <- "decisive"
+all3 <- all2[!is.na(all2$class),]
+#ggplot(all, aes(x=abs(all$envgwas_Beta), y =-log10(all$fst_repeat)))+
+#ggplot(shuf, aes(x=abs(shuf$max_fst), y =abs(shuf$envgwas_Beta_lon))) +
+
+#ggplot(shuf, aes(x=abs(shuf$baypass_BF_lon), y=abs(shuf$envgwas_Beta_lon))) +
+ggplot(type4, aes(x=abs(type4$baypass_BF), y=abs(type4$envgwas_Beta))) +
+  #ggplot(data, aes(x = leaf, y=abs(envGWAS_Beta_absm1ax)))+
+  geom_point(alpha=0.5) + 
+  theme_classic() + 
+  scale_fill_manual(values = c("#FDC086","#BEAED4","#ffffb3","#fccde5","blue")) +
+  theme(legend.title="")+
+  geom_smooth(se = TRUE, method = "gam", formula = y ~ x)+
+  theme(
+    axis.line.y = element_line(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.y=element_text(size=15),
+    axis.text.x=element_text(size=15),
+    axis.title.y=element_text(size = 15),
+    axis.title.x=element_text(size = 15),
+    legend.title=element_blank(),
+    axis.ticks.x = element_blank(),
+    plot.title = element_text(color="Black", size=20, face="bold.italic")
+  )
+
+
+
+ggplot(all3, aes(y =abs(all3$envgwas_Beta), fill=as.factor(class)))+
+  geom_boxplot( notch = F) +
+  theme_classic() +   
+  scale_fill_manual(values = c("#FDC086","#BEAED4","#ffffb3","#fccde5","blue","red","yellow")) +
+  theme(legend.title="")+
+  ylab("TPM")+
+  theme(
+    axis.line.y = element_line(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.y=element_text(size=15),
+    axis.text.x=element_text(size=15),
+    axis.title.y=element_text(size = 15),
+    axis.title.x=element_blank(),
+    legend.title=element_blank(),
+    plot.title = element_text(color="Black", size=20, face="bold.italic"))
+
+summary(lm(abs(type4$max_fst)~abs(type4$envgwas_Beta)))
+summary(lm(abs(shuf$max_fst)~abs(shuf$envgwas_Beta_type1)))
+summary(lm(abs(shuf$max_fst)~abs(shuf$envgwas_Beta_type2)))
+summary(lm(abs(shuf$max_fst)~abs(shuf$envgwas_Beta_type3)))
+summary(lm(abs(shuf$max_fst)~abs(shuf$envgwas_Beta_type4)))
+summary(lm(abs(shuf$max_fst)~abs(shuf$envgwas_Beta_lat)))
+summary(lm(abs(shuf$max_fst)~abs(shuf$envgwas_Beta_lon)))
+
+data$max_fst <- apply(data[,c(21:25)], 1, max)
+
+shuf$max_fst <- apply(shuf[,c(46:50)], 1, max)
+#[1] "Gene"         "cons1"        "cons2"        "tau"          "fst_repeat"   "popsingle"    "root"         "root_bc"      "root_cc"      "grain"       
+#[11] "grain_bc"     "grain_cc"     "abiotic"      "abiotic_bc"   "abiotic_cc"   "baypass_BF"   "baypass_Beta" "envgwas_p"    "envgwas_Beta" "AF1"         
+#[21] "pair_fst1"    "pair_fst2"    "pair_fst3"    "pair_fst4"    "pair_fst5"    "max_fst"
+
+#[1] "Gene"                "cons1"              "cons2"              "tau"                "fst_repeat"         "popsingle"         
+#[7] "root"                "root_bc"            "root_cc"            "grain"              "grain_bc"           "grain_cc"          
+#[13] "abiotic"            "abiotic_bc"         "abiotic_cc"         "baypass_BF_type1"   "baypass_Beta_type1" "baypass_BF_type2"  
+#[19] "baypass_Beta_type2" "baypass_BF_type3"   "baypass_Beta_type3" "baypass_BF_type4"   "baypass_Beta_type4" "baypass_BF_lat"    
+#[25] "baypass_Beta_lat"   "baypass_BF_lon"     "baypass_Beta_lon"   "envgwas_p_type1"    "envgwas_Beta_type1" "AF1_type1"         
+#[31] "envgwas_p_type2"    "envgwas_Beta_type2" "AF1_type2"          "envgwas_p_type3"    "envgwas_Beta_type3" "AF1_type3"         
+#[37] "envgwas_p_type4"    "envgwas_Beta_type4" "AF1_type4"          "envgwas_p_lat"      "envgwas_Beta_lat"   "AF1_lat"           
+#[43] "envgwas_p_lon"      "envgwas_Beta_lon"   "AF1_lon"            "pair_fst1"          "pair_fst2"          "pair_fst3"         
+#[49] "pair_fst4"          "pair_fst5" 
+
+t.test(data$cons1, shuf$cons1)
+t.test(data$cons2, shuf$cons2)
+t.test(data$tau, shuf$tau)
+t.test(data$root, shuf$root)
+t.test(data$root_bc, shuf$root_bc)
+t.test(data$root_cc, shuf$root_cc)
+t.test(data$grain, shuf$grain)
+t.test(data$grain_bc, shuf$grain_bc)
+t.test(data$grain_cc, shuf$grain_cc)
+t.test(data$abiotic, shuf$abiotic)
+t.test(data$abiotic_bc, shuf$abiotic_bc)
+t.test(data$abiotic_cc, shuf$abiotic_cc)
+t.test(data$baypass_BF, shuf$baypass_BF_type2)
+t.test(data$baypass_Beta, shuf$baypass_Beta_type2)
+t.test(data$envgwas_p, shuf$envgwas_p_type2)
+t.test(data$envgwas_Beta, shuf$envgwas_Beta_type2)
+t.test(data$fst_repeat, shuf$fst_repeat)
+t.test(data$max_fst, shuf$max_fst)
+t.test(data$AF1, shuf$AF1_type1)
+
+summary(lm(data$cons1~data$tau))
+summary(lm(data$cons2~data$tau))
+summary(lm(data$root~data$tau))
+summary(lm(data$root_bc~data$tau))
+summary(lm(data$root_cc~data$tau))
+summary(lm(data$root~data$cons1))
+summary(lm(data$root_bc~data$cons1))
+summary(lm(data$root_cc~data$cons1))
+
+summary(lm(data$root_bc~data$fst_repeat))
+summary(lm(data$root~data$fst_repeat))
+summary(lm(data$tau~data$fst_repeat))
+summary(lm(data$cons1~data$fst_repeat))
+summary(lm(data$max_fst~data$fst_repeat))
+
+summary(lm(data$root_bc~data$fst_repeat))
+summary(lm(data$root~data$fst_repeat))
+summary(lm(data$tau~data$fst_repeat))
+summary(lm(data$cons1~data$fst_repeat))
+summary(lm(data$max_fst~data$fst_repeat))
+
+summary(lm(data$root_bc~data$baypass_BF))
+summary(lm(data$root~data$baypass_BF))
+summary(lm(data$tau~data$baypass_BF))
+summary(lm(data$cons1~data$baypass_BF))
+summary(lm(data$max_fst~data$baypass_BF))
+summary(lm(data$fst_repeat~data$baypass_BF))
+summary(lm(data$fst_repeat~data$envgwas_p))
+summary(lm(data$fst_repeat~abs(data$envgwas_Beta)))
+
+sub <- data[which(data$envgwas_p < 0.05),]
+summary(lm(abs(data$envgwas_Beta)~data$fst_repeat))
+
+ggplot(data, aes(x=fst_repeat, y =abs(data$envgwas_Beta)))+
+  #ggplot(data, aes(x = leaf, y=abs(envGWAS_Beta_absmax)))+
+  geom_point() +
+  theme_classic() +
+  scale_fill_manual(values = c("#FDC086","#BEAED4","#ffffb3","#fccde5","blue")) +
+  theme(legend.title="")+
+  geom_smooth(se = TRUE, method = "gam", formula = y ~ x)+
+  theme(
+    axis.line.y = element_line(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.y=element_text(size=15),
+    axis.title.y=element_text(size = 15),
+    axis.title.x=element_text(size = 15),
+    legend.title=element_blank(),
+    axis.ticks.x = element_blank(),
+    plot.title = element_text(color="Black", size=20, face="bold.italic")
+  )
 
 #看选择重复性和选择次数的相关性
 rep <- read.table("genome_selectTime_PicMin.txt", header=F, stringsAsFactors = F)
@@ -1326,5 +1369,799 @@ ggplot(all, aes(y = xp_p, group=as.factor(type),color =as.factor(type)))+
     plot.title = element_text(color="Black", size=20, face="bold.italic")
   )
 
+#不同的环境因子中（光，温，水，土）share和uniq的基因在不同表达组织（abiotic，disease，root，spike，Leaf，grain）的共表达模块富集
+library(ggplot2)
+library(reshape2)
+setwd("/Users/guoyafei/Desktop/network/shareUniq")
+#share
+share <- read.table("timeM.out.txt", header=T,stringsAsFactors = F)
+cats <- melt(share,id=c("module","tissue"))
+cats$logP <- -log(cats$value,10)
+cats$color <- 1
+cats[which(cats$logP >= 2),6] <- 0
+cats$ID <- paste(cats$tissue,cats$module,sep="_")
+pdf("share.pdf", width=15,height=4)
+ggplot( data=cats, aes(x=ID, y=variable, size=5,color = logP,shape=as.factor(color))) +
+  geom_point() +
+  scale_size(range = c(12,12), name="Population (M)") +
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 30, hjust = 1, vjust = 1))
+dev.off()
+sub <- cats[which(cats$tissue != "abiotic" & cats$tissue != "disease" & cats$variable != "all"),]
+pdf("share2.pdf", width=10,height=3)
+ggplot( data=sub, aes(x=ID, y=variable, size=5,color = logP,shape=as.factor(color))) +
+  geom_point() +
+  scale_size(range = c(12,12), name="Population (M)") +
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 30, hjust = 1, vjust = 1))
+dev.off()
+#uniq
+share <- read.table("timeU.out.txt", header=T,stringsAsFactors = F)
+cats <- melt(share,id=c("module","tissue"))
+cats$logP <- -log(cats$value,10)
+cats$color <- 1
+cats[which(cats$logP >= 2),6] <- 0
+cats$ID <- paste(cats$tissue,cats$module,sep="_")
+pdf("uniq.pdf", width=15,height=4)
+ggplot( data=cats, aes(x=ID, y=variable, size=5,color = logP,shape=as.factor(color))) +
+  geom_point() +
+  scale_size(range = c(12,12), name="Population (M)") +
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 30, hjust = 1, vjust = 1))
+dev.off()
+sub2 <- cats[which(cats$tissue != "abiotic" & cats$tissue != "disease" & cats$variable != "all"),]
+pdf("uniq2.pdf", width=10,height=3)
+ggplot( data=sub2, aes(x=ID, y=variable, size=5,color = logP,shape=as.factor(color))) +
+  geom_point() +
+  scale_size(range = c(12,12), name="Population (M)") +
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 30, hjust = 1, vjust = 1))
+dev.off()
+   
+########################### XPCLR ########################
+library(UpSetR)
+library(ggplot2)
+setwd("/Users/guoyafei/Desktop/选择/xpclr")
+EA_IA <- read.table("EA_IA.txt", header=F, stringsAsFactors = F)[,1]
+EU_WA <- read.table("EU_WA.txt", header=F, stringsAsFactors = F)[,1]
+IA_WA <- read.table("IA_WA.txt", header=F, stringsAsFactors = F)[,1]
+SH_EA <- read.table("SH_EA.txt", header=F, stringsAsFactors = F)[,1]
+SH_IA <- read.table("SH_IA.txt", header=F, stringsAsFactors = F)[,1]
+a <- list(NEA_SEA<-SH_EA, IA_SH<-SH_IA, IA_NEA<-EA_IA, WA_IA<-IA_WA, WA_EU<-EU_WA)
+names(a) <- c("NEA_SEA","IA_SH","IA_NEA","WA_IA","WA_EU")
+tmp <- names(a)
+upset(fromList(a), keep.order = TRUE, sets=tmp, text.scale = c(2),point.size = 2.5, line.size = 1.5)
+
+a <- c(4556,1282,246,33,1)
+b <- c(1,2,3,4,5)
+data <- as.data.frame(cbind(b,a))
+
+ggplot(data, aes(x=b, y=a)) + 
+  geom_bar(stat = "identity")+
+  theme_classic()
 
 
+
+
+#表达量####
+library(reshape2)
+library(ggplot2)
+setwd("/Users/guoyafei/Desktop/network/2018science/tpm")
+data <- read.table("tpm.txt", header=F,stringsAsFactors = F)
+
+data$V4 <- factor(data$V4, levels=c("root","spike","leaf","grain"))
+data$V5 <- factor(data$V5, levels=c("type1","type2","type3","type4","shuf"))
+
+ggplot(data, aes(x=V4, y =log10(V2), fill=as.factor(V5)))+
+  geom_boxplot( notch = F) +
+  theme_classic() +   
+  scale_fill_manual(values = c("#FDC086","#BEAED4","#ffffb3","#fccde5","blue","red","yellow")) +
+  theme(legend.title="")+
+  ylab("log10(TPM)")+
+  theme(
+    axis.line.y = element_line(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.y=element_text(size=15),
+    axis.text.x=element_text(size=15),
+    axis.title.y=element_text(size = 15),
+    axis.title.x=element_blank(),
+    legend.title=element_blank(),
+    plot.title = element_text(color="Black", size=20, face="bold.italic"))
+
+#tau####
+library(reshape2)
+library(ggplot2)
+setwd("/Users/guoyafei/Desktop/network/2018science/tpm")
+data <- read.table("tau.txt", header=F,stringsAsFactors = F)
+
+data$V3 <- factor(data$V3, levels=c("type1","type2","type3","type4","shuf"))
+
+ggplot(data, aes(x=V3, y =V2, fill=as.factor(V3)))+
+  geom_boxplot( notch = F) +
+  theme_classic() +   
+  scale_fill_manual(values = c("#FDC086","#BEAED4","#ffffb3","#fccde5","blue","red","yellow")) +
+  theme(legend.title="")+
+  ylab("log10(TPM)")+
+  theme(
+    axis.line.y = element_line(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.y=element_text(size=15),
+    axis.text.x=element_text(size=15),
+    axis.title.y=element_text(size = 15),
+    axis.title.x=element_blank(),
+    legend.title=element_blank(),
+    plot.title = element_text(color="Black", size=20, face="bold.italic"))
+
+#degree####
+setwd("/Users/guoyafei/Desktop/network/2018science/degree")
+data <- read.table("degree.txt", header=F,stringsAsFactors = F)
+data$V3 <- factor(data$V3, levels=c("root","spike","leaf","grain"))
+data$V4 <- factor(data$V4, levels=c("type1","type2","type3","type4","shuf"))
+ggplot(data, aes(x=V3, y =V2, fill=as.factor(V4)))+
+  geom_boxplot( notch = F) +
+  theme_classic() +   
+  scale_fill_manual(values = c("#FDC086","#BEAED4","#ffffb3","#fccde5","blue","red","yellow")) +
+  theme(legend.title="")+
+  ylab("Co-expression network degree")+
+  theme(
+    axis.line.y = element_line(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.y=element_text(size=15),
+    axis.text.x=element_text(size=15),
+    axis.title.y=element_text(size = 15),
+    axis.title.x=element_blank(),
+    legend.title=element_blank(),
+    plot.title = element_text(color="Black", size=20, face="bold.italic"))
+
+
+
+#以下是研究 genetic architecture 和 adaptative architecture
+#beta分布----
+setwd("/Users/guoyafei/Desktop/envgwas/baypass/beta")
+data <- read.table("trait6.p001.txt", header = F, stringsAsFactors = F)
+data$type <- "p001"
+data2 <- read.table("trait6.p005.txt", header = F, stringsAsFactors = F)
+data2$type <- "p005"
+data3 <- read.table("trait6.p00001.gwas.txt", header = F, stringsAsFactors = F)
+data3$type <- "p00001_gwas"
+data4 <- read.table("trait6.shuf5k.txt", header = F, stringsAsFactors = F)
+data4$type <- "shuf"
+data5 <- read.table("trait6.p001.dispersal.txt", header = F, stringsAsFactors = F)
+data5$type <- "p001_dispersal"
+data6 <- read.table("trait6.p005.dispersal.txt", header = F, stringsAsFactors = F)
+data6$type <- "p005_dispersal"
+data7 <- read.table("trait6.baypass.txt", header = F, stringsAsFactors = F)
+data7$type <- "baypass"
+data8 <- read.table("trait6.baypass.dispersal.txt", header = F, stringsAsFactors = F)
+data8$type <- "baypass_dispersal"
+
+all <- as.data.frame(rbind(data,data2,data3,data4,data5,data6,data7,data8))
+all$type <- as.factor(all$type)
+
+ggplot(all, aes(x=type,y = -log10(V3)))+
+  geom_boxplot(fill = '#f8766d', notch = TRUE) +
+  theme_classic() +
+  theme(
+    #legend.position="none",
+    #panel.border = element_blank(),
+    axis.line.y = element_line(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.x=element_text(size=15),
+    axis.text.y=element_text(size=15),
+    axis.title.y=element_text(size = 15),
+    axis.title.x=element_text(size = 15),
+)
+
+#fst分布----
+library(ggplot2)
+library(gridExtra)
+setwd("/Users/guoyafei/Desktop/envgwas/fst/beta")
+row_max <- function(x) {
+  max(x, na.rm = TRUE)
+}
+row_mean <- function(x) {
+  mean(x, na.rm = TRUE)
+}
+
+data <- read.table("trait6.p001.fst.txt", header = T, stringsAsFactors = F)
+data$type <- "p001"
+data$max <- apply(data[,6:10],1,row_max)
+data$mean <- apply(data[,6:10],1,row_mean)
+
+data2 <- read.table("trait6.p005.fst.txt", header = T, stringsAsFactors = F)
+data2$type <- "p005"
+data2$max <- apply(data2[,6:10],1,row_max)
+data2$mean <- apply(data2[,6:10],1,row_mean)
+
+data3 <- read.table("trait6.p00001.gwas.fst.txt", header = T, stringsAsFactors = F)
+data3$type <- "p00001_gwas"
+data3$max <- apply(data3[,6:10],1,row_max)
+data3$mean <- apply(data3[,6:10],1,row_mean)
+
+data4 <- read.table("trait6.shuf1m.fst.txt", header = T, stringsAsFactors = F)
+data4$type <- "shuf"
+data4$max <- apply(data4[,6:10],1,row_max)
+data4$mean <- apply(data4[,6:10],1,row_mean)
+
+data5 <- read.table("trait6.p001.dispersal.fst.txt", header = T, stringsAsFactors = F)
+data5$type <- "p001_dispersal"
+data5$max <- apply(data5[,6:10],1,row_max)
+data5$mean <- apply(data5[,6:10],1,row_mean)
+
+data6 <- read.table("trait6.p005.dispersal.fst.txt", header = T, stringsAsFactors = F)
+data6$type <- "p005_dispersal"
+data6$max <- apply(data6[,6:9],1,row_max)
+data6$mean <- apply(data6[,6:10],1,row_mean)
+
+data7 <- read.table("trait6.baypass.fst.txt", header = T, stringsAsFactors = F)
+data7$type <- "baypass"
+data7$max <- apply(data7[,6:9],1,row_max)
+data7$mean <- apply(data7[,6:10],1,row_mean)
+
+data8 <- read.table("trait6.baypass.dispersal.fst.txt", header = T, stringsAsFactors = F)
+data8$type <- "baypass_dispersal"
+data8$max <- apply(data8[,6:10],1,row_max)
+data8$mean <- apply(data8[,6:10],1,row_mean)
+
+t.test(data4[,13],data7[,13])
+t.test(data7[,13],data8[,13])
+t.test(data2[,13],data6[,13])
+t.test(data[,13],data5[,13])
+
+plots <- list()
+
+#mean_fst
+plots[[1]] <- ggplot(data=data, aes(x=abs(beta), y=mean)) + xlab("BETA(p001)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylim(0,0.4)+ylab("Mean Population Fst")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[2]] <- ggplot(data=data2, aes(x=abs(beta), y=mean)) + xlab("BETA(p005)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylim(0,0.4)+ylab("Mean Population Fst")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[3]] <- ggplot(data=data3, aes(x=abs(beta), y=mean)) + xlab("BETA(p00001_gwas)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylim(0,0.4)+ylab("Mean Population Fst")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[4]] <- ggplot(data=data4, aes(x=abs(beta), y=mean)) + xlab("BETA(shuf)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylim(0,0.4)+ylab("Mean Population Fst")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[5]] <- ggplot(data=data5, aes(x=abs(beta), y=mean)) + xlab("BETA(p001_dispersal)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylim(0,0.4)+ylab("Mean Population Fst")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[6]] <- ggplot(data=data6, aes(x=abs(beta), y=mean)) + xlab("BETA(p005_dispersal)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylim(0,0.4)+ylab("Mean Population Fst")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[7]] <- ggplot(data=data7, aes(x=abs(beta), y=mean)) + xlab("BETA(baypass)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylim(0,0.4)+ylab("Mean Population Fst")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[8]] <- ggplot(data=data8, aes(x=abs(beta), y=mean)) + xlab("BETA(baypass_dispersal)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylim(0,0.4)+ylab("Mean Population Fst")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+
+#max_fst
+plots[[1]] <- ggplot(data=data, aes(x=abs(beta), y=max)) + xlab("BETA(p001)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylim(0,1)+ylab("Max Population Fst")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[2]] <- ggplot(data=data2, aes(x=abs(beta), y=max)) + xlab("BETA(p005)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylim(0,1)+ylab("Max Population Fst")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[3]] <- ggplot(data=data3, aes(x=abs(beta), y=max)) + xlab("BETA(p00001_gwas)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylim(0,1)+ylab("Max Population Fst")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[4]] <- ggplot(data=data4, aes(x=abs(beta), y=max)) + xlab("BETA(shuf)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylim(0,1)+ylab("Max Population Fst")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[5]] <- ggplot(data=data5, aes(x=abs(beta), y=max)) + xlab("BETA(p001_dispersal)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylim(0,1)+ylab("Max Population Fst")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[6]] <- ggplot(data=data6, aes(x=abs(beta), y=max)) + xlab("BETA(p005_dispersal)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylim(0,1)+ylab("Max Population Fst")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[7]] <- ggplot(data=data7, aes(x=abs(beta), y=max)) + xlab("BETA(baypass)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylim(0,1)+ylab("Max Population Fst")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[8]] <- ggplot(data=data8, aes(x=abs(beta), y=max)) + xlab("BETA(baypass_dispersal)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylim(0,1)+ylab("Max Population Fst")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+
+#-log(p)
+plots[[1]] <- ggplot(data=data, aes(x=abs(beta), y=-log(p))) + xlab("BETA(p001)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ylab("-log(P)")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[2]] <- ggplot(data=data2, aes(x=abs(beta), y=-log(p))) + xlab("BETA(p005)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylab("-log(P)")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[3]] <- ggplot(data=data3, aes(x=abs(beta), y=-log(p))) + xlab("BETA(p00001_gwas)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylab("-log(P)")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[4]] <- ggplot(data=data4, aes(x=abs(beta), y=-log(p))) + xlab("BETA(shuf)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylab("-log(P)")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[5]] <- ggplot(data=data5, aes(x=abs(beta), y=-log(p))) + xlab("BETA(p001_dispersal)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylab("-log(P)")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[6]] <- ggplot(data=data6, aes(x=abs(beta), y=-log(p))) + xlab("BETA(p005_dispersal)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylab("-log(P)")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[7]] <- ggplot(data=data7, aes(x=abs(beta), y=-log(p))) + xlab("BETA(baypass)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylab("-log(P)")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[8]] <- ggplot(data=data8, aes(x=abs(beta), y=-log(p))) + xlab("BETA(baypass_dispersal)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylab("-log(P)")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+
+pdf("beta_p相关性.pdf", height=10,width=22)
+grid.arrange(grobs = plots, ncol = 4)
+dev.off()
+
+all <- as.data.frame(rbind(data,data2,data3,data4,data5,data6,data7,data8))
+all$type <- as.factor(all$type)
+all <- na.omit(all)
+
+ggplot(all, aes(x=type,y = pop01_pop02))+
+  geom_boxplot(fill = '#f8766d', notch = T) +
+  theme_classic() +
+  theme(
+    legend.position="none",
+    #panel.border = element_blank(),
+    axis.line.y = element_line(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.x=element_text(size=15),
+    axis.text.y=element_text(size=15),
+    axis.title.y=element_text(size = 15),
+    axis.title.x=element_text(size = 15),
+  )
+
+t.test(data4[,12],data7[,12])
+t.test(data7[,12],data8[,12])
+t.test(data2[,12],data6[,12])
+t.test(data[,12],data5[,12])
+
+#相关性和p值
+#beta-mean_fst
+p001: Multiple R-squared:  0.07,	Adjusted R-squared:  0.07, p-value: < 2.2e-16
+p005: Multiple R-squared:  0.12,	Adjusted R-squared:  0.13, p-value: < 2.2e-16
+p001_dispersal: Multiple R-squared:  0.08574,	Adjusted R-squared:  0.08, p-value: 1.131e-12
+p005_dispersal: Multiple R-squared:  0.1822,	Adjusted R-squared:  0.18, p-value: < 2.2e-16
+baypass: Multiple R-squared:  0.004525,	Adjusted R-squared:  0.005, p-value: < 2.2e-16
+baypass_dispersal: Multiple R-squared:  0.02132,	Adjusted R-squared:  0.021, p-value: < 2.2e-16
+p00001_gwas: Multiple R-squared:  0.03699,	Adjusted R-squared:  0.04, p-value: < 2.2e-16
+shuf: Multiple R-squared:  0.05671,	Adjusted R-squared:  0.06, p-value: < 2.2e-16
+
+#beta-max_fst
+p001: Multiple R-squared:  0.01529,	Adjusted R-squared:  0.0144, p-value: 3.507e-05
+p005: Multiple R-squared:  0.06284,	Adjusted R-squared:  0.06261, p-value: < 2.2e-16
+p00001_gwas: Multiple R-squared:  0.08786,	Adjusted R-squared:  0.08738, p-value: < 2.2e-16
+shuf: Multiple R-squared:  0.04952,	Adjusted R-squared:  0.04914, p-value: < 2.2e-16
+p001_dispersal: Multiple R-squared:  0.0001097,	Adjusted R-squared:  -0.00166, p-value: 0.8035
+p005_dispersal: Multiple R-squared:  0.02633,	Adjusted R-squared:  0.02583, p-value: 8.019e-13
+baypass: Multiple R-squared:  0.01167,	Adjusted R-squared:  0.01161, p-value: < 2.2e-16
+baypass_dispersal: Multiple R-squared:  0.05206,	Adjusted R-squared:  0.05191, p-value: < 2.2e-16
+
+#beta-log(p)
+p001: Multiple R-squared:  0.2414,	Adjusted R-squared:  0.24, p-value: < 2.2e-16
+p005: Multiple R-squared:  0.4622,	Adjusted R-squared:  0.46, p-value: < 2.2e-16
+p00001_gwas: Multiple R-squared:  0.15,	Adjusted R-squared:  0.15, p-value: < 2.2e-16
+shuf: Multiple R-squared:  0.80,	Adjusted R-squared:  0.80, p-value: < 2.2e-16
+p001_dispersal: Multiple R-squared:  0.36,	Adjusted R-squared:  0.36, p-value: < 2.2e-16
+p005_dispersal: Multiple R-squared:   0.61,	Adjusted R-squared:  0.61, p-value: < 2.2e-16
+baypass: Multiple R-squared:  0.81,	Adjusted R-squared:  0.81, p-value: < 2.2e-16
+baypass_dispersal: Multiple R-squared:  0.83,	Adjusted R-squared:  0.83, p-value: < 2.2e-16
+
+#degree分布----
+setwd("/Users/guoyafei/Desktop/network/2018science/degree/dispersal")
+genetic <- read.table("all.type_3k.gene", header=F,stringsAsFactors = F)
+adapt <- read.table("select.gene.txt", header=F, stringsAsFactors = F)
+
+net1 <- read.table("root.tpm.pt.out", header=F,row.names = 1,stringsAsFactors = F)
+net2 <- read.table("spike.tpm.pt.out", header=F,row.names = 1,stringsAsFactors = F)
+net3 <- read.table("leaf.tpm.pt.out", header=F,row.names = 1,stringsAsFactors = F)
+net4 <- read.table("grain.tpm.pt.out", header=F,row.names = 1,stringsAsFactors = F)
+net5 <- read.table("abiotic.tpm.pt.out", header=F,row.names = 1,stringsAsFactors = F)
+net6 <- read.table("disease.tpm.pt.out", header=F,row.names = 1,stringsAsFactors = F)
+
+setwd("/Users/guoyafei/Desktop/network/2018science/betweenness_centrality")
+net1 <- read.table("root_bc_0.5.out", header=F,row.names = 1,stringsAsFactors = F)
+net2 <- read.table("spike_bc_0.5.out", header=F,row.names = 1,stringsAsFactors = F)
+net3 <- read.table("leaf_bc_0.5.out", header=F,row.names = 1,stringsAsFactors = F)
+net4 <- read.table("grain_bc_0.5.out", header=F,row.names = 1,stringsAsFactors = F)
+net5 <- read.table("abiotic_bc_0.5.out", header=F,row.names = 1,stringsAsFactors = F)
+net6 <- read.table("disease_bc_0.5.out", header=F,row.names = 1,stringsAsFactors = F)
+
+setwd("/Users/guoyafei/Desktop/network/2018science/closeness_centrality")
+net1 <- read.table("root_cc_0.5.out", header=F,row.names = 1,stringsAsFactors = F)
+net4 <- read.table("grain_cc_0.5.out", header=F,row.names = 1,stringsAsFactors = F)
+net5 <- read.table("abiotic_cc_0.5.out", header=F,row.names = 1,stringsAsFactors = F)
+
+net <- net5
+degree_g <- na.omit(net[genetic[,1],,drop=F])
+degree_g$type <- "genetic"
+degree_a <- na.omit(net[adapt[,1],,drop=F])
+degree_a$type <- "adaptive"
+degree_r <- net[sample(nrow(net), 5000),,drop=F]
+degree_r$type <- "random"
+
+all <- as.data.frame(rbind(degree_g, degree_a, degree_r))
+all$type <- as.factor(all$type)
+all <- na.omit(all)
+
+ggplot(all, aes(x=type,y = V2))+
+  geom_boxplot(fill = '#f8766d', notch = T) +
+  theme_classic() +
+  ylab("Root network degree")+
+  theme(
+    legend.position="none",
+    #panel.border = element_blank(),
+    axis.line.y = element_line(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.x=element_text(size=15),
+    axis.text.y=element_text(size=15),
+    axis.title.y=element_text(size = 15),
+    axis.title.x=element_text(size = 15),
+  )
+
+t.test(degree_g[,1], degree_a[,1])
+t.test(degree_g[,1], degree_r[,1])
+t.test(degree_a[,1], degree_r[,1])
+
+#tau分布----
+setwd("/Users/guoyafei/Desktop/network/tau")
+genetic <- read.table("/Users/guoyafei/Desktop/network/2018science/degree/dispersal/all.type_3k.gene", header=F,stringsAsFactors = F)
+adapt <- read.table("/Users/guoyafei/Desktop/network/2018science/degree/dispersal/select.gene.txt", header=F, stringsAsFactors = F)
+
+tau1 <- read.table("gene.tau", header=F,row.names = 1,stringsAsFactors = F)
+#adaptive  genetic   random 
+#5172    16309     5000 
+tau2 <- read.table("express.gene.tau", header=F,row.names = 1,stringsAsFactors = F)
+#adaptive  genetic   random 
+#3625    11540     5000
+tau_g <- na.omit(tau1[genetic[,1],,drop=F])
+tau_g$type <- "genetic"
+tau_a <- na.omit(tau1[adapt[,1],,drop=F])
+tau_a$type <- "adaptive"
+tau_r <- na.omit(tau1[sample(nrow(tau1), 5000),,drop=F])
+tau_r$type <- "random"
+
+all <- as.data.frame(rbind(tau_g, tau_a, tau_r))
+all$type <- as.factor(all$type)
+all <- na.omit(all)
+
+ggplot(all, aes(x=type,y = V2))+
+  geom_boxplot(fill = '#f8766d', notch = T) +
+  theme_classic() +
+  ylab("87,986 gene tau") +
+  theme(
+    legend.position="none",
+    #panel.border = element_blank(),
+    axis.line.y = element_line(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.x=element_text(size=15),
+    axis.text.y=element_text(size=15),
+    axis.title.y=element_text(size = 15),
+    axis.title.x=element_text(size = 15),
+  )
+
+#cons分布----
+setwd("/Users/guoyafei/Desktop/network/conservation")
+genetic <- read.table("/Users/guoyafei/Desktop/network/2018science/degree/dispersal/all.type_3k.gene", header=F,stringsAsFactors = F)
+adapt <- read.table("/Users/guoyafei/Desktop/network/2018science/degree/dispersal/select.gene.txt", header=F, stringsAsFactors = F)
+
+cons1 <- read.table("poaceae_meanPhastConsCDS_perGene.txt", header=F,row.names = 1,stringsAsFactors = F)
+#adaptive  genetic   random 
+#6118    19300     5000 
+cons2 <- read.table("triticeae_meanPhastConsCDS_perGene.txt", header=F,row.names = 1,stringsAsFactors = F)
+#adaptive  genetic   random 
+#6118    19300     5000 
+
+cons <- cons2
+cons_g <- na.omit(cons[genetic[,1],,drop=F])
+cons_g$type <- "genetic"
+cons_a <- na.omit(cons[adapt[,1],,drop=F])
+cons_a$type <- "adaptive"
+cons_r <- na.omit(cons[sample(nrow(cons), 5000),,drop=F])
+cons_r$type <- "random"
+
+all <- as.data.frame(rbind(cons_g, cons_a, cons_r))
+all$type <- as.factor(all$type)
+all <- na.omit(all)
+
+ggplot(all, aes(x=type,y = V2))+
+  geom_boxplot(fill = '#f8766d', notch = T) +
+  theme_classic() +
+  ylab("triticeae conservation") +
+  theme(
+    legend.position="none",
+    #panel.border = element_blank(),
+    axis.line.y = element_line(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.x=element_text(size=15),
+    axis.text.y=element_text(size=15),
+    axis.title.y=element_text(size = 15),
+    axis.title.x=element_text(size = 15),
+  )
+t.test(cons_a[,1], cons_r[,1])
+t.test(cons_g[,1], cons_r[,1])
+t.test(cons_a[,1], cons_g[,1]) #p-value = 0.003602
+
+#expression分布----
+setwd("/Users/guoyafei/Desktop/network/2018science/expression")
+genetic <- read.table("/Users/guoyafei/Desktop/network/2018science/degree/dispersal/all.type_3k.gene", header=F,stringsAsFactors = F)
+adapt <- read.table("/Users/guoyafei/Desktop/network/2018science/degree/dispersal/select.gene.txt", header=F, stringsAsFactors = F)
+
+expr1 <- read.table("root.tpm.expression", header=F,row.names = 1,stringsAsFactors = F)
+expr2 <- read.table("spike.tpm.expression", header=F,row.names = 1,stringsAsFactors = F)
+expr3 <- read.table("leaf.tpm.expression", header=F,row.names = 1,stringsAsFactors = F)
+expr4 <- read.table("grain.tpm.expression", header=F,row.names = 1,stringsAsFactors = F)
+expr5 <- read.table("abiotic.tpm.expression", header=F,row.names = 1,stringsAsFactors = F)
+expr6 <- read.table("disease.tpm.expression", header=F,row.names = 1,stringsAsFactors = F)
+
+expr <- expr5
+expr_g <- na.omit(expr[genetic[,1],,drop=F])
+expr_g$type <- "genetic"
+expr_a <- na.omit(expr[adapt[,1],,drop=F])
+expr_a$type <- "adaptive"
+expr_r <- na.omit(expr[sample(nrow(expr), 10000),,drop=F])
+expr_r$type <- "random"
+
+all <- as.data.frame(rbind(expr_g, expr_a, expr_r))
+all$type <- as.factor(all$type)
+all <- na.omit(all)
+
+ggplot(all, aes(x=type,y = log(V2)))+
+  geom_boxplot(fill = '#f8766d', notch = T) +
+  theme_classic() +
+  ylab("log(disease.tpm.expression)")+
+  theme(
+    legend.position="none",
+    #panel.border = element_blank(),
+    axis.line.y = element_line(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.x=element_text(size=15),
+    axis.text.y=element_text(size=15),
+    axis.title.y=element_text(size = 15),
+    axis.title.x=element_text(size = 15),
+  )
+t.test(log(expr_a[,1]), log(expr_r[,1]))
+t.test(log(expr_g[,1]), log(expr_r[,1]))
+t.test(log(expr_a[,1]), log(expr_g[,1]))
+
+#repeatability分布----
+setwd("/Users/guoyafei/Desktop/network/repeatbility")
+repeats <- read.table("genome_PQ.txt", header=F, row.names=1, stringsAsFactors = F)
+
+repeat_g <- na.omit(repeats[genetic[,1],,drop=F])
+repeat_g$type <- "genetic"
+repeat_a <- na.omit(repeats[adapt[,1],,drop=F])
+repeat_a$type <- "adaptive"
+repeat_r <- na.omit(repeats[sample(nrow(repeats), 5000),,drop=F])
+repeat_r$type <- "random"
+#adaptive  genetic   random 
+#6118    19298     5000 
+all <- as.data.frame(rbind(repeat_g, repeat_a, repeat_r))
+all$type <- as.factor(all$type)
+all <- na.omit(all)
+
+ggplot(all, aes(x=type,y = -log10(V2)))+
+  geom_boxplot(fill = '#f8766d', notch = T) +
+  theme_classic() +
+  ylab("-log10(repeatability P value)")+
+  theme(
+    legend.position="none",
+    #panel.border = element_blank(),
+    axis.line.y = element_line(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.x=element_text(size=15),
+    axis.text.y=element_text(size=15),
+    axis.title.y=element_text(size = 15),
+    axis.title.x=element_text(size = 15),
+  )
+
+t.test(-log10(repeat_a[,1]), -log10(repeat_r[,1]))
+t.test(-log10(repeat_g[,1]), -log10(repeat_r[,1]))
+t.test(-log10(repeat_a[,1]), -log10(repeat_g[,1]))
+
+#以下研究上述参数之间的关系, 包括多效性的程度(degree, tau, cons, expression), 重复选择强度(repeatability), 以及效应值(beta)和分化程度(fst)----
+degree_g$id <- rownames(degree_g)
+tau_g$id <- rownames(tau_g)
+cons_g$id <- rownames(cons_g)
+expr_g$id <- rownames(expr_g)
+repeat_g$id <- rownames(repeat_g)
+a <- merge(degree_g, tau_g, by = "id", all = FALSE)
+b <- merge(a, cons_g, by = "id", all = FALSE)
+c <- merge(b, expr_g, by = "id", all = FALSE)
+g <- merge(c, repeat_g, by = "id", all = FALSE)[,c(2,4,6,8,11,13)]
+colnames(g) <- c("degree","tau","cons","expr","repeats","type")
+
+degree_a$id <- rownames(degree_a)
+tau_a$id <- rownames(tau_a)
+cons_a$id <- rownames(cons_a)
+expr_a$id <- rownames(expr_a)
+repeat_a$id <- rownames(repeat_a)
+m <- merge(degree_a, tau_a, by = "id", all = FALSE)
+b <- merge(m, cons_a, by = "id", all = FALSE)
+c <- merge(b, expr_a, by = "id", all = FALSE)
+a <- merge(c, repeat_a, by = "id", all = FALSE)[,c(2,4,6,8,11,13)]
+colnames(a) <- c("degree","tau","cons","expr","repeats","type")
+
+degree_r$id <- rownames(degree_r)
+tau_r$id <- rownames(tau_r)
+cons_r$id <- rownames(cons_r)
+expr_r$id <- rownames(expr_r)
+repeat_r$id <- rownames(repeat_r)
+m <- merge(degree_r, tau_r, by = "id", all = FALSE)
+b <- merge(m, cons_r, by = "id", all = FALSE)
+c <- merge(b, expr_r, by = "id", all = FALSE)
+r <- merge(c, repeat_r, by = "id", all = FALSE)[,c(2,4,6,8,11,13)]
+colnames(r) <- c("degree","tau","cons","expr","repeats","type")
+
+plots <- list()
+plots[[1]] <- ggplot(data=a, aes(x=degree, y=-log10(repeats))) + xlab("co-expression network degree")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylab("-log10(repeatability p)")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[2]] <- ggplot(data=a, aes(x=tau, y=-log10(repeats))) + xlab("tau")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylab("-log10(repeatability p)")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[3]] <- ggplot(data=a, aes(x=cons, y=-log10(repeats))) + xlab("conservation")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylab("-log10(repeatability p)")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+plots[[4]] <- ggplot(data=a, aes(x=log10(expr), y=-log10(repeats))) + xlab("log10(expression tpm)")+ geom_point(size=0.5, color="#bebada")+ theme_classic()+ ylab("-log10(repeatability p)")+geom_smooth(method=lm , color="red", fill="#bebada", se=TRUE) + theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+
+pdf("-log10(repeatability)相关性.pdf", height=10,width=14)
+grid.arrange(grobs = plots, ncol = 2)
+dev.off()
+
+summary(lm(a[,1]~a[,5]))
+summary(lm(a[,2]~a[,5]))
+summary(lm(a[,3]~a[,5]))
+summary(lm(a[,4]~a[,5]))
+
+
+
+
+
+
+
+#baypass值的分布-------
+library(qqman)
+library(tidyverse)
+#66:/data2/yafei/polygenic/baypass/NEW/gene/out/all/manhuttan
+setwd("/Users/guoyafei/Desktop/baypass/BF")
+path <- "/Users/guoyafei/Desktop/baypass/BF" ##文件目录
+fileNames <- dir(path)  ##获取该路径下的文件名
+filePath <- sapply(fileNames, function(x){ 
+  paste(path,x,sep='/')})   ##生成读取文件路径
+data <- lapply(filePath, function(x){
+  read.table(x, header=F, stringsAsFactors = F)})
+
+data <- read.table("climate01.txt", header = F, stringsAsFactors = F)
+data$SNP <- paste(data$V1,data$V2,sep="-")
+gwasResults <- data[,c(6,1,2,3)]
+
+#threshold
+library(gdata)
+thresh <- read.xls("thresh.xlsx",sheet=1,row.name=1,na.strings=c("NA","#DIV/0!"))
+p <- list()
+for (i in c(1:length(data))){
+  filename <- strsplit( names(data)[i], ".txt")[[1]][1]
+    gwasResults2 <- data[[i]]
+    gwasResults2$SNP <- paste(gwasResults2$V1, gwasResults2$V2, sep="-")
+    gwasResults <- gwasResults2[,c(6,1,2,3)]
+    colnames(gwasResults) <- c("SNP", "CHR", "BP","P")
+    don <- gwasResults %>% 
+      group_by(CHR) %>% 
+      summarise(chr_len=max(BP)) %>% 
+      mutate(tot=cumsum(as.numeric(chr_len))-chr_len) %>%
+      select(-chr_len) %>%
+      left_join(gwasResults, ., by=c("CHR"="CHR")) %>%
+      arrange(CHR, BP) %>%
+      mutate( BPcum=BP+tot) 
+    axisdf <- don %>% group_by(CHR) %>% summarize(center=( max(BPcum) + min(BPcum) )/ 2)
+    p <- ggplot(don, aes(x=BPcum, y=P)) +
+      geom_point( aes(color=as.factor(CHR)), alpha=0.8, size=0.5) +
+      scale_color_manual(values = rep(c("grey","skyblue", "grey", "skyblue"), 7)) +
+      scale_x_continuous( label = axisdf$CHR, breaks= axisdf$center ) +
+      scale_y_continuous(expand = c(0, 0) ) + 
+      theme_bw() +
+      ylab("BF")+
+      xlab("Chromsome")+
+      theme( 
+        legend.position="none",
+        panel.border = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.text.x=element_text(size=15),
+        axis.text.y=element_text(size=15),
+        axis.title.y=element_text(size = 15),
+        axis.title.x=element_text(size = 15),
+      )+
+    #geom_vline(xintercept = 528377322, colour="red",linetype=2, size=1)
+    #geom_hline(yintercept = -log10(thresh[a,1]), colour="red",linetype=2, size=1)+
+    geom_hline(yintercept = 10, colour="red",linetype=2, size=0.7)
+    png(paste(filename,".png",sep=""), height = 120, width = 540)
+    print(p)
+    dev.off()
+}
+
+##环境适应性基因GO注释#####
+library(tidyverse)
+setwd("/Users/guoyafei/Desktop/baypass/GO/plot")
+GO_type1 <- read.table("/Users/guoyafei/Desktop/baypass/GO/plot/baypass_type1.gene_GO.txt", header=F,stringsAsFactors = F,sep="\t",quote="")
+GO_type3 <- read.table("/Users/guoyafei/Desktop/baypass/GO/plot/baypass_type3.gene_GO.txt", header=F,stringsAsFactors = F,sep="\t",quote="")
+
+GO_type1 <- read.table("/Users/guoyafei/Desktop/baypass/GO/plot/envgwas_type1.p005_3k.gene_GO.txt", header=F,stringsAsFactors = F,sep="\t",quote="")
+GO_type3 <- read.table("/Users/guoyafei/Desktop/baypass/GO/plot/envgwas_type3.p005_3k.gene_GO.txt", header=F,stringsAsFactors = F,sep="\t",quote="")
+
+GOMAP_type1 <- read.table("/Users/guoyafei/Desktop/baypass/GO/plot/baypass_type1.gene_GOMAP.txt", header=F,stringsAsFactors = F,sep="\t",quote="")
+GOMAP_type3 <- read.table("/Users/guoyafei/Desktop/baypass/GO/plot/baypass_type3.gene_GOMAP.txt", header=F,stringsAsFactors = F,sep="\t",quote="")
+GOMAP_type4 <- read.table("/Users/guoyafei/Desktop/baypass/GO/plot/baypass_type4.gene_GOMAP.txt", header=F,stringsAsFactors = F,sep="\t",quote="")
+
+GOMAP_type1 <- read.table("/Users/guoyafei/Desktop/baypass/GO/plot/envgwas_type1.p005_3k.gene_GOMAP.txt", header=F,stringsAsFactors = F,sep="\t",quote="")
+GOMAP_type2 <- read.table("/Users/guoyafei/Desktop/baypass/GO/plot/envgwas_type2.p005_3k.gene_GOMAP.txt", header=F,stringsAsFactors = F,sep="\t",quote="")
+GOMAP_type3 <- read.table("/Users/guoyafei/Desktop/baypass/GO/plot/envgwas_type3.p005_3k.gene_GOMAP.txt", header=F,stringsAsFactors = F,sep="\t",quote="")
+GOMAP_type4 <- read.table("/Users/guoyafei/Desktop/baypass/GO/plot/envgwas_type4.p005_3k.gene_GOMAP.txt", header=F,stringsAsFactors = F,sep="\t",quote="")
+
+data <- rbind(GO_type1,GO_type3)
+data <- rbind(GOMAP_type1,GOMAP_type3,GOMAP_type4)
+
+ggplot(data=GOMAP_type4)+
+  geom_bar(aes(y= V2, x=V4, fill=V3), stat='identity') +
+  #coord_flip() +
+  scale_fill_gradient(expression(pvalue),low="#FDAE6B", high = "#D94801") +
+  xlab("Gene number") +
+  ylab("GO term description") +
+  theme(
+    axis.text.x=element_text(angle=45,hjust=1,color="black"),
+    axis.text.y=element_text(angle=45,color="black", size=rel(0.3)),
+    axis.title.x = element_text(angle=45,color="black", size=rel(5)),
+    axis.title.y = element_blank(),
+    legend.text=element_text(color="black",size=rel(0.2)),
+    legend.title = element_text(color="black",size=rel(0.7))
+  )+
+  #ylim(0,10)+
+  theme_bw()
+
+
+
+
+
+
+## bf_gwas beta #########
+setwd("/Users/guoyafei/Desktop/bf_gwas")
+data <- read.table("/Users/guoyafei/Desktop/bf_gwas/bf_gwas05.bed", header = F, stringsAsFactors = F)
+data <- read.table("/Users/guoyafei/Desktop/bf_gwas/shuf50k.txt", header = F, stringsAsFactors = F)
+colnames(data) <- c("chr", "start", "stop", "id", "BF", "Beta", "SD_Beta", "eBPis", "AF1", "BETA", "P", "type")
+
+data <- read.table("/Users/guoyafei/Desktop/bf_gwas/bf_gwas05_14bio.bed", header = F, stringsAsFactors = F)
+colnames(data) <- c("id", "BF", "Beta", "SD_Beta", "eBPis", "AF1", "BETA", "P", "type")
+
+sub <- data[which(data$type == "prec_pc1"),]
+ggplot(sub, aes(abs(Beta), abs(BETA))) +
+  geom_point(size=2.5,alpha=0.3,color="blue") +
+  theme_classic()+
+  xlab("Allele Frequency")+
+  theme( 
+    legend.position="none",
+    panel.border = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.x=element_text(size=15),
+    axis.text.y=element_text(size=15),
+    axis.title.y=element_text(size = 15),
+    axis.title.x=element_text(size = 15),
+  )
+
+ggplot(data, aes(abs(Beta),abs(BETA),group=type,color=type)) +
+  geom_point(size=2.5,alpha=0.3) +
+  theme_classic()+
+  facet_grid(type~.)
+  #xlab("Allele Frequency")+
+  theme( 
+    legend.position="none",
+    panel.border = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.x=element_text(size=15),
+    axis.text.y=element_text(size=15),
+    axis.title.y=element_text(size = 15),
+    axis.title.x=element_text(size = 15),
+  )
+  
+## bf_gwas ld #########
+library(ggplot2)
+library(reshape2)
+library(corrgram)
+library(corrplot)
+setwd("/Users/guoyafei/Desktop/bf_gwas")
+data <- read.table("/Users/guoyafei/Desktop/bf_gwas/ld/lat.test.chr21.txt", header = T, stringsAsFactors = F)
+chr1 <- data[order(data[which(data$CHR_A == "1"),]$BP_A),c(2,4,5)]
+cats <- dcast(chr1, BP_A~BP_B, value.var="R2", fun.aggregate = mean)
+cats2 <- cats[,-1]
+rownames(cats2) <- cats[,1]
+corrgram(cats2, order=NULL, lower.panel=NULL, col.regions = colorRampPalette(c("#ffffcc","#fed976","#fd8d3c","#e31a1c","#800026")), upper.panel=panel.shade, text.panel=panel.txt, main="Car Milage Data (unsorted)")
+
+ggplot(chr1, aes(R2))+
+  theme_bw()+
+  geom_histogram(binwidth = 0.05, aes(x=R2, y=..density..), position="identity", alpha = 0.5)
+
+corrplot(cats2, method = "color", col.lim = c(20, 30), type = 'upper', tl.col="black", tl.srt = 45, addrect=1, addCoef.col = "grey",number.cex=0.5,number.digits=2,tl.cex=1,cl.cex=1,cl.lim = c(0, 1))
+
+## bf_gwas correction #########
+setwd("/Users/guoyafei/Desktop/bf_gwas/correlation/")
+
+file <- read.table("file4.txt", header=F,stringsAsFactors = F)
+#genep05 <- read.table("gene.p05.txt", header=F,stringsAsFactors = F)
+geneall <- read.table("all.type_3k.gene", header=F,stringsAsFactors = F)
+#gene <- file[which(file$V1 %in% genep05[,1]),]
+gene <- file[which(file$V1 %in% geneall[,1]),]
+
+#sample <- file[sample(nrow(file),5000),]
+sample <- gene[sample(nrow(gene),5000),]
+ggplot(data = sample, 
+  aes(x = V2, y = V3)) +
+  geom_point() +
+  geom_smooth(se = TRUE, method = "gam", formula = y ~ s(x))+
+  theme_bw()+
+  scale_color_manual(values = c("#66C2A5", "#FC8D62", "#8DA0CB"))
+
+
+
+  
+  
+  
+  
+  
+  

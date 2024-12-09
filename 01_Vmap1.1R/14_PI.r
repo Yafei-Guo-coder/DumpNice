@@ -169,5 +169,6 @@ p <- data %>%
     xlab("") +
     ylab("Assigned Probability (%)")
 
-p
-p
+
+
+

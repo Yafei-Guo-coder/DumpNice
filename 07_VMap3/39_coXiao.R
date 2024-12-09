@@ -100,6 +100,7 @@ ggplot(sub, aes(x=start, y=fd)) +
 
 ######################################################### 选择和适应性分析 ##################################################
 setwd("/Users/guoyafei/Desktop/coXiao/选择")
+
 data <- read.table("prec4.chr2A.txt",header=F,stringsAsFactors = F, sep="\t")
 
 pdf("baypass.pdf",width=14,height = 6)
@@ -113,9 +114,9 @@ ggplot(sub, aes(x=V3, y=V5)) +
   geom_vline(xintercept=759452125,color='red')+
   geom_vline(xintercept=759457059,color='red')
 dev.off()
-  
+library(ggplot2)
 data <- read.table("SH_IA.chr2A.21chr.txt",header=F,stringsAsFactors = F, sep="\t")
-pdf("xpclr.pdf",width=16,height = 6)
+pdf("/Users/guoyafei/Desktop/毕业论文/fig/xpclr.pdf",width=16,height = 6)
 sub <- data[which(data$V2 > 740000000),]
 ggplot(sub, aes(x=V3, y=V4)) +
   geom_line(linewidth=0.5)+
@@ -135,9 +136,36 @@ ggplot(sub, aes(x=V3, y=V4)) +
   geom_hline(yintercept=2.282,color='#E69F00',linetype = "dashed")+
   geom_vline(xintercept=759452125,color='red')+
   geom_vline(xintercept=759457059,color='red')
-  
 dev.off()
 
+setwd("/Users/guoyafei/Desktop/coXiao/文章")
+data <- read.table("chr2A.climate13.21chr.txt", header=F,stringsAsFactors = F)
+sub <- data[which(data$V4 > 740),]
+png("plot2.png", height=600,width=1200)
+ggplot(sub, aes(x=V4, y=V3)) +
+  geom_line(linewidth=1) +
+  theme_classic() +
+  xlab("Chr2A genomic position (Mb)")+
+  #theme(axis.title.y = element_blank()) 
+  ylab("Bayes Factor") +
+  theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=20),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))+
+  geom_hline(yintercept=6.28,color='#E69F00',linetype = "dashed")+
+  geom_vline(xintercept=759.452125,color='red')+
+  geom_vline(xintercept=759.457059,color='red')
+dev.off()
+
+pdf("plot2.pdf", height=6,width=12)
+ggplot(sub, aes(x=V4, y=V3)) +
+  geom_line(linewidth=1) +
+  theme_classic() +
+  xlab("Chr2A genomic position (Mb)")+
+  #theme(axis.title.y = element_blank()) 
+  ylab("Bayes Factor") +
+  theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=20),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))+
+  geom_hline(yintercept=6.28,color='#E69F00',linetype = "dashed")+
+  geom_vline(xintercept=759.452125,color='red')+
+  geom_vline(xintercept=759.457059,color='red')
+dev.off()
 ############################################################### 地图分析 #####################################################
 library(leaflet)
 library(rgdal)
@@ -359,6 +387,83 @@ ggplot(sub, aes(x=type, y = ABD_0733, fill=type,group=type))+
     axis.title.y=element_text(size = 15),
     axis.title.x=element_text(size = 15),
   ) 
+############################################################ 重新画地图 20240719 ######################################3#############
+library(rgdal)
+library(RColorBrewer)
+library(ggplot2)
+library(ggmap)
+library(sp)
+library(maptools)
+library(maps)
+library(psych)
+library(reshape)
+library(leaflet)
+library(rgdal)
+
+setwd("/Users/guoyafei/Desktop/coXiao/output/")
+data <- read.table("/Users/guoyafei/Desktop/coXiao/input/wildemmer_plot.txt", header=T,sep="\t", stringsAsFactors = F)
+sub <- data[which(data$latitude != "NA"),]
+
+type_var <- c("Domesticated einkorn","Wild einkorn","Wild emmer","Domesticated emmer","free-threshing tetraploids")
+type_var2 <- c("landrace","cultivar")
+sub2 <- sub[which(sub$Type %in% type_var),]
+sub3 <- sub[which(sub$Type %in% type_var2),]
+
+sub2$Type <- as.factor(sub2$Type)
+sub2$Haplotype <- as.factor(sub2$Haplotype)
+
+#一种带颜色的地图
+shapes <- sample(0:14, 10)
+iconFiles <- pchIcons(shapes, 40, 40, col = "steelblue", lwd = 2)
+iconFiles[1] <- "/var/folders/z0/pr12rcjn7_l53h_n951nknfh0000gn/T//RtmpzGF3cJ/file1294d55deebec.png"
+iconFiles[2] <- "/var/folders/z0/pr12rcjn7_l53h_n951nknfh0000gn/T//RtmpzGF3cJ/file1294d63d2eca9.png"
+iconFiles[3] <- "/var/folders/z0/pr12rcjn7_l53h_n951nknfh0000gn/T//RtmpzGF3cJ/file1294d770ef4a7.png"
+iconFiles[4] <- "/var/folders/z0/pr12rcjn7_l53h_n951nknfh0000gn/T//RtmpzGF3cJ/file1294d7bc5499f.png"
+iconFiles[5] <- "/var/folders/z0/pr12rcjn7_l53h_n951nknfh0000gn/T//RtmpzGF3cJ/file1294d5564a534.png"
+iconFiles[6] <- "/var/folders/z0/pr12rcjn7_l53h_n951nknfh0000gn/T//RtmpzGF3cJ/file1294d53303978.png"
+iconFiles[7] <- "/var/folders/z0/pr12rcjn7_l53h_n951nknfh0000gn/T//RtmpzGF3cJ/file1294d27b180a1.png"
+
+pal <- colorFactor(c( "#F9804C", "#FADFB4","#03068C","#64B82C"), domain = sub2$Haplotype)
+# 添加不同形状和颜色的点
+my_map <- leaflet() %>%
+  addTiles()  %>% 
+  addProviderTiles("Esri.WorldStreetMap")%>%
+  addCircleMarkers(data=sub2,~longitude, ~latitude, fillColor = pal(sub2$Haplotype), fillOpacity = 1,
+                   radius=15, stroke=F
+  )%>%
+  addMarkers(
+    data = sub2,
+    lng = ~longitude,
+    lat = ~latitude,
+    icon = ~ icons(
+      iconUrl = iconFiles[Type],
+      iconWidth = 35,
+      iconHeight = 35,
+      iconAnchorX = 0,
+      iconAnchorY = 0)
+  )%>%
+  addLegend( data=sub2,pal=pal, values=~sub2$Haplotype, opacity=1, title = "", position = "bottomright" )
+
+#另一种简单版本
+mp <- NULL
+mapworld <- borders("world",colour = "gray90") 
+mp <- ggplot() + 
+  mapworld + 
+  #xlim(0,90) +
+  ylim(-60,90) + 
+  theme_classic()
+
+mp+geom_point(aes(x=sub2$longitude, y=sub2$latitude,  fill=sub2$Haplotype, size=1, stroke=0.2, shape=sub2$Type))+
+  scale_size(range=c(1,1))+
+  #scale_shape_manual(values=c(7,0,1,2,10,5,6))+
+  geom_point(aes(x=sub3$longitude, y=sub3$latitude, color =sub3$Haplotype, fill=sub3$Haplotype, size=1,shape=sub3$Type))+
+  scale_shape_manual(values=c(8,21,22,23,10,24,25))+
+  scale_fill_manual(values = c("#F9804C", "#FADFB4","#03068C","#64B82C")) +
+  scale_color_manual(values=c("#F9804C", "#FADFB4","#03068C","#64B82C"))+
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.title = element_blank(),
+        panel.border = element_blank())
 
 ###################################################### 画单倍型网络图 ################
 setwd("/Users/guoyafei/Desktop/coXiao/TraesCS2A02G554200/plot/")
@@ -370,28 +475,20 @@ library(ggplot2)
 suppressMessages(library(stringr))
 suppressMessages(library(pegas))
 #library(geneHapR)
-
 info <- read.table("/Users/guoyafei/Desktop/coXiao/单倍型/haploinfo2.txt",sep="\t", header=T,stringsAsFactors = F)
 samples <- info[,c(2,5)]
 alignment <- read.dna("V1.37exonPos.21chr-V2.beagle.min4.fasta",format = "fasta")
 
-
 library(ape)
 nbin<-read.FASTA("V1.37exonPos.21chr-V2.beagle.min4.fasta")
-
-
 pal_10 <- c( "#000000", "#FFFF00", "#1CE6FF", "#FF34FF", "#FF4A46", "#008941","#006FA6", "#A30059", "#FFDBE5", "#7A4900")
-
 samples <- samples %>% filter(ID %in% labels(alignment))
 samples <- droplevels(samples);
-
 # otherwise, the haplotype table will be screwy
 rownames(samples) <- 1:nrow(samples)
-
 # make the data table be in the same order as the aligment (or everything breaks)
 samples <- samples[match(labels(alignment),samples$ID),]
 hap <- haplotype(alignment,strict=F)
-
 # Calculate haplotype network
 rownames(hap) <-  paste0("H", seq(1, length(rownames(hap)), by=1) )
 hap.net <- haploNet(hap)

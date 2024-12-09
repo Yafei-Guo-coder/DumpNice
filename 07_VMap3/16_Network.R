@@ -272,3 +272,47 @@ pdf("PPI.pdf",width = 15,height = 10)
 grid.arrange(p[[1]],p[[2]],p[[3]],p[[4]],p[[5]],p[[6]],p[[7]],p[[8]],p[[9]],p[[10]],p[[11]],p[[12]],p[[13]],p[[14]],p[[15]],p[[16]],p[[17]],p[[18]],nrow=4)
 dev.off()
 
+
+#### phyperTest co-expression network#####
+setwd("/Users/guoyafei/Desktop/network/2018science/phyperTest")
+shuf_integra <- read.table("shuf/integra_abiotic.txt", header=T, stringsAsFactors = F)
+shuf_phyper <- read.table("shuf/phyper_abiotic.txt", header=T, stringsAsFactors = F)
+
+#### z-score Test PPI network#####
+setwd("/Users/guoyafei/Desktop/network/PPI")
+data <- read.table("z.score.txt", header=T, stringsAsFactors = F)
+#(215-200.52)/3.63388
+#3.984722
+#(202-175.98)/3.41317
+#7.623412
+#(239-229.57)/3.76148
+#2.506992
+#(200-179.08)/3.69226
+#5.665907
+#(214-187.37)/3.69606
+#7.20497
+
+data$type <- rownames(data)
+pdf("enrich.pdf",width=4, height=2)
+ggplot(data, aes(y = type, x = mean)) +
+  geom_point(aes(y = type, x = point)) + 
+  geom_errorbar(aes(xmin=(mean-sd),xmax=(mean+sd)),width=1,size=1) +
+  scale_fill_manual(values = c("red","blue")) +  
+  labs(x = "",y = "") +
+  theme_bw() +
+  theme(
+    legend.position="none",
+    #panel.border = element_blank(),
+    axis.line.y = element_line(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.x=element_text(size=20),
+    axis.text.y=element_text(size=20),
+    axis.title.y=element_text(size = 20),
+    axis.title.x=element_text(size = 20),
+  )+
+  theme(legend.text = element_text(size=10),legend.title=element_blank(),axis.text.x = element_text(size = 10), axis.title.x = element_text(size = 10),axis.text.y = element_text(size = 10),axis.title.y = element_text(size = 10))
+#geom_text(aes(label = dat$Num),position=position_dodge(width = 0.5),size = 5,vjust = -0.25)+ ##########
+dev.off()
+
+

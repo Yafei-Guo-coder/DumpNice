@@ -63,7 +63,6 @@ vcftools --gzvcf /data1/home/yafei/Project3/Vmap1.1/Alineage.vcf.gz --weir-fst-p
   done
 
 #pop5-24:
-
 thread_num=20
 tempfifo="my_temp_fifo"
 mkfifo ${tempfifo}	

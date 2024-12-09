@@ -342,30 +342,49 @@ data <- read.table("D_mlm2.txt",header=T,stringsAsFactors = F)
 #--------------manhuttun-------------
 library(qqman)
 library(tidyverse)
-setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/09_GWAS/LD01")
-path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/09_GWAS/LD01/Manhuttan" ##文件目录
+library(ggrepel)
+#setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/09_GWAS/LD01")
+#path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/09_GWAS/LD01/Manhuttan" ##文件目录
+
+setwd("/Users/guoyafei/Desktop/毕业论文/growthHabit/V2")
+path <- "/Users/guoyafei/Desktop/毕业论文/growthHabit/V2/fastGWA" ##文件目录
 fileNames <- dir(path)  ##获取该路径下的文件名
 filePath <- sapply(fileNames, function(x){ 
   paste(path,x,sep='/')})   ##生成读取文件路径
 data <- lapply(filePath, function(x){
-  read.table(x, header=T,stringsAsFactors = F)})
+  read.table(x, header=F,stringsAsFactors = F)})
 
+path2 <- "/Users/guoyafei/Desktop/毕业论文/growthHabit/V2/gene" ##文件目录
+fileNames2 <- dir(path2)  ##获取该路径下的文件名
+filePath2 <- sapply(fileNames2, function(x){ 
+  paste(path2,x,sep='/')})   ##生成读取文件路径
+data2 <- lapply(filePath2, function(x){
+  read.table(x, header=F,stringsAsFactors = F)})
+
+path3 <- "/Users/guoyafei/Desktop/毕业论文/growthHabit/V2/anno" ##文件目录
+fileNames3 <- dir(path3)  ##获取该路径下的文件名
+filePath3 <- sapply(fileNames3, function(x){ 
+  paste(path3,x,sep='/')})   ##生成读取文件路径
+data3 <- lapply(filePath3, function(x){
+  read.table(x, header=F,stringsAsFactors = F)})
 #threshold
 library(gdata)
 thresh <- read.xls("thresh.xlsx",sheet=1,row.name=1,na.strings=c("NA","#DIV/0!"))
 
-#for (i in c(1,4,7,10,13,16,19,22,25,28,31,34,37,40,43,46,49,52,55,58)){
-for (i in seq(1,40,by=2)){
+for (i in c(1:3)){
+#for (i in seq(1,40,by=2)){
   filename <- strsplit( names(data)[i], "_")[[1]][1]
-  p<-list()
-  for (j in c(0,1)){
-    a <- i+j
-    gwasResults2 <- data[[a]]
-    colnames(gwasResults2) <- c("SNP", "CHR", "BP","P")
-    gwasResults3 <- gwasResults2[which(gwasResults2$P < 0.25),]
-    other <- gwasResults2[which(gwasResults2$P > 0.01 & gwasResults2$P <0.2),]
+  p <- list()
+  #for (j in c(0,1)){
+    #a <- i+j
+    gwasResults <- data[[i]]
+    point <- data2[[i]]
+    anno <- data3[[i]]
+    colnames(gwasResults) <- c("SNP", "CHR", "BP","P")
+    #gwasResults3 <- gwasResults2[which(gwasResults2$P < 0.25),]
+    #other <- gwasResults2[which(gwasResults2$P > 0.01 & gwasResults2$P <0.2),]
     #other2 <- other[sample(nrow(other), 20000), ]
-    gwasResults <- rbind(gwasResults3,other)
+    #gwasResults <- rbind(gwasResults3,other)
     don <- gwasResults %>% 
       # Compute chromosome size
       group_by(CHR) %>% 
@@ -377,19 +396,29 @@ for (i in seq(1,40,by=2)){
       left_join(gwasResults, ., by=c("CHR"="CHR")) %>%
       # Add a cumulative position of each SNP
       arrange(CHR, BP) %>%
-      mutate( BPcum=BP+tot) 
+      mutate( BPcum=BP+tot)
+    don$highlight <- "no"
+    don[which(don$SNP %in% point[,4]), 7] <- "yes"
+    
+    don$anno <- "no"
+    rownames(don) <- don$SNP
+    don[anno$V4, 8] <- "yes"
+    
+    don$name <- "no"
+    don[anno$V4, 9] <- anno[,6]
+    
     axisdf <- don %>% group_by(CHR) %>% summarize(center=( max(BPcum) + min(BPcum) )/ 2)
-    p[[j+1]] <- ggplot(don, aes(x=BPcum, y=F)) +
+    p[[i]] <- ggplot(don, aes(x=BPcum, y=-log10(P))) +
       # Show all points
       geom_point( aes(color=as.factor(CHR)), alpha=0.8, size=1.3) +
       scale_color_manual(values = rep(c("grey","grey", "skyblue", "skyblue"), 7)) +
       # custom X axis:
       scale_x_continuous( label = axisdf$CHR, breaks= axisdf$center ) +
-      scale_y_continuous(expand = c(0, 0) ) +     # remove space between plot area and x axis
+      #scale_y_continuous(expand = c(0, 0) ) +     # remove space between plot area and x axis
       # Add highlighted points
-      #geom_point(data=subset(don, is_highlight=="yes"), color="orange", size=2) +
+      geom_point(data=subset(don, highlight=="yes"), color="orange", size=1.3) +
       # Add label using ggrepel to avoid overlapping
-      #geom_label_repel( data=subset(don, is_annotate=="yes"), aes(label=SNP), size=2) +
+      geom_label_repel( data=subset(don, anno=="yes"), aes(label=name), size=1, max.overlaps=200) +
       # Custom the theme:
       theme_bw() +
       theme( 
@@ -402,14 +431,15 @@ for (i in seq(1,40,by=2)){
         axis.title.y=element_text(size = 15),
         axis.title.x=element_text(size = 15),
       )+
-      scale_y_continuous(limits = c(0,7))+
-      geom_point(data=point,aes(x=BPcum,y=-log10(P)),color="red")
+      scale_y_continuous(limits = c(0,10))
+      #geom_point(data=point,aes(x=BPcum,y=-log10(P)),color="red")
     #geom_vline(xintercept = 528377322, colour="red",linetype=2, size=1)
     #geom_hline(yintercept = -log10(thresh[a,1]), colour="red",linetype=2, size=1)+
     #geom_hline(yintercept = -log10(thresh[a,2]), colour="blue",linetype=2, size=1)
-  }
-  pdf(paste(filename,".pdf",sep=""),height = 9,width = 9)
-  grid.arrange(p[[1]],p[[2]],nrow=2)
+  #}
+  pdf(paste(filename,".pdf",sep=""),height = 4.5,width = 9)
+  #grid.arrange(p[[1]],p[[2]],nrow=2)
+  print(p[[i]])
   dev.off()
 }
 

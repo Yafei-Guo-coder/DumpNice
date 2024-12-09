@@ -97,12 +97,12 @@ dfe
 
 #定义一个空的data.frame
 all <- data.frame(CHROM="", BIN_START="", BIN_END="", MEAN_FST="", Gene_start="", Gene_end="",Gene_id="",Pop="", site="", lineage="", stringsAsFactors=FALSE)
-p = ggplot(data, aes(x = taxaNum,y = mean))+
-  geom_point()+ 
-  geom_errorbar(aes(ymin=(mean-sd),ymax=(mean+sd)),width=2,size=2)+
-  scale_fill_manual(values = c("red","blue"))+  
+p = ggplot(data, aes(x = taxaNum,y = mean)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin=(mean-sd),ymax=(mean+sd)),width=2,size=2) +
+  scale_fill_manual(values = c("red","blue")) +  
   labs(x = "Taxa Number",y = "Snp proportion") +
-  facet_wrap(Type1~Type2,scales="free")+
+  facet_wrap(Type1~Type2,scales="free") +
   theme_bw() +
   theme(
     legend.position="none",
@@ -361,14 +361,12 @@ pheatmap(data3, show_rownames=FALSE, show_colnames=FALSE, cluster_col = F, legen
 
 corrplot(cats,method = "color",col.lim = c(20, 30),type = 'lower',tl.col="black",tl.srt = 45,addrect=1,addCoef.col = "grey",number.cex=0.5,number.digits=2,tl.cex=1,cl.cex=1,cl.lim = c(0, 1))
 
-
-
 ggplot(data,aes(a,b))+
   theme_bw()+
   geom_bar()
 
-ggplot(all,aes(beta))+
-  theme_bw()+
+ggplot(all,aes(beta)) +
+  theme_bw() +
   geom_histogram(binwidth = 50,aes(x=beta, y=..density..),position="identity",alpha = 0.5)
 
 a <- data[,4,drop=F]
@@ -395,7 +393,6 @@ ggplot(data,aes(y=V2,group=V1))+
   theme_bw()+
   geom_histogram()
 
-
 data <- read.table("/Users/guoyafei/Desktop/type1.mode.salti.out", header=F, stringsAsFactors = F)
 data$V1 <- as.factor(data$V1)
 data[which(data$V2 > 1),2 ] <- 2
@@ -419,4 +416,14 @@ p <- ggplot(data=data5, mapping=aes(x = V1, y = value,fill=V2))+
   theme_classic()
 print(p)
 dev.off()
+library(corrgram)
+ggcorr(clim, method = c("everything", "pearson"), nbreaks = 5,hjust = 1, size = 4, color = "grey50",layout.exp = 1, legend.position = "bottom", legend.size = 12) +
+  guides(fill = guide_colorbar(barwidth = 18, title.vjust = 0.75)) +
+  theme(legend.title = element_text(size = 14))
+
+
+
+
+
+
 

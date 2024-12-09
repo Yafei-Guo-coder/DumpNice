@@ -5,7 +5,7 @@ sub <- data[,c(3,6:13,27:40)]
 #sub2 <- sub[,c(1:9,11:14,22:36)]
 sub3 <-  sub[!duplicated(sub, fromLast=TRUE), ] 
 
-#########################################环境变量的PCA分析######################################################
+####################################### 环境变量的PCA分析 ######################################################
 #方法1（无效，由于存在相关性方向，无法很好的区分）-------
 dt = t(scale(sub3, center = T, scale = T))
 rm1 <- cor(dt)
@@ -161,7 +161,7 @@ cluster_result <- hclust(as.dist(1 - abs(cor_matrix)), method = "")
 
 plot(cluster_result, hang=-1, cex=.8, main="Average Linkage Clustering")
 
-########################################环境变量的相关性分析####################################################
+####################################### 环境变量的相关性分析 ####################################################
 library(corrgram)
 #28个环境变量
 vars2 <- c("solar1","prec7","solar2","temp9","temp8","temp5","prec8","temp4","prec4","temp10",
@@ -183,12 +183,12 @@ vars2 <- c("temp9","temp1","temp11","temp6","Elevation","temp10","temp5",
 corrgram(sub3[,vars2], order = F,lower.panel = panel.shade,upper.panel=panel.pie,gap = 0.1,
          main="Correlogram of environment variables intercorrelations")
 
-#########################################环境变量的热图分析######################################################
+####################################### 环境变量的热图分析 ######################################################
 #无法说明问题
 library(pheatmap)
 pheatmap(scale(sub3),cluster_rows = F,clustering_distance_cols  = "correlation", border_color = "white",cutree_cols  = 3)
                         
-######################################三种环境变量的主成分分析###################################################
+####################################### 三种环境变量的主成分分析 ###################################################
 #library(FactoMineR)
 #library(factoextra)
 library(psych)
@@ -252,8 +252,7 @@ ggplot(PC, aes(x=type,y=PC1,color=region,fill=region)) +
   xlab("Group")+
   theme_classic()
 
-#####################################环境距离和遗传距离的相关性############################################
-
+####################################### 环境距离和遗传距离的相关性 ############################################
 #方式一：(在计算环境距离/地理距离和遗传距离的相关性时使用），根据环境PC选变量的问题：环境PC最相关的变量，在基因组上相应的位点很少，并不能很好的反应环境适应性。除了prec是PC2，其余都是PC1.
 #  temp11(0.98);temp1(0.96);temp6(0.96)(temp1鉴定的又多又好)
 #  solar3(0.99);solar1(0.94)(solar1鉴定的又多又好)
@@ -261,7 +260,6 @@ ggplot(PC, aes(x=type,y=PC1,color=region,fill=region)) +
 #    更新成prec3 prec4 prec6上面prec1;prec5鉴定的位点都很少
 #  soil9(0.94);soil12(0.94);soil13(0.93);soil11(-0.83);soil10(soil12鉴定的又多又好)
 #    更新成soil12(0.94)上面soil9，soil13，soil11鉴定位点情况都不好,位点也比较少
-
 #环境变量的筛选
 library(ggplot2)
 library(tidyr)
@@ -402,7 +400,7 @@ for ( i in c(1:4)) {
   dev.off()
 }
 
-######################################曼哈顿图(lfmm & baypass)#################################################
+####################################### 曼哈顿图(lfmm & baypass)#################################################
 library(qqman)
 library(tidyverse)
 setwd("/Users/guoyafei/Desktop/环境适应性位点/曼哈顿/")
@@ -451,7 +449,7 @@ for (i in 1){
   dev.off()
 }
 
-####################################群体对环境变量距离PC1的三元图###################################################
+####################################### 群体对环境变量距离PC1的三元图###################################################
 #首先对环境变量取PC1的值
 library(ggplot2)
 library(tidyr)
@@ -626,7 +624,7 @@ f <- rownames(test[which(test$color == "type6"),])
 g <- rownames(test[which(test$color == "type7"),])
 
 
-####################################单个群体的环境变量PC1的三元图###################################################
+####################################### 单个群体的环境变量PC1的三元图###################################################
 #首先对环境变量取PC1的值
 library(ggplot2)
 library(tidyr)
@@ -1061,6 +1059,12 @@ write.table(df1, "type3.PC.txt", quote=F, row.names = T)
 library(raster)
 library(sp)
 library(sf)
+
+library(raster)
+library(ncdf4)
+library(rasterVis)
+library(lattice)
+
 #conda activate worldclim
 #crop & mask 函数可以对tif文件进行剪切
 pre_5 = raster("/data2/yafei/polygenic/worldclim/wc2.1_30s_prec/wc2.1_30s_prec_05.tif")
@@ -1071,7 +1075,9 @@ pre_9 = raster("/data2/yafei/polygenic/worldclim/wc2.1_30s_prec/wc2.1_30s_prec_0
 
 bio12 <- raster("/data2/yafei/polygenic/worldclim/wc2.1_30s_bio/wc2.1_30s_bio_12.tif")
 #北美地区小麦主要收获季节是6-8月
-color_palette <- colorRampPalette(c("#e66101","#fdb863","#ffffbf","#b2abd2","#5e3c99","#c2a5cf","#bababa","#a6dba0","#92c5de","#ffffff","#abd9e9","#2c7bb6"))
+color_palette <- colorRampPalette(c("#e66101","#fdb863","#ffffbf","#b2abd2","#5e3c99","#c2a5cf","#bababa","#a6dba0","#92c5de","#d7dadb","#abd9e9","#2c7bb6"))
+color_palette <- colorRampPalette(c("#e66101","#fdb863","#ffffbf","#b2abd2","#5e3c99","#c2a5cf","#bababa","#abd9e9","#2c7bb6"))
+
 m1 <- addLayer(pre_6, pre_7,pre_8)
 r <- stackApply(m1, indices = 1, fun = sum)
 shape <- read_sf("/data2/yafei/polygenic/worldclim/NA_CEC_Eco_Level2/NA_CEC_Eco_Level2.shp")
@@ -1206,7 +1212,7 @@ ggplot()+geom_point(data =all, aes(x=PC1, y=PC2,color=cluster),size=1)+
   theme(panel.border = element_blank())
 
 #写进文档里，并手动根据kmeans聚类调整后保存为VMap3_479landracePC_6regions.txt，这个文件的PC是通过70个非土壤的环境变量做的
-#write.table(final_data, "PC_cluster5.txt",quote=F, sep="\t",row.names = F)
+#write.table(final_data, "PC_cluster5.txt", quote=F, sep="\t", row.names=F)
 #data <- read.table("/Users/guoyafei/RstudioProjects/GitHub/R_Code/07_VMap3/VMap3_479landracePC_6regions.txt",header=T,stringsAsFactors = F)
 #final_data$manual <- data[rownames(final_data),11]
 #重新写进文档里，并手动调整后保存为VMap3_476landracePC_6regions.txt，这个文件的PC是通过82个环境变量做的
@@ -1273,7 +1279,6 @@ mp+geom_point(data =data, aes(x=lon, y=lat,color=PC1),size=1.5)+
   theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=20),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
 
 ###################################################### 环境变量RDA分析 ################################################
-
 setwd("/Users/guoyafei/Desktop/RDA")
 data <- read.table("out2.txt", header= T, stringsAsFactors = F)
 type <- c(rep("solar",time=15), rep("temp", time=12), rep("prec",time=24),rep("temp", time=11), rep("prec",time=8), rep("soil",time=12),rep("allPC",time=10), rep("solarPC",time=10), rep("tempPC",time=10), rep("precPC",time=10), rep("soilPC",time=12), rep("STR",time=10))
@@ -1289,3 +1294,111 @@ ggplot(solar, aes(x=a, y=b))+
 
 
 
+
+####################################### 样本根据环境变量进行聚类画图 #################
+library(ggmap)
+library(RColorBrewer)
+library(cluster)
+library(factoextra)
+library(pheatmap)
+library(corrgram)
+library(GGally)
+setwd("/Users/guoyafei/Desktop/climate")
+data <- read.table("VMap3_sheet3_manual.txt", header =T, stringsAsFactors = F)
+
+#经纬度,82个环境变量
+clim <- data[,c(2,3,8:34,59:69,35:58,70:89)]
+
+#经纬度,前三个环境
+clim <- data[,c(2,3,172,173,174,187,188,189,210,211,212,242,243,244)]
+p <- scale(clim)
+p[43,81] <- 10
+pheatmap(p,cluster_rows = F,clustering_distance_cols  = "correlation", border_color = "white",cutree_cols  = 3)
+corrgram(clim, order = T,lower.panel = panel.shade, upper.panel = panel.shade,gap = 0.1,
+         main="Correlogram of environment variables intercorrelations")
+ggcorr(clim, method = c("everything", "pearson"),nbreaks = 5,hjust = 1, size = 4, color = "grey50",layout.exp = 1)
+
+data <- data[which(data$baypass_cluster_V1 !="0"),]
+clim <- data[,c(2,3,8:89)]
+
+#kmeans聚类看一下，手动调整
+df = scale(clim)
+#聚类数量 vs. 总体平方和
+fviz_nbclust(df, kmeans, method = "wss")
+#聚类数量 vs. 差距统计
+gap_stat <- clusGap(df,FUN = kmeans,nstart = 25,K.max = 25,B = 50)
+fviz_gap_stat(gap_stat)
+set.seed(120)
+km <- kmeans(df, centers = 14, nstart = 25)
+fviz_cluster(km, data = df,repel = FALSE,geom = c("point"))
+final_data <- cbind(rownames(clim),clim, cluster = km$cluster)
+final_data$cluster <- as.factor(final_data$cluster)
+pdf("plot17_divide.pdf",height = 14,width=20)
+mp <- NULL
+mapworld <- borders("world",colour = "gray90",fill="gray90") 
+mp <- ggplot() + mapworld + ylim(-60,90)  + theme_classic()
+mp+geom_point(data =final_data, aes(x=lon, y=lat,color = cluster),size=1)+
+  scale_size(range=c(1,1)) + 
+  theme(panel.border = element_blank())+
+  theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=20),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
+
+######################################## 画不同群体的环境变量的分布 ##############
+library(ggmap)
+library(RColorBrewer)
+library(cluster)
+library(factoextra)
+library(pheatmap)
+library(corrgram)
+library(GGally)
+library(reshape2)
+setwd("/Users/guoyafei/Desktop/climate")
+data <- read.table("VMap3_sheet3_manual.txt", header =T, stringsAsFactors = F)
+data <- data[which(data$baypass_cluster_V1 !="0"),]
+#经纬度,82个环境变量
+clim <- data[,c(7,2,3,8:34,59:69,35:58,70:89)]
+clim2 <- scale(data[,c(2,3,8:34,59:69,35:58,70:89)])
+clim3 <- as.data.frame(cbind(clim[,1],clim2))
+colnames(clim3)[1] <- "baypass_cluster_V1"
+
+#经纬度,前三个环境
+clim3 <- data[,c(7,2,3,172,173,174,187,188,189,210,211,212,242,243,244)]
+
+M <- aggregate(clim3, by=list(clim3$baypass_cluster_V1),FUN=mean)[,-1]
+#按照纬度排序
+a <- M[order(M$lat),]
+a$baypass_cluster_V1 <- factor(a$baypass_cluster_V1,levels =a$baypass_cluster_V1)
+cats <- melt(a,id="baypass_cluster_V1")
+#按照经度排序
+a <- M[order(M$lon ),]
+a$baypass_cluster_V1 <- factor(a$baypass_cluster_V1,levels =a$baypass_cluster_V1)
+cats <- melt(a,id="baypass_cluster_V1")
+
+solar <- cats[which(cats$variable == "solar15_PC1" | cats$variable == "solar15_PC2"| cats$variable == "solar15_PC3" ),]
+ggplot(solar, aes(x=baypass_cluster_V1, y=value, group= variable,shape= variable,color=variable)) + 
+  geom_line() +geom_point(size=4) +theme_bw()+xlab("population")+
+  theme(plot.title = element_text(color="red", size=15, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 20), axis.title.x = element_text(size = 20),axis.text.y = element_text(size = 20),axis.title.y = element_text(size = 20))
+
+temp <- cats[which(cats$variable == "temp23_PC1" | cats$variable == "temp23_PC2"| cats$variable == "temp23_PC3" ),]
+ggplot(temp, aes(x=baypass_cluster_V1, y=value, group= variable,shape= variable,color=variable)) + 
+  geom_line() +geom_point(size=4) +theme_bw()+xlab("population")+
+  theme(plot.title = element_text(color="red", size=15, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 20), axis.title.x = element_text(size = 20),axis.text.y = element_text(size = 20),axis.title.y = element_text(size = 20))
+
+prec <- cats[which(cats$variable == "prec32_PC1" | cats$variable == "prec32_PC2"| cats$variable == "prec32_PC3"),]
+ggplot(prec, aes(x=baypass_cluster_V1, y=value, group= variable,shape= variable,color=variable)) + 
+  geom_line() +geom_point(size=4) +theme_bw()+xlab("population")+
+  theme(plot.title = element_text(color="red", size=15, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 20), axis.title.x = element_text(size = 20),axis.text.y = element_text(size = 20),axis.title.y = element_text(size = 20))
+
+soil <- cats[which(cats$variable == "soil12_PC1" | cats$variable == "soil12_PC2"| cats$variable == "soil12_PC3"),]
+ggplot(soil, aes(x=baypass_cluster_V1, y=value, group= variable,shape= variable,color=variable)) + 
+  geom_line() +geom_point(size=4) +theme_bw()+xlab("population")+
+  theme(plot.title = element_text(color="red", size=15, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 20), axis.title.x = element_text(size = 20),axis.text.y = element_text(size = 20),axis.title.y = element_text(size = 20))
+
+lat <- cats[which(cats$variable == "lat"),]
+ggplot(lat, aes(x=baypass_cluster_V1, y=value, group= variable,shape= variable,color=variable)) + 
+  geom_line() +geom_point(size=4) +theme_bw()+xlab("population")+
+  theme(plot.title = element_text(color="red", size=15, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 20), axis.title.x = element_text(size = 20),axis.text.y = element_text(size = 20),axis.title.y = element_text(size = 20))
+
+lon <- cats[which(cats$variable == "lon"),]
+ggplot(lon, aes(x=baypass_cluster_V1, y=value, group= variable,shape= variable,color=variable)) + 
+  geom_line() +geom_point(size=4) +theme_bw()+xlab("population")+
+  theme(plot.title = element_text(color="red", size=15, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 20), axis.title.x = element_text(size = 20),axis.text.y = element_text(size = 20),axis.title.y = element_text(size = 20))

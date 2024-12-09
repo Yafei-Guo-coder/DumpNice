@@ -72,7 +72,7 @@ data <- read.table("/Users/guoyafei/RstudioProjects/GitHub/R_Code/07_VMap3/VMap3
 rownames(data) <- data$ID
 sub <- data[,c(2,3,89:98)]
 
-#kmeans聚类看一下，手动调整
+#kmeans聚类看一下
 df = scale(sub)
 #聚类数量 vs. 总体平方和
 fviz_nbclust(df, kmeans, method = "wss")
@@ -594,3 +594,5 @@ ggplot(data=strong1, mapping=aes(x = abs(V8), y=V28))+
   scale_fill_manual(values = c("#dadaeb","#9e9ac8","#6a51a3","#3f007d"))+
   theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 15), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 15),axis.title.y = element_text(size = 25))
 dev.off()
+
+

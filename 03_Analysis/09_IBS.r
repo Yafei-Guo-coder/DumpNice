@@ -19,10 +19,10 @@ nameABD <- c("B_Speltoides","DD_Anathera","AABBDD_Club_wheat","AABBDD_Cultivar",
 #A:487  485-487
 #B:406  404-406
 #D:306  304-306
-1.SS_taxa.txt
-2.sub_Anathera.txt
-3.sub_Club_wheat.txt
-4.sub_Cultivar.txt
+SS_taxa.txt
+sub_Anathera.txt
+sub_Club_wheat.txt
+sub_Cultivar.txt
 sub_Domesticated_einkorn.txt
 sub_Domesticated_emmer.txt
 sub_Durum.txt

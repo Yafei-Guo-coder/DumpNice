@@ -109,7 +109,7 @@ done
 done | awk '{print $4"\t"$6}'|sort -k1,1n -k2,2n | uniq | sed 's/\t/-/' > logP5_50k.snp
 
 
-#QQ plot-----
+#QQ plot----
 setwd("/Users/guoyafei/Documents/01_个人项目/05_FuGWAS/07_气孔导度数据/20210928/")
 data <- read.table("height_all.mlm.txt",header=F,stringsAsFactors = F)
 colnames(data) <- c("SNP", "CHR", "BP","P")
@@ -134,8 +134,6 @@ pd_qq <- ggplot(data=qq_dat,aes(exp,obs))+
 png("height_qq.png")
 pd_qq
 dev.off()
-
-#----
 
 for (i in c(1:20)){
 gwasResults <- data[[i]]

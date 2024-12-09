@@ -52,8 +52,30 @@ col <- brewer.pal(n = 8, name = "Oranges")[c(4,7)]
 col <- brewer.pal(n = 8, name = "Greens")[c(4,7)]
 setwd("/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Go/V3/GOMAP")
 
+
 #画整体的Go富集图----
-path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Go/V3/GOMAP/D"
+#path <- "/Users/guoyafei/Documents/01_Migration/02_Environment/02_XP-CLR/Go/V3/GOMAP/D"
+setwd("/Users/guoyafei/Desktop/baypass/GO")
+lat <- read.table("type4.go.txt", header=T,stringsAsFactors = F,sep="\t")
+ggplot(data=lat)+
+  geom_bar(aes(x=Description, y=number, fill=(p.adjust)), stat='identity') +
+  coord_flip() +
+  scale_fill_gradient(expression(p.adjust),low="#FDAE6B", high = "#D94801") +
+  ylab("Gene number") +
+  xlab("GO term description") +
+  theme(
+    axis.text.x=element_text(color="black",size=rel(0.3)),
+    axis.text.y=element_text(color="black", size=rel(0.3)),
+    axis.title.x = element_text(color="black", size=rel(5)),
+    axis.title.y = element_blank(),
+    legend.text=element_text(color="black",size=rel(0.2)),
+    legend.title = element_text(color="black",size=rel(0.7))
+  )+
+  theme_bw()+theme(panel.grid=element_blank(),panel.border=element_blank(),axis.line=element_line(size=1,colour="black"))
+
+
+
+
 fileNames <- dir(path) 
 filePath <- sapply(fileNames, function(x){
   paste(path,x,sep='/')})   

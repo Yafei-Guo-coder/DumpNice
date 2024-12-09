@@ -90,16 +90,24 @@ library(RColorBrewer)
 library(ggrepel)
 display.brewer.all()
 scale_fill_brewer(palette = "RdYiBu")
-setwd("/Users/guoyafei/Documents/02_VmapIII/04_Statistics/05_MDS")
+setwd("/Users/guoyafei/Documents/Vmap3/before0219/04_Statistics/05_MDS/")
 anno <- read.xls("/Users/guoyafei/RstudioProjects/GitHub/R_Code/07_VMap3/Lulab_germplasm_Info.xlsx",sheet=1,na.strings=c("NA","#DIV/0!"))
 data <- read.table("ABlineage.maf0.01.mds", header=T, stringsAsFactors = F)
 data[1356:1408,1] <- c("ABD_1144","ABD_1145","ABD_1146","ABD_1147","ABD_1148","ABD_1149","ABD_1150","ABD_1151","ABD_1152","ABD_1153","ABD_1154","ABD_1155","ABD_1156","ABD_1157","ABD_1158","ABD_1159","ABD_1160","ABD_1161","ABD_1162","ABD_1163","ABD_1164","ABD_1165","ABD_1166","ABD_1167","ABD_1168","ABD_1169","ABD_1170","ABD_1171","ABD_1172","ABD_1173","ABD_1174","ABD_1175","ABD_1176","ABD_1177","ABD_1178","ABD_1179","ABD_1180","ABD_1181","ABD_1182","ABD_1183","ABD_1184","ABD_1185","ABD_1186","ABD_1187","ABD_1188","ABD_1189","ABD_1190","ABD_1191","ABD_1192","ABD_1193","ABD_1194","ABD_1195","ABD_1196")
-test <- merge(data,anno,by.x="FID",by.y="Taxa.vmap3.")
+test <- merge(data,anno,by.x="FID",by.y="ID")
+
+BW <- c("Lancrace","Cultivar","Club_wheat","Indian_dwarf_wheat","Macha","Vavilovii","Yunan_wheat","Tibetan_semi_wild")
+hulled <- c("Wild_emmer","Domesticated_emmer","Ispahanicum","Georgian_wheat")
+
+
+test$color <- test$Common_name.21.
+test[which(test$Common_name.21. %in% Landrace ),50] <- "Landrace"
+
 
 color = scale_color_brewer(brewer.pal(6, "Set2")[c(1,2,3,4,6)])
-p <- ggplot(test, aes(C1, C2, color=as.factor(PCA_color) )) +
-  geom_point(size=3,shape=as.factor(test$PCA_shape)) +
-  scale_color_manual(values = c("#FC8D62","#8DA0CB","#E78AC3","#FFD92F")) +
+p <- ggplot(test, aes(C1, C2, color=as.factor(test$Common_name.21.) )) +
+  geom_point(size=3) +
+  #scale_color_manual(values = c("#FC8D62","#8DA0CB","#E78AC3","#FFD92F")) +
   theme_classic()+
   theme(panel.grid = element_blank(), panel.background = element_rect(color = 'black', fill = 'transparent'), plot.title = element_text(hjust = 0.5), legend.key = element_rect(fill = 'transparent')) + 
   theme(panel.border = element_blank()) +

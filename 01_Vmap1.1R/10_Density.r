@@ -9,6 +9,18 @@ wheat_karyotype <- read.table("wheat_karyotype.txt", header=T, stringsAsFactors 
 ideogram(karyotype = wheat_karyotype, overlaid = gene_density2)
 convertSVG("chromosome.svg", device = "pdf")
 
+#wheat_karyotype
+#Chr Start       End  CE_start    CE_end
+#1     0 248956422 122026459 124932724
+#2     0 242193529  92188145  94090557
+
+#gene_density
+#Chr   Start     End Value
+#1       1 1000000    65
+#1 1000001 2000000    76
+
+
+
 library(CMplot)
 setwd("/Users/guoyafei/Documents/01_个人项目/02_VmapIII/03_Fastcall2/测试数据")
 mydata<-read.table("/Users/guoyafei/Documents/01_个人项目/02_VmapIII/03_Fastcall2/测试数据/fastcall2_001_pos.txt",header=TRUE,sep="\t")

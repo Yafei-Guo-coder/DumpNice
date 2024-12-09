@@ -34,6 +34,39 @@ type3 <- rbind(my3,end)
 all <- rbind(type1,type2,type3)
 #但是我不会把他们画在同一条染色体上
 
+#位点全基因组密度分布
+setwd("/Users/guoyafei/Documents/Vmap3/density")
+require(RIdeogram)
+gene_density <- read.table("all.count.txt", header=T, stringsAsFactors = F)
+wheat_karyotype <- read.table("wheat_karyotype.txt", header=T, stringsAsFactors = F)
+ideogram(karyotype = wheat_karyotype, overlaid = gene_density)
+convertSVG("chromosome.svg", device = "pdf")
+#wheat_karyotype
+#Chr Start       End  CE_start    CE_end
+#1     0 248956422 122026459 124932724
+#2     0 242193529  92188145  94090557
+#gene_density
+#Chr   Start     End Value
+#1       1 1000000    65
+#1 1000001 2000000    76
+
+#亚基因组位点数量分布
+library(ggplot2)
+library(reshape)
+library(UpSetR)
+setwd("/Users/guoyafei/Desktop/RAiSD/gene")
+#part1
+
+expressionInput <- c(
+  AABB = 82420294, AABBDDAB = 46757947, AABBDDD = 22849127, DD = 11670269,
+  `AABB&AABBDDAB` = 162162813, `AABBDDD&DD` = 18599770)
+
+expressionInput <- c(
+  AABB = 82, AABBDDAB = 47, AABBDDD = 23, DD = 12,
+  `AABB&AABBDDAB` = 162, `AABBDDD&DD` = 18)
+
+upset(fromExpression(expressionInput), keep.order = TRUE,  text.scale = c(2),point.size = 2.5, line.size = 1.5)
+
 setwd("/Users/guoyafei/Desktop/3type/location")
 library(RIdeogram)
 library(RColorBrewer)
@@ -515,14 +548,6 @@ ggplot(sub2, aes(x=max.HUDSON_FST., y=abs(gwas_BETA))) +
   #geom_smooth(se = TRUE, method = "gam", formula = y ~ x)+
   theme(legend.position="none",plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=15),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 25),axis.title.y = element_text(size = 25))
 
-
-
-
-
-
-
-
-
 ggplot(data, aes(x=abs(BETA), y=median.HUDSON_FST.)) +
   geom_point(size=0.5)+
   #geom_line()+
@@ -687,7 +712,77 @@ ggplot(data=data4, mapping=aes(x = pop, y=value, fill=select))+
   theme(strip.background.y = element_rect(fill = "#FC4E07")) +
   theme(plot.title = element_text(color="red", size=20, face="bold.italic"),legend.text = element_text(size=20),legend.title=element_blank(),axis.text.x = element_text(size = 25), axis.title.x = element_text(size = 25),axis.text.y = element_text(size = 20),axis.title.y = element_text(size = 25))
 
+### ibs distance ####
+setwd("/Users/guoyafei/Documents/Vmap3/ibs")
+data <- read.table("AB_CS.ibs.txt", header=T,stringsAsFactors = F)
+a <- aggregate(data, by=list(data$type1),FUN=mean)[,c(1,3)]
+b <- aggregate(data, by=list(data$type1),FUN=sd)[,c(1,3)]
+all1 <- cbind(a,b)
+colnames(all1) <- c("type","mean","type2","sd")
+
+data <- read.table("D_CS.ibs.txt", header=T,stringsAsFactors = F)
+c <- aggregate(data, by=list(data$type1),FUN=mean)[,c(1,3)]
+d <- aggregate(data, by=list(data$type1),FUN=sd)[,c(1,3)]
+all2 <- cbind(c,d)
+colnames(all2) <- c("type","mean","type2","sd")
+
+all1$type2 <- "AB"
+all2$type2 <- "D"
+all <- rbind(all1,all2)
+
+
+ggplot(data=all, mapping=aes(x = type, y = mean, group= type2, fill=type2)) +
+  #scale_fill_manual(values = c("#A07D35","#56B4E9","#009E73","#F0E442","#0072B2","#D55E00"))+ 
+  geom_bar(stat="identity",position=position_dodge(0.85),width=0.75) +
+  geom_errorbar(aes(ymax = mean+sd, ymin = mean-sd),
+                position = position_dodge(0.85), width = 0.1)+
+  #facet_grid(tissue~.)+
+  theme_classic()
+
+AB <- read.table("AB_CS.ibs.txt", header=T,stringsAsFactors = F)
+AB$type3 <- "AB"
+
+D <- read.table("D_CS.ibs.txt", header=T,stringsAsFactors = F)
+D$type3 <- "D"
+all <- rbind(AB,D)
+all$type1 <- factor(all$type1,levels = c("Wild_emmer", "Domesticated_emmer","Ispahanicum","Georgian_wheat","Durum","Persian_wheat","Polish_wheat","Khorasan_wheat","Rivet_wheat","Spelt","Macha","Xinjiang_wheat","Vavilovii","Tibetan_semi_wild","Club_wheat","Indian_dwarf_wheat","Yunan_wheat","Landrace","Cultivar","OtherHexaploids","Strangulata"))
+all$type2 <- factor(all$type2,levels = c("Wild_emmer", "Domesticated_emmer","Free_threshing_tetraploids","OtherTetraploids","Landrace","Cultivar","OtherHexaploids","Strangulata"))
+ggplot(all, mapping=aes(x = type2, y = ABD_1143,fill=type3))+
+  geom_jitter(aes(color=type3),shape=16,alpha = 0.3, position = position_jitter(0.2))+
+  geom_boxplot() +
+  #geom_dotplot(binaxis = "y", stackdir = "center",
+  #             position = position_dodge(1),dotsize=0.02)+
+  theme_classic() +  
+  theme(
+    #legend.position="none",
+    #panel.border = element_blank(),
+    #axis.line.y = element_line(),
+    #panel.grid.major.x = element_blank(),
+    #panel.grid.minor.x = element_blank(),
+    axis.text.x=element_text(angle = 45,hjust = 1,size=15),
+    axis.text.y=element_text(size=15),
+    axis.title.y=element_text(size = 15),
+    axis.title.x=element_text(size = 15),
+  )
 
 
 
 
+### 每个环境鉴定到的基因上面显著位点的分布 ####
+setwd("/Users/guoyafei/Desktop/baypass/Num")
+data <- read.table("type1_Num.txt", header=T, stringsAsFactors = F)
+ggplot(data, aes(x = CDS))+
+  #geom_boxplot(fill = '#f8766d', notch = TRUE) +
+  geom_density()+
+  theme_classic() +  
+  theme(
+    legend.position="none",
+    #panel.border = element_blank(),
+    axis.line.y = element_line(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.x=element_text(size=15),
+    axis.text.y=element_text(size=15),
+    axis.title.y=element_text(size = 15),
+    axis.title.x=element_text(size = 15),
+  ) 

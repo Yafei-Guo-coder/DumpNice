@@ -58,7 +58,19 @@ print(gene2peak)
 #         print(f"{g} 不在 gene2peak 里")
 # 基于推断的顺式调控区域构建TF-靶基因调控网络
 
-motif_bed = scglue.genomics.read_bed("/jdfsbjcas1/ST_BJ/P21Z28400N0234/yangjing7/01.Proj/202208.At_silique_dev/250827.Endo.snATAC_snRNA.GRN/db.for_GRN/ath_cisbp_all.GeneID.fixed.bed")
+# motif_bed = scglue.genomics.read_bed("/jdfsbjcas1/ST_BJ/P21Z28400N0234/yangjing7/01.Proj/202208.At_silique_dev/250827.Endo.snATAC_snRNA.GRN/db.for_GRN/ath_cisbp_all.GeneID.fixed.bed")
+# 上面这个bed文件缺少预测的ICE1的motif基因组位置，所以重新预测一下ICE1的bed然后添加到这个bed文件里面
+
+fimo --o output --motif AT3G26744 /jdfsbjcas1/ST_BJ/P21Z28400N0234/guoyafei1/ATAC_out/ArchR/motif_AT/motif/Ath_TF_binding_motifs_addV2.meme /jdfsbjcas1/ST_BJ/P21Z28400N0234/guoyafei1/ATAC_out/seed/00_ref/Arabidopsis/TAIR10_chr_all.fa
+
+AT1G60920
+AT2G41835
+AT3G49930
+AT5G25475
+AT5G48670
+AT5G58620
+AT5G62165
+
 motif_bed.head()
 tfs = pd.Index(motif_bed["name"]).intersection(rna.var_names)
 tfs.size

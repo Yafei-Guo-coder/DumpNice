@@ -11,14 +11,12 @@ from networkx.drawing.nx_agraph import graphviz_layout
 import networkx as nx
 import matplotlib.pyplot as plt
 
-
 rna = ad.read_h5ad("/jdfsbjcas1/ST_BJ/P21Z28400N0234/yangjing7/01.Proj/202208.At_silique_dev/250827.Endo.snATAC_snRNA.GRN/integration.spectral/endo_rna_embeddings.h5ad")
 atac = ad.read_h5ad("/jdfsbjcas1/ST_BJ/P21Z28400N0234/yangjing7/01.Proj/202208.At_silique_dev/250827.Endo.snATAC_snRNA.GRN/integration.spectral/endo_atac_embeddings.h5ad")
 guidance_hvf = nx.read_graphml("/jdfsbjcas1/ST_BJ/P21Z28400N0234/yangjing7/01.Proj/202208.At_silique_dev/250827.Endo.snATAC_snRNA.GRN/integration.spectral/endo_guidance.graphml.gz")
 
 atac.var["name"] = atac.var_names
 rna.var["name"] = rna.var_names
-
 peaks = atac.var.query("highly_variable").index
 
 # 这里基因的高变基因没有关注的随时序变化的基因，所以直接使用随时序变化的基因
@@ -144,15 +142,29 @@ print(supp_df.head())
 print(glue_df.columns)
 print(glue_df.shape)
 
+genes = ['AT1G75080', 'AT3G26744']
+
+# 检查 tracks 列是否包含这些基因（假设 tracks 值为基因ID + '_glue'）
+for gene in genes:
+  gene_with_glue = f"{gene}_glue"  # 构造类似 AT1G75080_glue 的值
+if gene_with_glue in glue_df['tracks'].values:
+  print(f"{gene} (as {gene_with_glue}) is present in the 'tracks' column.")
+else:
+  print(f"{gene} (as {gene_with_glue}) is NOT present in the 'tracks' column.")
+
+
 
 tfs_of_interest = ["AT3G26744", "AT1G75080"]
 
 # 统计每个 TF 在 glue feather 中小于阈值的 target 数量
+tfs_of_interest = ["AT3G26744", "AT1G75080"]
 rank_threshold = 800
+
 for tf in tfs_of_interest:
   count_glue = (glue_df[tf] <= rank_threshold).sum()
-count_supp = (supp_df[tf] <= rank_threshold).sum()
-print(f"{tf}: glue={count_glue}, supp={count_supp}, total={count_glue+count_supp}")
+  count_supp = (supp_df[tf] <= rank_threshold).sum()
+  print(f"{tf}: glue={count_glue}, supp={count_supp}, total={count_glue+count_supp}")
+
 
 
 print("AT1G75080 在列中:", "AT1G75080" in glue_df.columns)
@@ -160,6 +172,18 @@ print(glue_df["AT1G75080"].sort_values().head(10))
 
 ann = pd.read_csv("ctx_annotation.tsv", sep="\t")
 print(ann[ann["gene_name"] == "AT1G75080"])
+
+
+
+import pandas as pd
+annotations = pd.read_csv("ctx_annotation.tsv", sep="\t")
+for tf in ['AT3G26744', 'AT1G75080']:
+  if tf in annotations['gene_name'].values:
+  print(f"{tf} has {len(annotations[annotations['gene_name'] == tf])} motif annotations")
+else:
+  print(f"{tf} is missing motif annotations")
+
+
 
 pd.concat([
   pd.DataFrame({
@@ -176,7 +200,7 @@ pd.concat([
   description="placeholder"
 ).to_csv("ctx_annotation.tsv", sep="\t", index=False)
 
-pyscenic ctx draft_grn.csv glue.genes_vs_tracks.rankings.feather supp.genes_vs_tracks.rankings.feather --annotations_fname ctx_annotation.tsv --expression_mtx_fname rna.loom --output pruned_grn_800.csv  --rank_threshold  800 --min_genes 3 --num_workers 20 --cell_id_attribute cellID --gene_attribute gene_id 2> /dev/null
+pyscenic ctx draft_grn.csv glue.genes_vs_tracks.rankings.feather supp.genes_vs_tracks.rankings.feather --annotations_fname ctx_annotation.tsv --expression_mtx_fname rna.loom --output pruned_grn_1000_1.csv  --rank_threshold  1000 --min_genes 1 --num_workers 20 --cell_id_attribute cellID --gene_attribute gene_id --verbose 2> /dev/null
 pyscenic ctx draft_grn.csv glue.genes_vs_tracks.rankings.feather supp.genes_vs_tracks.rankings.feather --annotations_fname ctx_annotation.tsv --expression_mtx_fname rna.loom --output pruned_grn_1000_gene100.csv --rank_threshold 1000 --min_genes 100 --num_workers 20 --cell_id_attribute cellID --gene_attribute gene_id 2> /dev/null
 pyscenic ctx draft_grn.csv glue.genes_vs_tracks.rankings.feather supp.genes_vs_tracks.rankings.feather --annotations_fname ctx_annotation.tsv --expression_mtx_fname rna.loom --output pruned_grn_1200.csv --rank_threshold 1200 --min_genes 1 --num_workers 20 --cell_id_attribute cellID --gene_attribute gene_id 2> /dev/null
 pyscenic ctx draft_grn.csv glue.genes_vs_tracks.rankings.feather supp.genes_vs_tracks.rankings.feather --annotations_fname ctx_annotation.tsv --expression_mtx_fname rna.loom --output pruned_grn_1500.csv --rank_threshold 1500 --min_genes 1 --num_workers 20 --cell_id_attribute cellID --gene_attribute gene_id 2> /dev/null

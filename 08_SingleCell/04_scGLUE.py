@@ -9,6 +9,7 @@ from matplotlib import rcParams
 from networkx.algorithms.bipartite import biadjacency_matrix
 from networkx.drawing.nx_agraph import graphviz_layout
 import networkx as nx
+import matplotlib.pyplot as plt
 
 
 rna = ad.read_h5ad("/jdfsbjcas1/ST_BJ/P21Z28400N0234/yangjing7/01.Proj/202208.At_silique_dev/250827.Endo.snATAC_snRNA.GRN/integration.spectral/endo_rna_embeddings.h5ad")
@@ -29,6 +30,7 @@ genes = valid_new_genes
 genes = genes.values 
 genes = pd.Index(genes) 
 
+
 # 用GLUE特征嵌入进行顺式调控推断
 features = pd.Index(np.concatenate([rna.var_names, atac.var_names]))
 feature_embeddings = np.concatenate([rna.varm["X_glue"], atac.varm["X_glue"]])
@@ -45,31 +47,31 @@ reginf = scglue.genomics.regulatory_inference(
 
 gene2peak = reginf.edge_subgraph(
   e for e, attr in dict(reginf.edges).items()
-  if attr["qval"] < 0.1
+  if attr["pval"] < 0.071
 )
 print(gene2peak)
 
-# genes_to_check = ["AT3G26744", "AT1G75080"]
-# 
+# genes_to_check = ["AT3G26744", "AT1G75080", "AT5G67580"]
 # for g in genes_to_check:
 #     if g in gene2peak.nodes:
 #         print(f"{g} 在 gene2peak 里")
 #     else:
 #         print(f"{g} 不在 gene2peak 里")
+# 
+# edges_list = []
+# for g in ["AT3G26744", "AT1G75080", "AT5G67580,'AT1G01150', 'AT1G01160', 'AT1G04013', 'AT1G04007', 'AT1G01180', 'AT1G01170']:
+#   for _, tgt, attr in gene2peak.out_edges(g, data=True):
+#   edges_list.append({"TF": g, "Peak": tgt, "qval": attr["qval"]})
+# 
+# df = pd.DataFrame(edges_list)
+# print(df)
 # 基于推断的顺式调控区域构建TF-靶基因调控网络
 
 # motif_bed = scglue.genomics.read_bed("/jdfsbjcas1/ST_BJ/P21Z28400N0234/yangjing7/01.Proj/202208.At_silique_dev/250827.Endo.snATAC_snRNA.GRN/db.for_GRN/ath_cisbp_all.GeneID.fixed.bed")
 # 上面这个bed文件缺少预测的ICE1的motif基因组位置，所以重新预测一下ICE1的bed然后添加到这个bed文件里面
+# fimo --o output --motif AT3G26744 /jdfsbjcas1/ST_BJ/P21Z28400N0234/guoyafei1/ATAC_out/ArchR/motif_AT/motif/Ath_TF_binding_motifs_addV2.meme /jdfsbjcas1/ST_BJ/P21Z28400N0234/guoyafei1/ATAC_out/seed/00_ref/Arabidopsis/TAIR10_chr_all.fa
 
-fimo --o output --motif AT3G26744 /jdfsbjcas1/ST_BJ/P21Z28400N0234/guoyafei1/ATAC_out/ArchR/motif_AT/motif/Ath_TF_binding_motifs_addV2.meme /jdfsbjcas1/ST_BJ/P21Z28400N0234/guoyafei1/ATAC_out/seed/00_ref/Arabidopsis/TAIR10_chr_all.fa
-
-AT1G60920
-AT2G41835
-AT3G49930
-AT5G25475
-AT5G48670
-AT5G58620
-AT5G62165
+motif_bed = scglue.genomics.read_bed("/jdfsbjcas1/ST_BJ/P21Z28400N0234/guoyafei1/ATAC_out/seed/01_fragment/03_ATACseed_run2/anchor_ED/network/all_fimo.V2.bed")
 
 motif_bed.head()
 tfs = pd.Index(motif_bed["name"]).intersection(rna.var_names)
@@ -80,23 +82,46 @@ tfs.size
 rna[:, np.union1d(genes, tfs)].write_loom("rna.loom")
 np.savetxt("tfs.txt", tfs, fmt="%s")
 
-!pyscenic grn rna.loom tfs.txt \
--o draft_grn.csv --seed 0 --num_workers 20 \
---cell_id_attribute cellID --gene_attribute gene_id
+!pyscenic grn rna.loom tfs.txt -o draft_grn.csv --seed 0 --num_workers 20 --cell_id_attribute cellID --gene_attribute gene_id
 
 # 经由ATAC峰生成TF顺式调控排序
 peak_bed = scglue.genomics.Bed(atac.var.loc[peaks])
 peak2tf = scglue.genomics.window_graph(peak_bed, motif_bed, 0, right_sorted=True)
-peak2tf = peak2tf.edge_subgraph(e for e in peak2tf.edges if e[1] in tfs)
+
+# print("节点数:", len(peak2tf.nodes))
+# print("边数:", len(peak2tf.edges))
+# print(list(peak2tf.nodes)[:5])
+# 
+# # 随机查看 5 条边及属性
+# for u, v, attr in list(peak2tf.edges(data=True))[:5]:
+#   print(u, "→", v, attr)
+# 
+# "Chr1:38668-39168" in peak2tf.nodes  # 检查某个 peak
+# "AT3G26744" in peak2tf.nodes 
+peak2tf_filtered = peak2tf.edge_subgraph(e for e in peak2tf.edges if e[1] in tfs)
+print("节点数:", len(peak2tf_filtered.nodes))
+print("边数:", len(peak2tf_filtered.edges))
+print(list(peak2tf_filtered.nodes)[:5])
+"Chr1:38668-39168" in peak2tf_filtered.nodes  # 检查某个 peak
+"AT3G26744" in peak2tf_filtered.nodes 
+# 随机查看 5 条边及属性
+# for u, v, attr in list(peak2tf_filtered.edges(data=True))[:5]:
+#   print(u, "→", v, attr)
+# 
+# "Chr1:38668-39168" in peak2tf_filtered.nodes  # 检查某个 peak
+# "AT3G26744" in peak2tf_filtered.nodes
+
+
+# peak2tf = peak2tf.edge_subgraph(e for e in peak2tf.edges if e[1] in tfs)
 
 gene2tf_rank_glue = scglue.genomics.cis_regulatory_ranking(
-  gene2peak, peak2tf, genes, peaks, tfs,
+  gene2peak, peak2tf_filtered, genes, peaks, tfs,
   region_lens=atac.var.loc[peaks, "chromEnd"] - atac.var.loc[peaks, "chromStart"],
   random_state=0
 )
 gene2tf_rank_glue.iloc[:5, :5]
 
-flank_bed = scglue.genomics.Bed(rna.var.loc[genes]).strand_specific_start_site().expand(500, 500)
+flank_bed = scglue.genomics.Bed(rna.var.loc[genes]).strand_specific_start_site().expand(1000, 500)
 flank2tf = scglue.genomics.window_graph(flank_bed, motif_bed, 0, right_sorted=True)
 gene2flank = nx.Graph([(g, g) for g in genes])
 gene2tf_rank_supp = scglue.genomics.cis_regulatory_ranking(
@@ -105,12 +130,31 @@ gene2tf_rank_supp = scglue.genomics.cis_regulatory_ranking(
 )
 gene2tf_rank_supp.iloc[:5, :5]
 
-
 # 使用顺式调控排序修剪共表达网络
 gene2tf_rank_glue.columns = gene2tf_rank_glue.columns + "_glue"
 gene2tf_rank_supp.columns = gene2tf_rank_supp.columns + "_supp"
 scglue.genomics.write_scenic_feather(gene2tf_rank_glue, "glue.genes_vs_tracks.rankings.feather")
 scglue.genomics.write_scenic_feather(gene2tf_rank_supp, "supp.genes_vs_tracks.rankings.feather")
+
+# 检查文件里面我们关注的基因都在不在
+import pandas as pd
+glue_df = pd.read_feather("glue.genes_vs_tracks.rankings.feather")
+supp_df = pd.read_feather("supp.genes_vs_tracks.rankings.feather")
+print(glue_df.head())
+print(supp_df.head())
+print(glue_df.columns)
+print(glue_df.shape)
+
+print("AT1G75080 在列中:", "AT1G75080" in glue_df.columns)
+print(glue_df["AT1G75080"].sort_values().head(10))
+
+
+
+ann = pd.read_csv("ctx_annotation.tsv", sep="\t")
+print(ann[ann["gene_name"] == "AT1G75080"])
+
+
+
 pd.concat([
   pd.DataFrame({
     "#motif_id": tfs + "_glue",
@@ -131,21 +175,16 @@ glue.genes_vs_tracks.rankings.feather \
 supp.genes_vs_tracks.rankings.feather \
 --annotations_fname ctx_annotation.tsv \
 --expression_mtx_fname rna.loom \
---output pruned_grn.csv \
---rank_threshold 500 --min_genes 1 \
+--output pruned_grn_800.csv \
+--rank_threshold 800 --min_genes 1 \
 --num_workers 20 \
 --cell_id_attribute cellID --gene_attribute gene_id 2> /dev/null
 grn = scglue.genomics.read_ctx_grn("pruned_grn.csv")
 
 
-import matplotlib.pyplot as plt
-import networkx as nx
-from networkx.drawing.nx_agraph import graphviz_layout
 
-# 假设 grn 是你的 TF-靶基因网络图
+
 plt.figure(figsize=(12, 12))
-
-# 使用 spring 布局
 pos = nx.spring_layout(grn, seed=42)
 
 nx.draw(grn, pos=pos, with_labels=True, node_size=500, font_size=10)

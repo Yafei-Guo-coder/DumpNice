@@ -111,7 +111,6 @@ print(list(peak2tf_filtered.nodes)[:5])
 # "Chr1:38668-39168" in peak2tf_filtered.nodes  # 检查某个 peak
 # "AT3G26744" in peak2tf_filtered.nodes
 
-
 # peak2tf = peak2tf.edge_subgraph(e for e in peak2tf.edges if e[1] in tfs)
 
 gene2tf_rank_glue = scglue.genomics.cis_regulatory_ranking(
@@ -145,15 +144,22 @@ print(supp_df.head())
 print(glue_df.columns)
 print(glue_df.shape)
 
+
+tfs_of_interest = ["AT3G26744", "AT1G75080"]
+
+# 统计每个 TF 在 glue feather 中小于阈值的 target 数量
+rank_threshold = 800
+for tf in tfs_of_interest:
+  count_glue = (glue_df[tf] <= rank_threshold).sum()
+count_supp = (supp_df[tf] <= rank_threshold).sum()
+print(f"{tf}: glue={count_glue}, supp={count_supp}, total={count_glue+count_supp}")
+
+
 print("AT1G75080 在列中:", "AT1G75080" in glue_df.columns)
 print(glue_df["AT1G75080"].sort_values().head(10))
 
-
-
 ann = pd.read_csv("ctx_annotation.tsv", sep="\t")
 print(ann[ann["gene_name"] == "AT1G75080"])
-
-
 
 pd.concat([
   pd.DataFrame({
@@ -170,26 +176,17 @@ pd.concat([
   description="placeholder"
 ).to_csv("ctx_annotation.tsv", sep="\t", index=False)
 
-!pyscenic ctx draft_grn.csv \
-glue.genes_vs_tracks.rankings.feather \
-supp.genes_vs_tracks.rankings.feather \
---annotations_fname ctx_annotation.tsv \
---expression_mtx_fname rna.loom \
---output pruned_grn_800.csv \
---rank_threshold 800 --min_genes 1 \
---num_workers 20 \
---cell_id_attribute cellID --gene_attribute gene_id 2> /dev/null
-grn = scglue.genomics.read_ctx_grn("pruned_grn.csv")
+pyscenic ctx draft_grn.csv glue.genes_vs_tracks.rankings.feather supp.genes_vs_tracks.rankings.feather --annotations_fname ctx_annotation.tsv --expression_mtx_fname rna.loom --output pruned_grn_800.csv  --rank_threshold  800 --min_genes 3 --num_workers 20 --cell_id_attribute cellID --gene_attribute gene_id 2> /dev/null
+pyscenic ctx draft_grn.csv glue.genes_vs_tracks.rankings.feather supp.genes_vs_tracks.rankings.feather --annotations_fname ctx_annotation.tsv --expression_mtx_fname rna.loom --output pruned_grn_1000_gene100.csv --rank_threshold 1000 --min_genes 100 --num_workers 20 --cell_id_attribute cellID --gene_attribute gene_id 2> /dev/null
+pyscenic ctx draft_grn.csv glue.genes_vs_tracks.rankings.feather supp.genes_vs_tracks.rankings.feather --annotations_fname ctx_annotation.tsv --expression_mtx_fname rna.loom --output pruned_grn_1200.csv --rank_threshold 1200 --min_genes 1 --num_workers 20 --cell_id_attribute cellID --gene_attribute gene_id 2> /dev/null
+pyscenic ctx draft_grn.csv glue.genes_vs_tracks.rankings.feather supp.genes_vs_tracks.rankings.feather --annotations_fname ctx_annotation.tsv --expression_mtx_fname rna.loom --output pruned_grn_1500.csv --rank_threshold 1500 --min_genes 1 --num_workers 20 --cell_id_attribute cellID --gene_attribute gene_id 2> /dev/null
+pyscenic ctx draft_grn.csv glue.genes_vs_tracks.rankings.feather supp.genes_vs_tracks.rankings.feather --annotations_fname ctx_annotation.tsv --expression_mtx_fname rna.loom --output pruned_grn_1800.csv --rank_threshold 1800 --min_genes 1 --num_workers 20 --cell_id_attribute cellID --gene_attribute gene_id 2> /dev/null
 
-
-
-
+grn = scglue.genomics.read_ctx_grn("pruned_grn_1000_gene100.csv")
 plt.figure(figsize=(12, 12))
 pos = nx.spring_layout(grn, seed=42)
-
 nx.draw(grn, pos=pos, with_labels=True, node_size=500, font_size=10)
-
-plt.savefig("gene_TF_network.pdf", format="pdf")
+plt.savefig("gene_TF_network_1000_gene100.pdf", format="pdf")
 plt.close()
 
 

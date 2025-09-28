@@ -40,7 +40,6 @@ library(SeuratObject,lib= "./lib2")
 library(universalmotif)
 library(tidydr)
 
-
 # projAll <- readRDS("/jdfsbjcas1/ST_BJ/P21Z28400N0234/guoyafei1/ATAC_out/seed/01_fragment/03_ATACseed_run2/anchor_ED/rds/ArchR_EndospermD_rmTorpedo2_reAnchor2_filter_motifV2meme_UMAPTest.rds")
 
 #====================================================================================================================#
@@ -446,6 +445,27 @@ pheatmap(mat_z,
          show_colnames = TRUE)
 dev.off()
 
+#====================================================================================================================#
+#                                                   提取peak marker                                               ####
+#====================================================================================================================#
+
+markerPeaks <- getMarkerFeatures(
+  ArchRProj = projAll, 
+  useMatrix = "PeakMatrix", 
+  groupBy = "Stage",
+  bias = c("TSSEnrichment", "log10(nFrags)"),
+  testMethod = "wilcoxon"
+)
+markerList <- getMarkers(markerPeaks, cutOff = "FDR <= 0.1 & Log2FC >= 0.5")
+for(stage in names(markerList)){
+  write.table(
+    as.data.frame(markerList[[stage]]),
+    file = paste0(stage, "_specific_peaks.txt"),
+    sep = "\t",
+    quote = FALSE,
+    row.names = FALSE
+  )
+}
 
 #====================================================================================================================#
 #                                               motif足迹分析                                                     ####

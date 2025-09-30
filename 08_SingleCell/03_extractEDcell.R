@@ -283,6 +283,61 @@ print(p_GSM)
 print(p_GIM)
 dev.off()
 
+
+
+#====================================================================================================================#
+#                                 combine motifMatrix and geneInteration matrix                                   ####
+#====================================================================================================================#
+projAll <- readRDS("/jdfsbjcas1/ST_BJ/P21Z28400N0234/guoyafei1/ATAC_out/seed/01_fragment/03_ATACseed_run2/anchor_ED/rds/ArchR_EndospermD_rmTorpedo2_reAnchor2_filter_motifV2meme_UMAPTest.rds")
+# combine motifMatrix and geneInteration matrix
+corGSM_MM <- correlateTrajectories(trajGSM, trajMM,corCutOff = 0.3)
+idxToRemove <- grep(pattern = "deviations", x = corGSM_MM[["correlatedMappings"]]$name2)
+if(length(idxToRemove > 1)){
+  corGSM_MM[["correlatedMappings"]] <- corGSM_MM[["correlatedMappings"]][-idxToRemove,]
+}
+
+# corGSM_MM[["correlatedMappings"]]
+trajGSM2 <- trajGSM[corGSM_MM[["correlatedMappings"]]$name1, ]
+trajMM2 <- trajMM[corGSM_MM[["correlatedMappings"]]$name2, ]
+
+trajCombined <- trajGSM2
+assay(trajCombined, withDimnames=FALSE) <- t(apply(assay(trajGSM2), 1, scale)) + t(apply(assay(trajMM2), 1, scale))
+
+combinedMat <- plotTrajectoryHeatmap(trajCombined, returnMat = TRUE, varCutOff = 0)
+rowOrder <- match(rownames(combinedMat), rownames(trajGSM2))
+
+ht1 <- plotTrajectoryHeatmap(trajGSM2,  pal = paletteContinuous(set = "horizonExtra"),  varCutOff = 0, rowOrder = rowOrder)
+ht2 <- plotTrajectoryHeatmap(trajMM2, pal = paletteContinuous(set = "solarExtra"), varCutOff = 0, rowOrder = rowOrder)
+
+# ComplexHeatmap::draw(ht1 + ht2)
+pdf("EndospermTrajectory_umap_reanchor_plot7.pdf", width = 6, height = 8)
+print(ht1)
+print(ht2)
+dev.off()
+
+# combine motifMatrix and geneScore matrix
+corGIM_MM <- correlateTrajectories(trajGIM, trajMM,corCutOff = 0.3)
+idxToRemove2 <- grep(pattern = "deviations", x = corGIM_MM[["correlatedMappings"]]$name2)
+if(length(idxToRemove2 > 1)){
+  corGIM_MM[["correlatedMappings"]] <- corGIM_MM[["correlatedMappings"]][-idxToRemove2,]
+}
+# corGIM_MM[[1]]
+
+trajGIM2 <- trajGIM[corGIM_MM[[1]]$name1, ]
+trajMM2 <- trajMM[corGIM_MM[[1]]$name2, ]
+trajCombined <- trajGIM2
+assay(trajCombined, withDimnames=FALSE) <- t(apply(assay(trajGIM2), 1, scale)) + t(apply(assay(trajMM2), 1, scale))
+combinedMat <- plotTrajectoryHeatmap(trajCombined, returnMat = TRUE, varCutOff = 0)
+
+rowOrder <- match(rownames(combinedMat), rownames(trajGIM2))
+ht1 <- plotTrajectoryHeatmap(trajGIM2,  pal = paletteContinuous(set = "blueYellow"),  varCutOff = 0, rowOrder = rowOrder)
+ht2 <- plotTrajectoryHeatmap(trajMM2, pal = paletteContinuous(set = "solarExtra"), varCutOff = 0, rowOrder = rowOrder)
+# ComplexHeatmap::draw(ht1 + ht2)
+pdf("EndospermTrajectory_umap_reanchor_plot8.pdf", width = 6, height = 8)
+print(ht1)
+print(ht2)
+
+
 #====================================================================================================================#
 #                           画关注的基因的开放分数，表达分数以及motif富集（针对转录因子）分数                                  #
 #====================================================================================================================#

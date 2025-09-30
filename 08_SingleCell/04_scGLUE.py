@@ -35,12 +35,13 @@ peaks = atac.var.query("highly_variable").index #V1
 # 这里基因的高变基因没有关注的随时序变化的基因，所以直接使用随时序变化的基因(V2)
 # genes = rna.var.query("highly_variable").index #V1
 # new_genes = pd.read_csv("/jdfsbjcas1/ST_BJ/P21Z28400N0234/yangjing7/01.Proj/202208.At_silique_dev/Figs/Fig.Endo_dev/03.dtw_cluster/0917.HVG2000_2nd.txt", header=None, names=["gene"] )
+# V4
+new_genes = pd.read_csv("/jdfsbjcas1/ST_BJ/P21Z28400N0234/yangjing7/01.Proj/202208.At_silique_dev/Figs/Fig.Endo_dev/03.dtw_cluster/update0924/0924.DTW_HVG2000.txt", header=None, names=["gene"] )
 new_genes = new_genes["gene"]
 valid_new_genes = new_genes[new_genes.isin(rna.var_names)]
 genes = valid_new_genes
 genes = genes.values 
 genes = pd.Index(genes) 
-
 
 # 用GLUE特征嵌入进行顺式调控推断
 features = pd.Index(np.concatenate([rna.var_names, atac.var_names]))
@@ -62,12 +63,12 @@ gene2peak = reginf.edge_subgraph(
 )
 print(gene2peak)
 
-# genes_to_check = ["AT3G26744", "AT1G75080", "AT5G67580"]
-# for g in genes_to_check:
-#     if g in gene2peak.nodes:
-#         print(f"{g} 在 gene2peak 里")
-#     else:
-#         print(f"{g} 不在 gene2peak 里")
+genes_to_check = ["AT3G26744", "AT1G75080", "AT5G67580"]
+for g in genes_to_check:
+    if g in gene2peak.nodes:
+        print(f"{g} 在 gene2peak 里")
+    else:
+        print(f"{g} 不在 gene2peak 里")
 # 
 # edges_list = []
 # for g in ["AT3G26744", "AT1G75080", "AT5G67580,'AT1G01150', 'AT1G01160', 'AT1G04013', 'AT1G04007', 'AT1G01180', 'AT1G01170']:
@@ -86,9 +87,9 @@ motif_bed = scglue.genomics.read_bed("/jdfsbjcas1/ST_BJ/P21Z28400N0234/guoyafei1
 
 motif_bed.head()
 tfs = pd.Index(motif_bed["name"]).intersection(rna.var_names)
-# tfs.size
-# "AT3G26744" in tfs
-# "AT1G75080" in tfs
+tfs.size
+"AT3G26744" in tfs
+"AT1G75080" in tfs
 
 rna[:, np.union1d(genes, tfs)].write_loom("rna.loom")
 np.savetxt("tfs.txt", tfs, fmt="%s")
@@ -99,16 +100,16 @@ np.savetxt("tfs.txt", tfs, fmt="%s")
 peak_bed = scglue.genomics.Bed(atac.var.loc[peaks])
 peak2tf = scglue.genomics.window_graph(peak_bed, motif_bed, 0, right_sorted=True)
 
-# print("节点数:", len(peak2tf.nodes))
-# print("边数:", len(peak2tf.edges))
-# print(list(peak2tf.nodes)[:5])
-# 
-# # 随机查看 5 条边及属性
-# for u, v, attr in list(peak2tf.edges(data=True))[:5]:
-#   print(u, "→", v, attr)
-# 
-# "Chr1:38668-39168" in peak2tf.nodes  # 检查某个 peak
-# "AT3G26744" in peak2tf.nodes
+print("节点数:", len(peak2tf.nodes))
+print("边数:", len(peak2tf.edges))
+print(list(peak2tf.nodes)[:5])
+
+# 随机查看 5 条边及属性
+for u, v, attr in list(peak2tf.edges(data=True))[:5]:
+  print(u, "→", v, attr)
+
+"Chr1:38668-39168" in peak2tf.nodes  # 检查某个 peak
+"AT3G26744" in peak2tf.nodes
 
 peak2tf_filtered = peak2tf.edge_subgraph(e for e in peak2tf.edges if e[1] in tfs)
 print("节点数:", len(peak2tf_filtered.nodes))
@@ -161,23 +162,23 @@ genes = ['AT1G75080', 'AT3G26744']
 # 检查 tracks 列是否包含这些基因（假设 tracks 值为基因ID + '_glue'）
 for gene in genes:
   gene_with_glue = f"{gene}_glue"  # 构造类似 AT1G75080_glue 的值
-if gene_with_glue in glue_df['tracks'].values:
-  print(f"{gene} (as {gene_with_glue}) is present in the 'tracks' column.")
-else:
-  print(f"{gene} (as {gene_with_glue}) is NOT present in the 'tracks' column.")
-
-
-
-tfs_of_interest = ["AT3G26744", "AT1G75080"]
-
-# 统计每个 TF 在 glue feather 中小于阈值的 target 数量
-tfs_of_interest = ["AT3G26744", "AT1G75080"]
-rank_threshold = 800
-
-for tf in tfs_of_interest:
-  count_glue = (glue_df[tf] <= rank_threshold).sum()
-  count_supp = (supp_df[tf] <= rank_threshold).sum()
-  print(f"{tf}: glue={count_glue}, supp={count_supp}, total={count_glue+count_supp}")
+  if gene_with_glue in glue_df['tracks'].values:
+    print(f"{gene} (as {gene_with_glue}) is present in the 'tracks' column.")
+  else:
+    print(f"{gene} (as {gene_with_glue}) is NOT present in the 'tracks' column.")
+#
+#
+# 
+# tfs_of_interest = ["AT3G26744", "AT1G75080"]
+# 
+# # 统计每个 TF 在 glue feather 中小于阈值的 target 数量
+# tfs_of_interest = ["AT3G26744", "AT1G75080"]
+# rank_threshold = 800
+# 
+# for tf in tfs_of_interest:
+#   count_glue = (glue_df[tf] <= rank_threshold).sum()
+#   count_supp = (supp_df[tf] <= rank_threshold).sum()
+#   print(f"{tf}: glue={count_glue}, supp={count_supp}, total={count_glue+count_supp}")
 
 
 
@@ -188,16 +189,14 @@ ann = pd.read_csv("ctx_annotation.tsv", sep="\t")
 print(ann[ann["gene_name"] == "AT1G75080"])
 
 
-
-import pandas as pd
-annotations = pd.read_csv("ctx_annotation.tsv", sep="\t")
-for tf in ['AT3G26744', 'AT1G75080']:
-  if tf in annotations['gene_name'].values:
-    print(f"{tf} has {len(annotations[annotations['gene_name'] == tf])} motif annotations")
-else:
-  print(f"{tf} is missing motif annotations")
-
-
+# 
+# import pandas as pd
+# annotations = pd.read_csv("ctx_annotation.tsv", sep="\t")
+# for tf in ['AT3G26744', 'AT1G75080']:
+#   if tf in annotations['gene_name'].values:
+#     print(f"{tf} has {len(annotations[annotations['gene_name'] == tf])} motif annotations")
+# else:
+#   print(f"{tf} is missing motif annotations")
 
 pd.concat([
   pd.DataFrame({
@@ -214,20 +213,16 @@ pd.concat([
   description="placeholder"
 ).to_csv("ctx_annotation.tsv", sep="\t", index=False)
 
-pyscenic ctx draft_grn.csv glue.genes_vs_tracks.rankings.feather supp.genes_vs_tracks.rankings.feather --annotations_fname ctx_annotation.tsv --expression_mtx_fname rna.loom --output pruned_grn_1000.csv  --rank_threshold  1000 --min_genes 1 --num_workers 20 --cell_id_attribute cellID --gene_attribute gene_id 2> /dev/null
-pyscenic ctx draft_grn.csv glue.genes_vs_tracks.rankings.feather supp.genes_vs_tracks.rankings.feather --annotations_fname ctx_annotation.tsv --expression_mtx_fname rna.loom --output pruned_grn_1000_gene100.csv --rank_threshold 1000 --min_genes 100 --num_workers 20 --cell_id_attribute cellID --gene_attribute gene_id 2> /dev/null
-pyscenic ctx draft_grn.csv glue.genes_vs_tracks.rankings.feather supp.genes_vs_tracks.rankings.feather --annotations_fname ctx_annotation.tsv --expression_mtx_fname rna.loom --output pruned_grn_1200.csv --rank_threshold 1200 --min_genes 1 --num_workers 20 --cell_id_attribute cellID --gene_attribute gene_id 2> /dev/null
-pyscenic ctx draft_grn.csv glue.genes_vs_tracks.rankings.feather supp.genes_vs_tracks.rankings.feather --annotations_fname ctx_annotation.tsv --expression_mtx_fname rna.loom --output pruned_grn_1500.csv --rank_threshold 1500 --min_genes 1 --num_workers 20 --cell_id_attribute cellID --gene_attribute gene_id 2> /dev/null
-pyscenic ctx draft_grn.csv glue.genes_vs_tracks.rankings.feather supp.genes_vs_tracks.rankings.feather --annotations_fname ctx_annotation.tsv --expression_mtx_fname rna.loom --output pruned_grn_1800.csv --rank_threshold 1800 --min_genes 1 --num_workers 20 --cell_id_attribute cellID --gene_attribute gene_id 2> /dev/null
+!pyscenic ctx draft_grn.csv glue.genes_vs_tracks.rankings.feather supp.genes_vs_tracks.rankings.feather --annotations_fname ctx_annotation.tsv --expression_mtx_fname rna.loom --output pruned_grn_1000.csv  --rank_threshold  1000 --min_genes 1 --num_workers 20 --cell_id_attribute cellID --gene_attribute gene_id 2> /dev/null
 
-grn = scglue.genomics.read_ctx_grn("pruned_grn_1000_gene100.csv")
+grn = scglue.genomics.read_ctx_grn("pruned_grn_1000.csv")
 plt.figure(figsize=(12, 12))
 pos = nx.spring_layout(grn, seed=42)
 nx.draw(grn, pos=pos, with_labels=True, node_size=500, font_size=10)
-plt.savefig("gene_TF_network_1000_gene100.pdf", format="pdf")
+plt.savefig("gene_TF_network_1000.pdf", format="pdf")
 plt.close()
 
-
+nx.write_graphml(grn, "pruned_grn.graphml.gz")
 
 
 

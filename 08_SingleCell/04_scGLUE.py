@@ -11,13 +11,16 @@ from networkx.drawing.nx_agraph import graphviz_layout
 import matplotlib.pyplot as plt
 from glob import glob
 
+# python 路径
+# /home/yangjing7/.conda/envs/scPlant/bin/python
+
 rna = ad.read_h5ad("/jdfsbjcas1/ST_BJ/P21Z28400N0234/yangjing7/01.Proj/202208.At_silique_dev/250827.Endo.snATAC_snRNA.GRN/integration.spectral/endo_rna_embeddings.h5ad")
 atac = ad.read_h5ad("/jdfsbjcas1/ST_BJ/P21Z28400N0234/yangjing7/01.Proj/202208.At_silique_dev/250827.Endo.snATAC_snRNA.GRN/integration.spectral/endo_atac_embeddings.h5ad")
 guidance_hvf = nx.read_graphml("/jdfsbjcas1/ST_BJ/P21Z28400N0234/yangjing7/01.Proj/202208.At_silique_dev/250827.Endo.snATAC_snRNA.GRN/integration.spectral/endo_guidance.graphml.gz")
 
 atac.var["name"] = atac.var_names
 rna.var["name"] = rna.var_names
-# 这里也是 更新一下peak(V3)
+# 这里也是更新一下peak(V3)
 peaks = atac.var.query("highly_variable").index #V1
 
 # 找到所有 *_specific_peaks.txt 文件
@@ -32,7 +35,7 @@ peaks = atac.var.query("highly_variable").index #V1
 # all_peaks = sorted(set(all_peaks))
 # peaks = pd.Index(all_peaks)
 
-# 这里基因的高变基因没有关注的随时序变化的基因，所以直接使用随时序变化的基因(V2)
+# 这里的高变基因没有关注的随时序变化的基因，所以直接使用随时序变化的基因(V2)
 # genes = rna.var.query("highly_variable").index #V1
 # new_genes = pd.read_csv("/jdfsbjcas1/ST_BJ/P21Z28400N0234/yangjing7/01.Proj/202208.At_silique_dev/Figs/Fig.Endo_dev/03.dtw_cluster/0917.HVG2000_2nd.txt", header=None, names=["gene"] )
 # V4
@@ -180,16 +183,12 @@ for gene in genes:
 #   count_supp = (supp_df[tf] <= rank_threshold).sum()
 #   print(f"{tf}: glue={count_glue}, supp={count_supp}, total={count_glue+count_supp}")
 
-
-
 print("AT1G75080 在列中:", "AT1G75080" in glue_df.columns)
 print(glue_df["AT1G75080"].sort_values().head(10))
 
 ann = pd.read_csv("ctx_annotation.tsv", sep="\t")
 print(ann[ann["gene_name"] == "AT1G75080"])
 
-
-# 
 # import pandas as pd
 # annotations = pd.read_csv("ctx_annotation.tsv", sep="\t")
 # for tf in ['AT3G26744', 'AT1G75080']:
